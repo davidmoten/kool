@@ -12,6 +12,7 @@ import java.util.function.Supplier;
 
 import org.davidmoten.kool.internal.operators.Filter;
 import org.davidmoten.kool.internal.operators.Map;
+import org.davidmoten.kool.internal.operators.Prepend;
 
 public class LazySeq<T> implements Seq<T> {
 
@@ -51,28 +52,26 @@ public class LazySeq<T> implements Seq<T> {
     }
 
     @Override
-    public <R> R reduce(Supplier<? extends R> initialValueFactory,
+    public <R> R reduce(Supplier< R> initialValueFactory,
             BiFunction<? super R, ? super T, ? extends R> reducer) {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public <R> R collect(Supplier<? extends R> factory, BiConsumer<? super R, ? super T> collector) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public ArrayList<T> toJavaArrayList() {
+    public <R> R collect(Supplier<R> factory, BiConsumer<? super R, ? super T> collector) {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
     public ArrayList<T> toJavaArrayList(int sizeHint) {
-        // TODO Auto-generated method stub
-        return null;
+        ArrayList<T> a = new ArrayList<>(sizeHint);
+        Iterator<T> it = source.iterator();
+        while (it.hasNext()) {
+            a.add(it.next());
+        }
+        return a;
     }
 
     @Override
@@ -93,8 +92,7 @@ public class LazySeq<T> implements Seq<T> {
 
     @Override
     public Seq<T> prepend(T value) {
-        // TODO Auto-generated method stub
-        return null;
+        return create(new Prepend<T>(value, source));
     }
 
     @Override
@@ -160,6 +158,11 @@ public class LazySeq<T> implements Seq<T> {
         public <T> LazySeq<T> of(T t1, T t2) {
             return create(LinkedList.of(t1, t2));
         }
+
+        public <T> LazySeq<T> of(T t1, T t2, T t3) {
+            return create(LinkedList.of(t1, t2, t3));
+        }
+
     }
 
 }

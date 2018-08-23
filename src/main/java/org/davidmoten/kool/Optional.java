@@ -351,7 +351,7 @@ public final class Optional<T> {
     
     //additions for kool
     public LinkedList<T> toLinkedList() {
-        if (isPresent()) {
+        if (!isPresent()) {
             return LinkedList.nil();
         } else {
             return LinkedList.of(get());

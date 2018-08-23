@@ -12,6 +12,8 @@ import java.util.function.Supplier;
 
 import com.github.davidmoten.guavamini.Preconditions;
 
+import static org.davidmoten.kool.internal.operators.Constants.DEFAULT_BUFFER_SIZE;
+
 /**
  * Non-lazy unidirectional linked list with functional style methods. Aims to be
  * memory and cpu efficient within the normal constraints of a linked list.
@@ -20,7 +22,6 @@ import com.github.davidmoten.guavamini.Preconditions;
  */
 public final class LinkedList<T> implements Seq<T> {
 
-    private static final int DEFAULT_BUFFER_SIZE = 16;
     private static final Object HEAD_NOT_PRESENT = new Object();
     private static final LinkedList<Object> NIL = new LinkedList<>(HEAD_NOT_PRESENT, null);
 
@@ -94,7 +95,7 @@ public final class LinkedList<T> implements Seq<T> {
      * java.util.function.BiFunction)
      */
     @Override
-    public <R> R reduce(Supplier<? extends R> initialValueFactory, BiFunction<? super R,? super T, ? extends R> reducer) {
+    public <R> R reduce(Supplier<R> initialValueFactory, BiFunction<? super R,? super T, ? extends R> reducer) {
         R r = initialValueFactory.get();
         return reduce(r, reducer);
     }
@@ -106,7 +107,7 @@ public final class LinkedList<T> implements Seq<T> {
      * java.util.function.BiConsumer)
      */
     @Override
-    public <R> R collect(Supplier<? extends R> factory, BiConsumer<? super R, ? super T> collector) {
+    public <R> R collect(Supplier<R> factory, BiConsumer<? super R, ? super T> collector) {
         R r = factory.get();
         LinkedList<T> x = this;
         while (!x.isEmpty()) {

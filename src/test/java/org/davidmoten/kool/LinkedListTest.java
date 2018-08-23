@@ -66,7 +66,7 @@ public class LinkedListTest {
 
     @Test
     public void testReduce() {
-        assertEquals(10, (int) LinkedList.of(1, 2, 3, 4).reduce(() -> 0, (a, b) -> a + b));
+        assertEquals(10, (int) LinkedList.of(1, 2, 3, 4).<Integer>reduce(() -> 0, (a, b) -> a + b));
     }
 
     @Test
