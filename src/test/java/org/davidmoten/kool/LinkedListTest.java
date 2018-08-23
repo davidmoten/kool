@@ -66,7 +66,7 @@ public class LinkedListTest {
 
     @Test
     public void testFlatMap() {
-        assertEquals(LinkedList.of(1, 1, 2, 2, 3, 3), LinkedList.of(1, 2, 3).flatMap(x -> LinkedList.of(x, x)));
+        assertEquals(LinkedList.of(1, 4, 2, 5, 3, 6), LinkedList.of(1, 2, 3).flatMap(x -> LinkedList.of(x, x+ 3)));
     }
 
     @Test

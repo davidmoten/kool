@@ -116,8 +116,10 @@ public final class LinkedList<T> implements Iterable<T> {
 
     public ArrayList<T> toJavaArrayList(int sizeHint) {
         ArrayList<T> a = new ArrayList<>();
-        for (T t : this) {
-            a.add(t);
+        LinkedList<T> x = this;
+        while (!x.isEmpty()) {
+            a.add(x.head);
+            x = x.tail;
         }
         return a;
     }
@@ -193,8 +195,9 @@ public final class LinkedList<T> implements Iterable<T> {
         LinkedList<T> x = this;
         while (!x.isEmpty()) {
             LinkedList<R> y = function.apply(x.head);
-            for (R r : y) {
-                a.add(r);
+            while (!y.isEmpty()) {
+                a.add(y.head);
+                y = y.tail;
             }
             x = x.tail;
         }
