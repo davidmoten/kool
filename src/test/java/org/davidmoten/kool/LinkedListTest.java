@@ -45,6 +45,16 @@ public class LinkedListTest {
     }
 
     @Test
+    public void testSizeWhenEmpty() {
+        assertEquals(0, LinkedList.nil().size());
+    }
+
+    @Test
+    public void testSize() {
+        assertEquals(3, LinkedList.of(1, 2, 3).size());
+    }
+
+    @Test
     public void testToJavaArrayList() {
         assertEquals(Lists.newArrayList(1, 2, 3), LinkedList.of(1, 2, 3).toJavaArrayList());
     }
@@ -66,7 +76,7 @@ public class LinkedListTest {
 
     @Test
     public void testFlatMap() {
-        assertEquals(LinkedList.of(1, 4, 2, 5, 3, 6), LinkedList.of(1, 2, 3).flatMap(x -> LinkedList.of(x, x+ 3)));
+        assertEquals(LinkedList.of(1, 4, 2, 5, 3, 6), LinkedList.of(1, 2, 3).flatMap(x -> LinkedList.of(x, x + 3)));
     }
 
     @Test

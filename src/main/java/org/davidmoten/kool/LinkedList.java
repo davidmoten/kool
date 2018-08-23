@@ -14,8 +14,7 @@ import com.github.davidmoten.guavamini.Preconditions;
 
 /**
  * Non-lazy unidirectional linked list with functional style methods. Aims to be
- * memory and cpu sufficient within the constraints of the advertised data
- * structure.
+ * memory and cpu efficient within the normal constraints of a linked list.
  *
  * @param <T>
  */
