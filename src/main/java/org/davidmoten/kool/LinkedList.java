@@ -61,7 +61,7 @@ public final class LinkedList<T> implements Seq<T> {
      * @see org.davidmoten.kool.Seq#reduce(java.util.function.BiFunction)
      */
     @Override
-    public T reduce(BiFunction<T, T, T> reducer) {
+    public T reduce(BiFunction<? super T, ? super T, ? extends T> reducer) {
         if (isEmpty()) {
             // TODO better exception name?
             throw new NoSuchElementException("list cannot be empty");
@@ -76,7 +76,7 @@ public final class LinkedList<T> implements Seq<T> {
      * @see org.davidmoten.kool.Seq#reduce(R, java.util.function.BiFunction)
      */
     @Override
-    public <R> R reduce(R initialValue, BiFunction<R, T, R> reducer) {
+    public <R> R reduce(R initialValue, BiFunction<? super R, ? super  T, ? extends R> reducer) {
         R r = initialValue;
         LinkedList<T> x = this;
         while (!x.isEmpty()) {
@@ -94,7 +94,7 @@ public final class LinkedList<T> implements Seq<T> {
      * java.util.function.BiFunction)
      */
     @Override
-    public <R> R reduce(Supplier<R> initialValueFactory, BiFunction<R, T, R> reducer) {
+    public <R> R reduce(Supplier<? extends R> initialValueFactory, BiFunction<? super R,? super T, ? extends R> reducer) {
         R r = initialValueFactory.get();
         return reduce(r, reducer);
     }
@@ -106,7 +106,7 @@ public final class LinkedList<T> implements Seq<T> {
      * java.util.function.BiConsumer)
      */
     @Override
-    public <R> R collect(Supplier<R> factory, BiConsumer<R, T> collector) {
+    public <R> R collect(Supplier<? extends R> factory, BiConsumer<? super R, ? super T> collector) {
         R r = factory.get();
         LinkedList<T> x = this;
         while (!x.isEmpty()) {
@@ -123,17 +123,11 @@ public final class LinkedList<T> implements Seq<T> {
      * @see org.davidmoten.kool.Seq#map(java.util.function.Function)
      */
     @Override
-    public <R> LinkedList<R> map(Function<T, R> function) {
+    public <R> LinkedList<R> map(Function<? super T, ? extends R> function) {
         return map(function, 16);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.davidmoten.kool.Seq#map(java.util.function.Function, int)
-     */
-    @Override
-    public <R> LinkedList<R> map(Function<T, R> function, int sizeHint) {
+    public <R> LinkedList<R> map(Function<? super T, ? extends R> function, int sizeHint) {
         if (this == NIL) {
             return nil();
         } else {
@@ -185,17 +179,11 @@ public final class LinkedList<T> implements Seq<T> {
      * @see org.davidmoten.kool.Seq#filter(java.util.function.Predicate)
      */
     @Override
-    public LinkedList<T> filter(Predicate<T> function) {
+    public LinkedList<T> filter(Predicate<? super T> function) {
         return filter(function, DEFAULT_BUFFER_SIZE);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.davidmoten.kool.Seq#filter(java.util.function.Predicate, int)
-     */
-    @Override
-    public LinkedList<T> filter(Predicate<T> function, int sizeHint) {
+    public LinkedList<T> filter(Predicate<? super T> function, int sizeHint) {
         if (this == NIL) {
             return nil();
         } else {
@@ -224,8 +212,8 @@ public final class LinkedList<T> implements Seq<T> {
      * @see org.davidmoten.kool.Seq#count()
      */
     @Override
-    public int count() {
-        int size = 0;
+    public long count() {
+        long size = 0;
         LinkedList<T> x = this;
         while (x != NIL) {
             size++;
@@ -264,7 +252,7 @@ public final class LinkedList<T> implements Seq<T> {
      * @see org.davidmoten.kool.Seq#prepend(java.util.List)
      */
     @Override
-    public LinkedList<T> prepend(List<T> values) {
+    public LinkedList<T> prepend(List<? extends T> values) {
         LinkedList<T> x = this;
         for (int i = values.size() - 1; i >= 0; i--) {
             x = x.prepend(values.get(i));
@@ -278,7 +266,7 @@ public final class LinkedList<T> implements Seq<T> {
      * @see org.davidmoten.kool.Seq#flatMap(java.util.function.Function)
      */
     @Override
-    public <R> LinkedList<R> flatMap(Function<T, Seq<R>> function) {
+    public <R> LinkedList<R> flatMap(Function<? super T,? extends Seq<? extends R>> function) {
         return flatMap(function, DEFAULT_BUFFER_SIZE);
     }
 
@@ -288,11 +276,11 @@ public final class LinkedList<T> implements Seq<T> {
      * @see org.davidmoten.kool.Seq#flatMap(java.util.function.Function, int)
      */
     @Override
-    public <R> LinkedList<R> flatMap(Function<T, Seq<R>> function, int sizeHint) {
+    public <R> LinkedList<R> flatMap(Function<? super T, ? extends Seq<? extends R>> function, int sizeHint) {
         ArrayList<R> a = new ArrayList<R>(sizeHint);
         LinkedList<T> x = this;
         while (!x.isEmpty()) {
-            Seq<R> y = function.apply(x.head);
+            Seq<? extends R> y = function.apply(x.head);
             for (R r: y) {
                 a.add(r);
             }
@@ -467,4 +455,7 @@ public final class LinkedList<T> implements Seq<T> {
         return LinkedList.<T>nil().prepend(a);
     }
 
+    public static LazyLinkedList.Builder lazy() {
+        return LazyLinkedList.BUILDER;
+    }
 }

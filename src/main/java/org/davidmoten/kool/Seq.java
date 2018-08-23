@@ -13,42 +13,38 @@ public interface Seq<T> extends Iterable<T> {
 
     boolean isEmpty();
 
-    T reduce(BiFunction<T, T, T> reducer);
+    T reduce(BiFunction<? super T, ? super T, ? extends T> reducer);
 
-    <R> R reduce(R initialValue, BiFunction<R, T, R> reducer);
+    <R> R reduce(R initialValue, BiFunction<? super R, ? super T, ? extends R> reducer);
 
-    <R> R reduce(Supplier<R> initialValueFactory, BiFunction<R, T, R> reducer);
+    <R> R reduce(Supplier<? extends R> initialValueFactory, BiFunction<? super R, ? super T, ? extends R> reducer);
 
-    <R> R collect(Supplier<R> factory, BiConsumer<R, T> collector);
+    <R> R collect(Supplier<? extends R> factory, BiConsumer<? super R, ? super T> collector);
 
-    <R> Seq<R> map(Function<T, R> function);
-
-    <R> Seq<R> map(Function<T, R> function, int sizeHint);
+    <R> Seq<R> map(Function<? super T, ? extends R> function);
 
     ArrayList<T> toJavaArrayList();
 
     ArrayList<T> toJavaArrayList(int sizeHint);
 
-    Seq<T> filter(Predicate<T> function);
-
-    Seq<T> filter(Predicate<T> function, int sizeHint);
+    Seq<T> filter(Predicate<? super T> function);
 
     /**
      * Returns the number of elements in the list. O(N) algorithmic complexity.
      * 
      * @return the number of elements in the list
      */
-    int count();
+    long count();
 
     Seq<T> prepend(T value);
 
     Seq<T> prepend(T[] values);
 
-    Seq<T> prepend(List<T> values);
+    Seq<T> prepend(List<? extends T> values);
 
-    <R> Seq<R> flatMap(Function<T, Seq<R>> function);
+    <R> Seq<R> flatMap(Function<? super T, ? extends Seq<? extends R>> function);
 
-    <R> Seq<R> flatMap(Function<T, Seq<R>> function, int sizeHint);
+    <R> Seq<R> flatMap(Function<? super T, ? extends Seq<? extends R>> function, int sizeHint);
 
     Optional<T> findFirst(Predicate<? super T> predicate);
 
