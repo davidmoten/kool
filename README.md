@@ -1,5 +1,10 @@
 # kool
-functional java collections
+Functional-style java collection classes.
+
+Status: *pre-alpha* (in development)
+
+
+## Features
 
 * `org.davidmoten.kool.LinkedList` offers
 ** lower memory usage than `java.util.LinkedList` (which is bidirectional and holds size as well)
