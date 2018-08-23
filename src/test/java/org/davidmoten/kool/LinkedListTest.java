@@ -51,17 +51,22 @@ public class LinkedListTest {
 
     @Test
     public void testMap() {
-        assertEquals(Lists.newArrayList(4, 5, 6), LinkedList.of(1, 2, 3).map(x -> x + 3).toJavaArrayList());
+        assertEquals(LinkedList.of(4, 5, 6), LinkedList.of(1, 2, 3).map(x -> x + 3));
     }
 
     @Test
     public void testReduce() {
         assertEquals(10, (int) LinkedList.of(1, 2, 3, 4).reduce(() -> 0, (a, b) -> a + b));
     }
-    
+
     @Test
     public void testReduceNoFactory() {
         assertEquals(10, (int) LinkedList.of(1, 2, 3, 4).reduce((a, b) -> a + b));
+    }
+
+    @Test
+    public void testFlatMap() {
+        assertEquals(LinkedList.of(1, 1, 2, 2, 3, 3), LinkedList.of(1, 2, 3).flatMap(x -> LinkedList.of(x, x)));
     }
 
 }

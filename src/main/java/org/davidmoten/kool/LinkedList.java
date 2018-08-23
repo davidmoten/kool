@@ -52,7 +52,7 @@ public final class LinkedList<T> implements Iterable<T> {
 
     public T reduce(BiFunction<T, T, T> reducer) {
         if (isEmpty()) {
-            //TODO better exception name?
+            // TODO better exception name?
             throw new NoSuchElementException("list cannot be empty");
         } else {
             return tail.<T>reduce(head, reducer);
@@ -184,6 +184,23 @@ public final class LinkedList<T> implements Iterable<T> {
         return x;
     }
 
+    public <R> LinkedList<R> flatMap(Function<T, LinkedList<R>> function) {
+        return flatMap(function, DEFAULT_BUFFER_SIZE);
+    }
+
+    public <R> LinkedList<R> flatMap(Function<T, LinkedList<R>> function, int sizeHint) {
+        ArrayList<R> a = new ArrayList<R>(sizeHint);
+        LinkedList<T> x = this;
+        while (!x.isEmpty()) {
+            LinkedList<R> y = function.apply(x.head);
+            for (R r : y) {
+                a.add(r);
+            }
+            x = x.tail;
+        }
+        return LinkedList.from(a);
+    }
+
     @Override
     public Iterator<T> iterator() {
         return new Iterator<T>() {
@@ -207,8 +224,41 @@ public final class LinkedList<T> implements Iterable<T> {
             }
         };
     }
+    
 
+    
     // factory methods
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((head == null) ? 0 : head.hashCode());
+        result = prime * result + ((tail == null) ? 0 : tail.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        LinkedList<?> other = (LinkedList<?>) obj;
+        if (head == null) {
+            if (other.head != null)
+                return false;
+        } else if (!head.equals(other.head))
+            return false;
+        if (tail == null) {
+            if (other.tail != null)
+                return false;
+        } else if (!tail.equals(other.tail))
+            return false;
+        return true;
+    }
 
     @SuppressWarnings("unchecked")
     public static <R> LinkedList<R> nil() {
