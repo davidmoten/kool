@@ -2,12 +2,12 @@ package org.davidmoten.kool.internal.operators;
 
 import java.util.Iterator;
 
-public class Prepend<T> implements Iterable<T> {
+public class PrependOne<T> implements Iterable<T> {
 
     private final T value;
     private final Iterable<T> source;
 
-    public Prepend(T value, Iterable<T> source) {
+    public PrependOne(T value, Iterable<T> source) {
         this.value = value;
         this.source = source;
     }
@@ -16,7 +16,7 @@ public class Prepend<T> implements Iterable<T> {
     public Iterator<T> iterator() {
         return new Iterator<T>() {
             final Iterator<T> it = source.iterator();
-            T value = Prepend.this.value;
+            T value = PrependOne.this.value;
 
             @Override
             public boolean hasNext() {

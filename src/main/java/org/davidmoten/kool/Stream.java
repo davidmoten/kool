@@ -12,8 +12,10 @@ import java.util.function.Supplier;
 
 import org.davidmoten.kool.internal.operators.Filter;
 import org.davidmoten.kool.internal.operators.Map;
-import org.davidmoten.kool.internal.operators.Prepend;
+import org.davidmoten.kool.internal.operators.PrependMany;
+import org.davidmoten.kool.internal.operators.PrependOne;
 import org.davidmoten.kool.internal.operators.Reduce1;
+import org.davidmoten.kool.internal.util.Iterables;
 
 public final class Stream<T> implements Seq<T> {
 
@@ -88,13 +90,12 @@ public final class Stream<T> implements Seq<T> {
 
     @Override
     public Stream<T> prepend(T value) {
-        return create(new Prepend<T>(value, source));
+        return create(new PrependOne<T>(value, source));
     }
 
     @Override
     public Stream<T> prepend(T[] values) {
-        // TODO Auto-generated method stub
-        return null;
+        return create(new PrependMany<T>(Iterables.fromArray(values), source));
     }
 
     @Override

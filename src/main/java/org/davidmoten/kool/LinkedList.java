@@ -18,7 +18,7 @@ import static org.davidmoten.kool.internal.operators.Constants.DEFAULT_BUFFER_SI
  * Non-lazy unidirectional linked list with functional style methods. Aims to be
  * memory and cpu efficient within the normal constraints of a linked list.
  *
- * @param <T>
+ * @param <T> type of item in linst
  */
 public final class LinkedList<T> implements Seq<T> {
 

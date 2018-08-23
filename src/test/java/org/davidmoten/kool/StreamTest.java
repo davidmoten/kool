@@ -19,7 +19,16 @@ public class StreamTest {
 
     @Test
     public void testPrepend() {
-        assertEquals(Lists.newArrayList(0, 1, 2, 3), Stream.of(1, 2, 3).prepend(0).toJavaArrayList());
+        assertEquals(Lists.newArrayList(0, 1, 2, 3),
+                Stream.of(1, 2, 3).prepend(0).toJavaArrayList());
+    }
+
+    @Test
+    public void testPrependMany() {
+        assertEquals(Lists.newArrayList(0, 1, 2, 3), //
+                Stream.of(2, 3) //
+                        .prepend(new Integer[] { 0, 1 }) //
+                        .toJavaArrayList());
     }
 
     @Test
