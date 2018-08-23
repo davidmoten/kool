@@ -11,6 +11,7 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import org.davidmoten.kool.internal.operators.Filter;
+import org.davidmoten.kool.internal.operators.FlatMap;
 import org.davidmoten.kool.internal.operators.Map;
 import org.davidmoten.kool.internal.operators.PrependMany;
 import org.davidmoten.kool.internal.operators.PrependOne;
@@ -106,8 +107,7 @@ public final class Stream<T> implements Seq<T> {
 
     @Override
     public <R> Stream<R> flatMap(Function<? super T, ? extends Seq<? extends R>> function) {
-        // TODO Auto-generated method stub
-        return null;
+        return create(new FlatMap<T, R>(function, source));
     }
 
     @Override
