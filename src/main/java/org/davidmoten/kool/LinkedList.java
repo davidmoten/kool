@@ -18,7 +18,7 @@ import com.github.davidmoten.guavamini.Preconditions;
  *
  * @param <T>
  */
-public final class LinkedList<T> implements Iterable<T> {
+public final class LinkedList<T> implements Iterable<T>, Seq<T> {
 
     private static final int DEFAULT_BUFFER_SIZE = 16;
     private static final Object HEAD_NOT_PRESENT = new Object();
@@ -33,6 +33,10 @@ public final class LinkedList<T> implements Iterable<T> {
         this.tail = tail;
     }
 
+    /* (non-Javadoc)
+     * @see org.davidmoten.kool.Seq#isEmpty()
+     */
+    @Override
     public boolean isEmpty() {
         return this == NIL;
     }
@@ -48,7 +52,11 @@ public final class LinkedList<T> implements Iterable<T> {
     public LinkedList<T> tail() {
         return tail;
     }
-
+    
+    /* (non-Javadoc)
+     * @see org.davidmoten.kool.Seq#reduce(java.util.function.BiFunction)
+     */
+    @Override
     public T reduce(BiFunction<T, T, T> reducer) {
         if (isEmpty()) {
             // TODO better exception name?
@@ -58,6 +66,10 @@ public final class LinkedList<T> implements Iterable<T> {
         }
     }
 
+    /* (non-Javadoc)
+     * @see org.davidmoten.kool.Seq#reduce(R, java.util.function.BiFunction)
+     */
+    @Override
     public <R> R reduce(R initialValue, BiFunction<R, T, R> reducer) {
         R r = initialValue;
         LinkedList<T> x = this;
@@ -69,11 +81,19 @@ public final class LinkedList<T> implements Iterable<T> {
         return r;
     }
 
+    /* (non-Javadoc)
+     * @see org.davidmoten.kool.Seq#reduce(java.util.function.Supplier, java.util.function.BiFunction)
+     */
+    @Override
     public <R> R reduce(Supplier<R> initialValueFactory, BiFunction<R, T, R> reducer) {
         R r = initialValueFactory.get();
         return reduce(r, reducer);
     }
 
+    /* (non-Javadoc)
+     * @see org.davidmoten.kool.Seq#collect(java.util.function.Supplier, java.util.function.BiConsumer)
+     */
+    @Override
     public <R> R collect(Supplier<R> factory, BiConsumer<R, T> collector) {
         R r = factory.get();
         LinkedList<T> x = this;
@@ -85,10 +105,18 @@ public final class LinkedList<T> implements Iterable<T> {
         return r;
     }
 
+    /* (non-Javadoc)
+     * @see org.davidmoten.kool.Seq#map(java.util.function.Function)
+     */
+    @Override
     public <R> LinkedList<R> map(Function<T, R> function) {
         return map(function, 16);
     }
 
+    /* (non-Javadoc)
+     * @see org.davidmoten.kool.Seq#map(java.util.function.Function, int)
+     */
+    @Override
     public <R> LinkedList<R> map(Function<T, R> function, int sizeHint) {
         if (this == NIL) {
             return nil();
@@ -109,10 +137,18 @@ public final class LinkedList<T> implements Iterable<T> {
         }
     }
 
+    /* (non-Javadoc)
+     * @see org.davidmoten.kool.Seq#toJavaArrayList()
+     */
+    @Override
     public ArrayList<T> toJavaArrayList() {
         return toJavaArrayList(DEFAULT_BUFFER_SIZE);
     }
 
+    /* (non-Javadoc)
+     * @see org.davidmoten.kool.Seq#toJavaArrayList(int)
+     */
+    @Override
     public ArrayList<T> toJavaArrayList(int sizeHint) {
         ArrayList<T> a = new ArrayList<>();
         LinkedList<T> x = this;
@@ -123,10 +159,18 @@ public final class LinkedList<T> implements Iterable<T> {
         return a;
     }
 
+    /* (non-Javadoc)
+     * @see org.davidmoten.kool.Seq#filter(java.util.function.Predicate)
+     */
+    @Override
     public LinkedList<T> filter(Predicate<T> function) {
         return filter(function, DEFAULT_BUFFER_SIZE);
     }
 
+    /* (non-Javadoc)
+     * @see org.davidmoten.kool.Seq#filter(java.util.function.Predicate, int)
+     */
+    @Override
     public LinkedList<T> filter(Predicate<T> function, int sizeHint) {
         if (this == NIL) {
             return nil();
@@ -150,12 +194,11 @@ public final class LinkedList<T> implements Iterable<T> {
         }
     }
 
-    /**
-     * Returns the number of elements in the list. O(N) algorithmic complexity.
-     * 
-     * @return the number of elements in the list
+    /* (non-Javadoc)
+     * @see org.davidmoten.kool.Seq#count()
      */
-    public int size() {
+    @Override
+    public int count() {
         int size = 0;
         LinkedList<T> x = this;
         while (x != NIL) {
@@ -165,10 +208,18 @@ public final class LinkedList<T> implements Iterable<T> {
         return size;
     }
 
+    /* (non-Javadoc)
+     * @see org.davidmoten.kool.Seq#prepend(T)
+     */
+    @Override
     public LinkedList<T> prepend(T value) {
         return new LinkedList<T>(value, this);
     }
 
+    /* (non-Javadoc)
+     * @see org.davidmoten.kool.Seq#prepend(T[])
+     */
+    @Override
     public LinkedList<T> prepend(T[] values) {
         LinkedList<T> x = this;
         for (int i = values.length - 1; i >= 0; i--) {
@@ -177,6 +228,10 @@ public final class LinkedList<T> implements Iterable<T> {
         return x;
     }
 
+    /* (non-Javadoc)
+     * @see org.davidmoten.kool.Seq#prepend(java.util.List)
+     */
+    @Override
     public LinkedList<T> prepend(List<T> values) {
         LinkedList<T> x = this;
         for (int i = values.size() - 1; i >= 0; i--) {
@@ -185,10 +240,18 @@ public final class LinkedList<T> implements Iterable<T> {
         return x;
     }
 
+    /* (non-Javadoc)
+     * @see org.davidmoten.kool.Seq#flatMap(java.util.function.Function)
+     */
+    @Override
     public <R> LinkedList<R> flatMap(Function<T, LinkedList<R>> function) {
         return flatMap(function, DEFAULT_BUFFER_SIZE);
     }
 
+    /* (non-Javadoc)
+     * @see org.davidmoten.kool.Seq#flatMap(java.util.function.Function, int)
+     */
+    @Override
     public <R> LinkedList<R> flatMap(Function<T, LinkedList<R>> function, int sizeHint) {
         ArrayList<R> a = new ArrayList<R>(sizeHint);
         LinkedList<T> x = this;
@@ -203,6 +266,10 @@ public final class LinkedList<T> implements Iterable<T> {
         return LinkedList.from(a);
     }
 
+    /* (non-Javadoc)
+     * @see org.davidmoten.kool.Seq#findFirst(java.util.function.Predicate)
+     */
+    @Override
     public Optional<T> findFirst(Predicate<? super T> predicate) {
         LinkedList<T> x = this;
         while (!x.isEmpty()) {
@@ -213,7 +280,31 @@ public final class LinkedList<T> implements Iterable<T> {
         }
         return Optional.empty();
     }
+    
+    @Override
+    public Optional<T> first() {
+        if (isEmpty()) {
+            return Optional.empty();
+        } else {
+            return Optional.of(head);
+        }
+    }
+    
+    @Override
+    public Optional<T> last() {
+        LinkedList<T> x = this;
+        while (!x.isEmpty()) {
+            if (x.tail.isEmpty()) {
+                return Optional.of(x.head);
+            }
+            x = x.tail;
+        }
+        return Optional.empty();
+    }
 
+    /* (non-Javadoc)
+     * @see org.davidmoten.kool.Seq#iterator()
+     */
     @Override
     public Iterator<T> iterator() {
         return new Iterator<T>() {
@@ -319,5 +410,5 @@ public final class LinkedList<T> implements Iterable<T> {
         }
         return LinkedList.<T>nil().prepend(a);
     }
-
+    
 }

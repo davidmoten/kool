@@ -46,12 +46,12 @@ public class LinkedListTest {
 
     @Test
     public void testSizeWhenEmpty() {
-        assertEquals(0, LinkedList.nil().size());
+        assertEquals(0, LinkedList.nil().count());
     }
 
     @Test
     public void testSize() {
-        assertEquals(3, LinkedList.of(1, 2, 3).size());
+        assertEquals(3, LinkedList.of(1, 2, 3).count());
     }
 
     @Test
@@ -82,6 +82,26 @@ public class LinkedListTest {
     @Test
     public void testForEachFromIterable() {
         LinkedList.of(1, 2, 3).forEach(System.out::println);
+    }
+    
+    @Test
+    public void testFirstOfEmpty() {
+        assertFalse(LinkedList.nil().first().isPresent());
+    }
+    
+    @Test
+    public void testFirstOfNonEmpty() {
+        assertEquals(1, (int) LinkedList.of(1,2,3).first().get());
+    }
+    
+    @Test
+    public void testLastOfEmpty() {
+        assertFalse(LinkedList.nil().last().isPresent());
+    }
+    
+    @Test
+    public void testLastOfNonEmpty() {
+        assertEquals(3, (int) LinkedList.of(1,2,3).last().get());
     }
 
 }
