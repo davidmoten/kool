@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
-import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -202,6 +201,17 @@ public final class LinkedList<T> implements Iterable<T> {
         return LinkedList.from(a);
     }
 
+    public Optional<T> findFirst(Predicate<? super T> predicate) {
+        LinkedList<T> x = this;
+        while (!x.isEmpty()) {
+            if (predicate.test(x.head)) {
+                return Optional.of(x.head);
+            }
+            x = x.tail;
+        }
+        return Optional.empty();
+    }
+
     @Override
     public Iterator<T> iterator() {
         return new Iterator<T>() {
@@ -225,9 +235,7 @@ public final class LinkedList<T> implements Iterable<T> {
             }
         };
     }
-    
 
-    
     // factory methods
 
     @Override
