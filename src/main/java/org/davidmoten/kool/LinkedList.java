@@ -18,7 +18,7 @@ import com.github.davidmoten.guavamini.Preconditions;
  *
  * @param <T>
  */
-public final class LinkedList<T> implements Iterable<T>, Seq<T> {
+public final class LinkedList<T> implements Seq<T> {
 
     private static final int DEFAULT_BUFFER_SIZE = 16;
     private static final Object HEAD_NOT_PRESENT = new Object();
@@ -278,7 +278,7 @@ public final class LinkedList<T> implements Iterable<T>, Seq<T> {
      * @see org.davidmoten.kool.Seq#flatMap(java.util.function.Function)
      */
     @Override
-    public <R> LinkedList<R> flatMap(Function<T, LinkedList<R>> function) {
+    public <R> LinkedList<R> flatMap(Function<T, Seq<R>> function) {
         return flatMap(function, DEFAULT_BUFFER_SIZE);
     }
 
@@ -288,14 +288,13 @@ public final class LinkedList<T> implements Iterable<T>, Seq<T> {
      * @see org.davidmoten.kool.Seq#flatMap(java.util.function.Function, int)
      */
     @Override
-    public <R> LinkedList<R> flatMap(Function<T, LinkedList<R>> function, int sizeHint) {
+    public <R> LinkedList<R> flatMap(Function<T, Seq<R>> function, int sizeHint) {
         ArrayList<R> a = new ArrayList<R>(sizeHint);
         LinkedList<T> x = this;
         while (!x.isEmpty()) {
-            LinkedList<R> y = function.apply(x.head);
-            while (!y.isEmpty()) {
-                a.add(y.head);
-                y = y.tail;
+            Seq<R> y = function.apply(x.head);
+            for (R r: y) {
+                a.add(r);
             }
             x = x.tail;
         }

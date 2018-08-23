@@ -9,7 +9,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-public interface Seq<T> {
+public interface Seq<T> extends Iterable<T> {
 
     boolean isEmpty();
 
@@ -21,17 +21,17 @@ public interface Seq<T> {
 
     <R> R collect(Supplier<R> factory, BiConsumer<R, T> collector);
 
-    <R> LinkedList<R> map(Function<T, R> function);
+    <R> Seq<R> map(Function<T, R> function);
 
-    <R> LinkedList<R> map(Function<T, R> function, int sizeHint);
+    <R> Seq<R> map(Function<T, R> function, int sizeHint);
 
     ArrayList<T> toJavaArrayList();
 
     ArrayList<T> toJavaArrayList(int sizeHint);
 
-    LinkedList<T> filter(Predicate<T> function);
+    Seq<T> filter(Predicate<T> function);
 
-    LinkedList<T> filter(Predicate<T> function, int sizeHint);
+    Seq<T> filter(Predicate<T> function, int sizeHint);
 
     /**
      * Returns the number of elements in the list. O(N) algorithmic complexity.
@@ -40,15 +40,15 @@ public interface Seq<T> {
      */
     int count();
 
-    LinkedList<T> prepend(T value);
+    Seq<T> prepend(T value);
 
-    LinkedList<T> prepend(T[] values);
+    Seq<T> prepend(T[] values);
 
-    LinkedList<T> prepend(List<T> values);
+    Seq<T> prepend(List<T> values);
 
-    <R> LinkedList<R> flatMap(Function<T, LinkedList<R>> function);
+    <R> Seq<R> flatMap(Function<T, Seq<R>> function);
 
-    <R> LinkedList<R> flatMap(Function<T, LinkedList<R>> function, int sizeHint);
+    <R> Seq<R> flatMap(Function<T, Seq<R>> function, int sizeHint);
 
     Optional<T> findFirst(Predicate<? super T> predicate);
 
