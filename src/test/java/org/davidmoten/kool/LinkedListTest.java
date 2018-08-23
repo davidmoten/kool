@@ -69,4 +69,9 @@ public class LinkedListTest {
         assertEquals(LinkedList.of(1, 1, 2, 2, 3, 3), LinkedList.of(1, 2, 3).flatMap(x -> LinkedList.of(x, x)));
     }
 
+    @Test
+    public void testForEachFromIterable() {
+        LinkedList.of(1, 2, 3).forEach(System.out::println);
+    }
+
 }
