@@ -348,4 +348,13 @@ public final class Optional<T> {
             ? String.format("Optional[%s]", value)
             : "Optional.empty";
     }
+    
+    //additions for kool
+    public LinkedList<T> toLinkedList() {
+        if (isPresent()) {
+            return LinkedList.nil();
+        } else {
+            return LinkedList.of(get());
+        }
+    }
 }

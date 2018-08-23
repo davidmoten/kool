@@ -33,7 +33,9 @@ public final class LinkedList<T> implements Iterable<T>, Seq<T> {
         this.tail = tail;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.davidmoten.kool.Seq#isEmpty()
      */
     @Override
@@ -52,8 +54,10 @@ public final class LinkedList<T> implements Iterable<T>, Seq<T> {
     public LinkedList<T> tail() {
         return tail;
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.davidmoten.kool.Seq#reduce(java.util.function.BiFunction)
      */
     @Override
@@ -66,7 +70,9 @@ public final class LinkedList<T> implements Iterable<T>, Seq<T> {
         }
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.davidmoten.kool.Seq#reduce(R, java.util.function.BiFunction)
      */
     @Override
@@ -81,8 +87,11 @@ public final class LinkedList<T> implements Iterable<T>, Seq<T> {
         return r;
     }
 
-    /* (non-Javadoc)
-     * @see org.davidmoten.kool.Seq#reduce(java.util.function.Supplier, java.util.function.BiFunction)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.davidmoten.kool.Seq#reduce(java.util.function.Supplier,
+     * java.util.function.BiFunction)
      */
     @Override
     public <R> R reduce(Supplier<R> initialValueFactory, BiFunction<R, T, R> reducer) {
@@ -90,8 +99,11 @@ public final class LinkedList<T> implements Iterable<T>, Seq<T> {
         return reduce(r, reducer);
     }
 
-    /* (non-Javadoc)
-     * @see org.davidmoten.kool.Seq#collect(java.util.function.Supplier, java.util.function.BiConsumer)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.davidmoten.kool.Seq#collect(java.util.function.Supplier,
+     * java.util.function.BiConsumer)
      */
     @Override
     public <R> R collect(Supplier<R> factory, BiConsumer<R, T> collector) {
@@ -105,7 +117,9 @@ public final class LinkedList<T> implements Iterable<T>, Seq<T> {
         return r;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.davidmoten.kool.Seq#map(java.util.function.Function)
      */
     @Override
@@ -113,7 +127,9 @@ public final class LinkedList<T> implements Iterable<T>, Seq<T> {
         return map(function, 16);
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.davidmoten.kool.Seq#map(java.util.function.Function, int)
      */
     @Override
@@ -137,7 +153,9 @@ public final class LinkedList<T> implements Iterable<T>, Seq<T> {
         }
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.davidmoten.kool.Seq#toJavaArrayList()
      */
     @Override
@@ -145,7 +163,9 @@ public final class LinkedList<T> implements Iterable<T>, Seq<T> {
         return toJavaArrayList(DEFAULT_BUFFER_SIZE);
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.davidmoten.kool.Seq#toJavaArrayList(int)
      */
     @Override
@@ -159,7 +179,9 @@ public final class LinkedList<T> implements Iterable<T>, Seq<T> {
         return a;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.davidmoten.kool.Seq#filter(java.util.function.Predicate)
      */
     @Override
@@ -167,7 +189,9 @@ public final class LinkedList<T> implements Iterable<T>, Seq<T> {
         return filter(function, DEFAULT_BUFFER_SIZE);
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.davidmoten.kool.Seq#filter(java.util.function.Predicate, int)
      */
     @Override
@@ -194,7 +218,9 @@ public final class LinkedList<T> implements Iterable<T>, Seq<T> {
         }
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.davidmoten.kool.Seq#count()
      */
     @Override
@@ -208,7 +234,9 @@ public final class LinkedList<T> implements Iterable<T>, Seq<T> {
         return size;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.davidmoten.kool.Seq#prepend(T)
      */
     @Override
@@ -216,7 +244,9 @@ public final class LinkedList<T> implements Iterable<T>, Seq<T> {
         return new LinkedList<T>(value, this);
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.davidmoten.kool.Seq#prepend(T[])
      */
     @Override
@@ -228,7 +258,9 @@ public final class LinkedList<T> implements Iterable<T>, Seq<T> {
         return x;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.davidmoten.kool.Seq#prepend(java.util.List)
      */
     @Override
@@ -240,7 +272,9 @@ public final class LinkedList<T> implements Iterable<T>, Seq<T> {
         return x;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.davidmoten.kool.Seq#flatMap(java.util.function.Function)
      */
     @Override
@@ -248,7 +282,9 @@ public final class LinkedList<T> implements Iterable<T>, Seq<T> {
         return flatMap(function, DEFAULT_BUFFER_SIZE);
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.davidmoten.kool.Seq#flatMap(java.util.function.Function, int)
      */
     @Override
@@ -266,7 +302,9 @@ public final class LinkedList<T> implements Iterable<T>, Seq<T> {
         return LinkedList.from(a);
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.davidmoten.kool.Seq#findFirst(java.util.function.Predicate)
      */
     @Override
@@ -280,7 +318,7 @@ public final class LinkedList<T> implements Iterable<T>, Seq<T> {
         }
         return Optional.empty();
     }
-    
+
     @Override
     public Optional<T> first() {
         if (isEmpty()) {
@@ -289,7 +327,7 @@ public final class LinkedList<T> implements Iterable<T>, Seq<T> {
             return Optional.of(head);
         }
     }
-    
+
     @Override
     public Optional<T> last() {
         LinkedList<T> x = this;
@@ -302,7 +340,9 @@ public final class LinkedList<T> implements Iterable<T>, Seq<T> {
         return Optional.empty();
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.davidmoten.kool.Seq#iterator()
      */
     @Override
@@ -328,8 +368,6 @@ public final class LinkedList<T> implements Iterable<T>, Seq<T> {
             }
         };
     }
-
-    // factory methods
 
     @Override
     public int hashCode() {
@@ -361,6 +399,25 @@ public final class LinkedList<T> implements Iterable<T>, Seq<T> {
             return false;
         return true;
     }
+
+    @Override
+    public Optional<T> get(int index) {
+        LinkedList<T> x = this;
+        while (index > 0) {
+            if (x.isEmpty()) {
+                return Optional.empty();
+            }
+            index--;
+            x = x.tail;
+        }
+        if (x.isEmpty()) {
+            return Optional.empty();
+        } else {
+            return Optional.of(x.head);
+        }
+    }
+
+    // factory methods
 
     @SuppressWarnings("unchecked")
     public static <R> LinkedList<R> nil() {
@@ -410,5 +467,5 @@ public final class LinkedList<T> implements Iterable<T>, Seq<T> {
         }
         return LinkedList.<T>nil().prepend(a);
     }
-    
+
 }

@@ -57,5 +57,7 @@ public interface Seq<T> {
     Optional<T> first();
     
     Optional<T> last();
+    
+    Optional<T> get(int index);
 
 }

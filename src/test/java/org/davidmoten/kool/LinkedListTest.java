@@ -103,5 +103,20 @@ public class LinkedListTest {
     public void testLastOfNonEmpty() {
         assertEquals(3, (int) LinkedList.of(1,2,3).last().get());
     }
+    
+    @Test
+    public void testGetOnEmpty() {
+        assertFalse(LinkedList.nil().get(0).isPresent());
+        assertFalse(LinkedList.nil().get(1).isPresent());
+    }
+    
+    @Test
+    public void testGetOnNonEmpty() {
+        LinkedList<Integer> list = LinkedList.of(1, 2, 3);
+        assertEquals(1, (int) list.get(0).get());
+        assertEquals(2, (int) list.get(1).get());
+        assertEquals(3, (int) list.get(2).get());
+        assertFalse( list.get(3).isPresent());
+    }
 
 }
