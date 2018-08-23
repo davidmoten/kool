@@ -6,7 +6,7 @@ import org.junit.Test;
 
 import com.github.davidmoten.guavamini.Lists;
 
-public class LazySeqTest {
+public class StreamTest {
 
     @Test
     public void testMapFilter() {
