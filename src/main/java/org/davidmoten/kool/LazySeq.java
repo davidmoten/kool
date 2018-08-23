@@ -166,6 +166,25 @@ public class LazySeq<T> implements Seq<T> {
             return create(LinkedList.of(t1, t2, t3, t4));
         }
 
+        public <T> LazySeq<T> of(T t1, T t2, T t3, T t4, T t5) {
+            return create(LinkedList.of(t1, t2, t3, t4, t5));
+        }
+        
+        public <T> LazySeq<T> of(T t1, T t2, T t3, T t4, T t5, T t6) {
+            return create(LinkedList.of(t1, t2, t3, t4, t5, t6));
+        }
+        
+        public <T> LazySeq<T> of(T t1, T t2, T t3, T t4, T t5, T t6, T t7) {
+            return create(LinkedList.of(t1, t2, t3, t4, t5, t6, t7));
+        }
+        
+        public <T> LazySeq<T> of(T t1, T t2, T t3, T t4, T t5, T t6, T t7, T t8) {
+            return create(LinkedList.of(t1, t2, t3, t4, t5, t6, t7, t8));
+        }
+        
+        public <T> LazySeq<T> from(Iterable<T> iterable) {
+            return create(LinkedList.from(iterable));
+        }
     }
 
 }
