@@ -13,24 +13,24 @@ import java.util.function.Supplier;
 import org.davidmoten.kool.internal.operators.Filter;
 import org.davidmoten.kool.internal.operators.Map;
 
-public class LazyLinkedList<T> implements Seq<T> {
+public class LazySeq<T> implements Seq<T> {
 
     static final Builder BUILDER = new Builder();
 
     private final Iterable<T> source;
 
-    LazyLinkedList(Iterable<T> source) {
+    LazySeq(Iterable<T> source) {
         this.source = source;
     }
 
-    static <T> LazyLinkedList<T> create(Iterable<T> source) {
-        return new LazyLinkedList<T>(source);
+    static <T> LazySeq<T> create(Iterable<T> source) {
+        return new LazySeq<T>(source);
     }
 
     @Override
     public boolean isEmpty() {
-        // TODO Auto-generated method stub
-        return false;
+        Iterator<T> it = source.iterator();
+        return !it.hasNext();
     }
 
     @Override
@@ -153,11 +153,11 @@ public class LazyLinkedList<T> implements Seq<T> {
 
     public static final class Builder {
 
-        public <T> LazyLinkedList<T> of(T t) {
+        public <T> LazySeq<T> of(T t) {
             return create(Collections.singleton(t));
         }
 
-        public <T> LazyLinkedList<T> of(T t1, T t2) {
+        public <T> LazySeq<T> of(T t1, T t2) {
             return create(LinkedList.of(t1, t2));
         }
     }

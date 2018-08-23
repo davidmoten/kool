@@ -455,7 +455,7 @@ public final class LinkedList<T> implements Seq<T> {
         return LinkedList.<T>nil().prepend(a);
     }
 
-    public static LazyLinkedList.Builder lazy() {
-        return LazyLinkedList.BUILDER;
+    public static LazySeq.Builder lazy() {
+        return LazySeq.BUILDER;
     }
 }
