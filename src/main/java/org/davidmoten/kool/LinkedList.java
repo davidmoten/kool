@@ -271,12 +271,6 @@ public final class LinkedList<T> implements Seq<T> {
         return flatMap(function, DEFAULT_BUFFER_SIZE);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.davidmoten.kool.Seq#flatMap(java.util.function.Function, int)
-     */
-    @Override
     public <R> LinkedList<R> flatMap(Function<? super T, ? extends Seq<? extends R>> function, int sizeHint) {
         ArrayList<R> a = new ArrayList<R>(sizeHint);
         LinkedList<T> x = this;
@@ -456,7 +450,4 @@ public final class LinkedList<T> implements Seq<T> {
         return LinkedList.<T>nil().prepend(a);
     }
 
-    public static LazySeq.Builder lazy() {
-        return LazySeq.BUILDER;
-    }
 }

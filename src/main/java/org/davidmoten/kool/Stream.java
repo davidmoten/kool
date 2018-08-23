@@ -15,28 +15,25 @@ import org.davidmoten.kool.internal.operators.Map;
 import org.davidmoten.kool.internal.operators.Prepend;
 import org.davidmoten.kool.internal.operators.Reduce1;
 
-public class LazySeq<T> implements Seq<T> {
-
-    static final Builder BUILDER = new Builder();
+public final class Stream<T> implements Seq<T> {
 
     private final Iterable<T> source;
 
-    LazySeq(Iterable<T> source) {
+    Stream(Iterable<T> source) {
         this.source = source;
     }
 
-    static <T> LazySeq<T> create(Iterable<T> source) {
-        return new LazySeq<T>(source);
+    static <T> Stream<T> create(Iterable<T> source) {
+        return new Stream<T>(source);
     }
 
     @Override
     public boolean isEmpty() {
-        Iterator<T> it = source.iterator();
-        return !it.hasNext();
+        return !source.iterator().hasNext();
     }
 
     @Override
-    public <R> Seq<R> map(Function<? super T, ? extends R> function) {
+    public <R> Stream<R> map(Function<? super T, ? extends R> function) {
         return create(new Map<T, R>(function, source));
     }
 
@@ -52,8 +49,7 @@ public class LazySeq<T> implements Seq<T> {
     }
 
     @Override
-    public <R> R reduce(Supplier< R> initialValueFactory,
-            BiFunction<? super R, ? super T, ? extends R> reducer) {
+    public <R> R reduce(Supplier<R> initialValueFactory, BiFunction<? super R, ? super T, ? extends R> reducer) {
         // TODO Auto-generated method stub
         return null;
     }
@@ -75,7 +71,7 @@ public class LazySeq<T> implements Seq<T> {
     }
 
     @Override
-    public Seq<T> filter(Predicate<? super T> function) {
+    public Stream<T> filter(Predicate<? super T> function) {
         return create(new Filter<T>(function, source));
     }
 
@@ -91,30 +87,24 @@ public class LazySeq<T> implements Seq<T> {
     }
 
     @Override
-    public Seq<T> prepend(T value) {
+    public Stream<T> prepend(T value) {
         return create(new Prepend<T>(value, source));
     }
 
     @Override
-    public Seq<T> prepend(T[] values) {
+    public Stream<T> prepend(T[] values) {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public Seq<T> prepend(List<? extends T> values) {
+    public Stream<T> prepend(List<? extends T> values) {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public <R> Seq<R> flatMap(Function<? super T, ? extends Seq<? extends R>> function) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public <R> Seq<R> flatMap(Function<? super T, ? extends Seq<? extends R>> function, int sizeHint) {
+    public <R> Stream<R> flatMap(Function<? super T, ? extends Seq<? extends R>> function) {
         // TODO Auto-generated method stub
         return null;
     }
@@ -148,43 +138,40 @@ public class LazySeq<T> implements Seq<T> {
         return null;
     }
 
-    public static final class Builder {
+    public static <T> Stream<T> of(T t) {
+        return create(Collections.singleton(t));
+    }
 
-        public <T> LazySeq<T> of(T t) {
-            return create(Collections.singleton(t));
-        }
+    public static <T> Stream<T> of(T t1, T t2) {
+        return create(LinkedList.of(t1, t2));
+    }
 
-        public <T> LazySeq<T> of(T t1, T t2) {
-            return create(LinkedList.of(t1, t2));
-        }
+    public static <T> Stream<T> of(T t1, T t2, T t3) {
+        return create(LinkedList.of(t1, t2, t3));
+    }
 
-        public <T> LazySeq<T> of(T t1, T t2, T t3) {
-            return create(LinkedList.of(t1, t2, t3));
-        }
-        
-        public <T> LazySeq<T> of(T t1, T t2, T t3, T t4) {
-            return create(LinkedList.of(t1, t2, t3, t4));
-        }
+    public static <T> Stream<T> of(T t1, T t2, T t3, T t4) {
+        return create(LinkedList.of(t1, t2, t3, t4));
+    }
 
-        public <T> LazySeq<T> of(T t1, T t2, T t3, T t4, T t5) {
-            return create(LinkedList.of(t1, t2, t3, t4, t5));
-        }
-        
-        public <T> LazySeq<T> of(T t1, T t2, T t3, T t4, T t5, T t6) {
-            return create(LinkedList.of(t1, t2, t3, t4, t5, t6));
-        }
-        
-        public <T> LazySeq<T> of(T t1, T t2, T t3, T t4, T t5, T t6, T t7) {
-            return create(LinkedList.of(t1, t2, t3, t4, t5, t6, t7));
-        }
-        
-        public <T> LazySeq<T> of(T t1, T t2, T t3, T t4, T t5, T t6, T t7, T t8) {
-            return create(LinkedList.of(t1, t2, t3, t4, t5, t6, t7, t8));
-        }
-        
-        public <T> LazySeq<T> from(Iterable<T> iterable) {
-            return create(LinkedList.from(iterable));
-        }
+    public static <T> Stream<T> of(T t1, T t2, T t3, T t4, T t5) {
+        return create(LinkedList.of(t1, t2, t3, t4, t5));
+    }
+
+    public static <T> Stream<T> of(T t1, T t2, T t3, T t4, T t5, T t6) {
+        return create(LinkedList.of(t1, t2, t3, t4, t5, t6));
+    }
+
+    public static <T> Stream<T> of(T t1, T t2, T t3, T t4, T t5, T t6, T t7) {
+        return create(LinkedList.of(t1, t2, t3, t4, t5, t6, t7));
+    }
+
+    public static <T> Stream<T> of(T t1, T t2, T t3, T t4, T t5, T t6, T t7, T t8) {
+        return create(LinkedList.of(t1, t2, t3, t4, t5, t6, t7, t8));
+    }
+
+    public static <T> Stream<T> from(Iterable<T> iterable) {
+        return create(LinkedList.from(iterable));
     }
 
 }

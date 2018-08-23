@@ -48,8 +48,6 @@ public interface Seq<T> extends Iterable<T> {
 
     <R> Seq<R> flatMap(Function<? super T, ? extends Seq<? extends R>> function);
 
-    <R> Seq<R> flatMap(Function<? super T, ? extends Seq<? extends R>> function, int sizeHint);
-
     Optional<T> findFirst(Predicate<? super T> predicate);
 
     Iterator<T> iterator();
