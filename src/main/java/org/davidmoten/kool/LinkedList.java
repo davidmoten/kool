@@ -4,7 +4,11 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 import com.github.davidmoten.guavamini.Preconditions;
 
@@ -46,11 +50,33 @@ public final class LinkedList<T> implements Iterable<T> {
         return tail;
     }
 
-    public <R> LinkedList<R> map(F1<T, R> function) {
+    public <R> R reduce(Supplier<R> initialValueFactory, BiFunction<R, T, R> reducer) {
+        R r = initialValueFactory.get();
+        LinkedList<T> x = this;
+        while (!x.isEmpty()) {
+            T v = x.head;
+            r = reducer.apply(r, v);
+            x = x.tail;
+        }
+        return r;
+    }
+    
+    public <R> R collect(Supplier<R> factory, BiConsumer<R, T> collector) {
+        R r = factory.get();
+        LinkedList<T> x = this;
+        while (!x.isEmpty()) {
+            T v = x.head;
+            collector.accept(r, v);
+            x = x.tail;
+        }
+        return r;
+    }
+
+    public <R> LinkedList<R> map(Function<T, R> function) {
         return map(function, 16);
     }
 
-    public <R> LinkedList<R> map(F1<T, R> function, int sizeHint) {
+    public <R> LinkedList<R> map(Function<T, R> function, int sizeHint) {
         if (this == NIL) {
             return nil();
         } else {
@@ -69,7 +95,7 @@ public final class LinkedList<T> implements Iterable<T> {
             return x;
         }
     }
-    
+
     public ArrayList<T> toJavaArrayList() {
         return toJavaArrayList(DEFAULT_BUFFER_SIZE);
     }

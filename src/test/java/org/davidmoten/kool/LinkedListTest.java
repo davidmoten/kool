@@ -51,8 +51,12 @@ public class LinkedListTest {
 
     @Test
     public void testMap() {
-        LinkedList<Integer> list = LinkedList.of(1, 2, 3);
         assertEquals(Lists.newArrayList(4, 5, 6), LinkedList.of(1, 2, 3).map(x -> x + 3).toJavaArrayList());
+    }
+
+    @Test
+    public void testReduce() {
+        assertEquals(10, (int) LinkedList.of(1, 2, 3, 4).reduce(() -> 0, (a, b) -> a + b));
     }
 
 }
