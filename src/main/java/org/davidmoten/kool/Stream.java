@@ -51,7 +51,8 @@ public final class Stream<T> implements Seq<T> {
     }
 
     @Override
-    public <R> R reduce(Supplier<R> initialValueFactory, BiFunction<? super R, ? super T, ? extends R> reducer) {
+    public <R> R reduce(Supplier<R> initialValueFactory,
+            BiFunction<? super R, ? super T, ? extends R> reducer) {
         // TODO Auto-generated method stub
         return null;
     }
@@ -100,8 +101,7 @@ public final class Stream<T> implements Seq<T> {
 
     @Override
     public Stream<T> prepend(List<? extends T> values) {
-        // TODO Auto-generated method stub
-        return null;
+        return create(new PrependMany<T>(values, source));
     }
 
     @Override

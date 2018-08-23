@@ -5,10 +5,10 @@ import java.util.NoSuchElementException;
 
 public class PrependMany<T> implements Iterable<T> {
 
-    private final Iterable<T> source1;
-    private final Iterable<T> source2;
+    private final Iterable<? extends T> source1;
+    private final Iterable<? extends T> source2;
 
-    public PrependMany(Iterable<T> source1, Iterable<T> source2) {
+    public PrependMany(Iterable<? extends T> source1, Iterable<? extends T> source2) {
         this.source1 = source1;
         this.source2 = source2;
     }
@@ -17,8 +17,8 @@ public class PrependMany<T> implements Iterable<T> {
     public Iterator<T> iterator() {
         return new Iterator<T>() {
 
-            Iterator<T> a = source1.iterator();
-            Iterator<T> b = null;
+            Iterator<? extends T> a = source1.iterator();
+            Iterator<? extends T> b = null;
 
             @Override
             public boolean hasNext() {
@@ -36,7 +36,7 @@ public class PrependMany<T> implements Iterable<T> {
                 }
             }
 
-            private Iterator<T> b() {
+            private Iterator<? extends T> b() {
                 if (b == null) {
                     b = source2.iterator();
                 }
