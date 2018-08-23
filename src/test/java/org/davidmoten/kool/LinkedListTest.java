@@ -58,5 +58,10 @@ public class LinkedListTest {
     public void testReduce() {
         assertEquals(10, (int) LinkedList.of(1, 2, 3, 4).reduce(() -> 0, (a, b) -> a + b));
     }
+    
+    @Test
+    public void testReduceNoFactory() {
+        assertEquals(10, (int) LinkedList.of(1, 2, 3, 4).reduce((a, b) -> a + b));
+    }
 
 }

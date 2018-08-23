@@ -50,8 +50,17 @@ public final class LinkedList<T> implements Iterable<T> {
         return tail;
     }
 
-    public <R> R reduce(Supplier<R> initialValueFactory, BiFunction<R, T, R> reducer) {
-        R r = initialValueFactory.get();
+    public T reduce(BiFunction<T, T, T> reducer) {
+        if (isEmpty()) {
+            //TODO better exception name?
+            throw new NoSuchElementException("list cannot be empty");
+        } else {
+            return tail.<T>reduce(head, reducer);
+        }
+    }
+
+    public <R> R reduce(R initialValue, BiFunction<R, T, R> reducer) {
+        R r = initialValue;
         LinkedList<T> x = this;
         while (!x.isEmpty()) {
             T v = x.head;
@@ -60,7 +69,12 @@ public final class LinkedList<T> implements Iterable<T> {
         }
         return r;
     }
-    
+
+    public <R> R reduce(Supplier<R> initialValueFactory, BiFunction<R, T, R> reducer) {
+        R r = initialValueFactory.get();
+        return reduce(r, reducer);
+    }
+
     public <R> R collect(Supplier<R> factory, BiConsumer<R, T> collector) {
         R r = factory.get();
         LinkedList<T> x = this;
