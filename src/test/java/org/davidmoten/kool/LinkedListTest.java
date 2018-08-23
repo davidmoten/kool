@@ -71,7 +71,7 @@ public class LinkedListTest {
 
     @Test
     public void testReduceNoFactory() {
-        assertEquals(10, (int) LinkedList.of(1, 2, 3, 4).reduce((a, b) -> a + b));
+        assertEquals(10, (int) LinkedList.of(1, 2, 3, 4).reduce((a, b) -> a + b).get());
     }
 
     @Test

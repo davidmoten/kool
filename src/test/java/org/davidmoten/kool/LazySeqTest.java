@@ -23,5 +23,10 @@ public class LazySeqTest {
     public void testPrepend() {
         assertEquals(Lists.newArrayList(0,1,2,3),  LinkedList.lazy().of(1,2,3).prepend(0).toJavaArrayList());
     }
+    
+    @Test
+    public void testReduce1() {
+        assertEquals(10, (int) LinkedList.lazy().of(1,2,3,4).reduce((a,b)-> a + b).get());
+    }
 
 }

@@ -62,12 +62,12 @@ public final class LinkedList<T> implements Seq<T> {
      * @see org.davidmoten.kool.Seq#reduce(java.util.function.BiFunction)
      */
     @Override
-    public T reduce(BiFunction<? super T, ? super T, ? extends T> reducer) {
+    public Optional<T> reduce(BiFunction<? super T, ? super T, ? extends T> reducer) {
         if (isEmpty()) {
             // TODO better exception name?
-            throw new NoSuchElementException("list cannot be empty");
+            return Optional.empty();
         } else {
-            return tail.<T>reduce(head, reducer);
+            return Optional.of(tail.<T>reduce(head, reducer));
         }
     }
 
@@ -77,7 +77,7 @@ public final class LinkedList<T> implements Seq<T> {
      * @see org.davidmoten.kool.Seq#reduce(R, java.util.function.BiFunction)
      */
     @Override
-    public <R> R reduce(R initialValue, BiFunction<? super R, ? super  T, ? extends R> reducer) {
+    public <R> R reduce(R initialValue, BiFunction<? super R, ? super T, ? extends R> reducer) {
         R r = initialValue;
         LinkedList<T> x = this;
         while (!x.isEmpty()) {
@@ -95,7 +95,7 @@ public final class LinkedList<T> implements Seq<T> {
      * java.util.function.BiFunction)
      */
     @Override
-    public <R> R reduce(Supplier<R> initialValueFactory, BiFunction<? super R,? super T, ? extends R> reducer) {
+    public <R> R reduce(Supplier<R> initialValueFactory, BiFunction<? super R, ? super T, ? extends R> reducer) {
         R r = initialValueFactory.get();
         return reduce(r, reducer);
     }
@@ -267,7 +267,7 @@ public final class LinkedList<T> implements Seq<T> {
      * @see org.davidmoten.kool.Seq#flatMap(java.util.function.Function)
      */
     @Override
-    public <R> LinkedList<R> flatMap(Function<? super T,? extends Seq<? extends R>> function) {
+    public <R> LinkedList<R> flatMap(Function<? super T, ? extends Seq<? extends R>> function) {
         return flatMap(function, DEFAULT_BUFFER_SIZE);
     }
 
@@ -282,7 +282,7 @@ public final class LinkedList<T> implements Seq<T> {
         LinkedList<T> x = this;
         while (!x.isEmpty()) {
             Seq<? extends R> y = function.apply(x.head);
-            for (R r: y) {
+            for (R r : y) {
                 a.add(r);
             }
             x = x.tail;

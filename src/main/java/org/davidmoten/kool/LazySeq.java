@@ -13,6 +13,7 @@ import java.util.function.Supplier;
 import org.davidmoten.kool.internal.operators.Filter;
 import org.davidmoten.kool.internal.operators.Map;
 import org.davidmoten.kool.internal.operators.Prepend;
+import org.davidmoten.kool.internal.operators.Reduce1;
 
 public class LazySeq<T> implements Seq<T> {
 
@@ -40,9 +41,8 @@ public class LazySeq<T> implements Seq<T> {
     }
 
     @Override
-    public T reduce(BiFunction<? super T, ? super T, ? extends T> reducer) {
-        // TODO Auto-generated method stub
-        return null;
+    public Optional<T> reduce(BiFunction<? super T, ? super T, ? extends T> reducer) {
+        return create(new Reduce1<T>(reducer, source)).iterator().next();
     }
 
     @Override
@@ -127,8 +127,7 @@ public class LazySeq<T> implements Seq<T> {
 
     @Override
     public Iterator<T> iterator() {
-        // TODO Auto-generated method stub
-        return null;
+        return source.iterator();
     }
 
     @Override
@@ -161,6 +160,10 @@ public class LazySeq<T> implements Seq<T> {
 
         public <T> LazySeq<T> of(T t1, T t2, T t3) {
             return create(LinkedList.of(t1, t2, t3));
+        }
+        
+        public <T> LazySeq<T> of(T t1, T t2, T t3, T t4) {
+            return create(LinkedList.of(t1, t2, t3, t4));
         }
 
     }

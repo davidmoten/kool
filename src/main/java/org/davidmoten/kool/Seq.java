@@ -15,7 +15,7 @@ public interface Seq<T> extends Iterable<T> {
 
     boolean isEmpty();
 
-    T reduce(BiFunction<? super T, ? super T, ? extends T> reducer);
+    Optional<T> reduce(BiFunction<? super T, ? super T, ? extends T> reducer);
 
     <R> R reduce(R initialValue, BiFunction<? super R, ? super T, ? extends R> reducer);
 
