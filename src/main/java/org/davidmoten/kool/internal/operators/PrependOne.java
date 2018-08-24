@@ -2,7 +2,7 @@ package org.davidmoten.kool.internal.operators;
 
 import java.util.Iterator;
 
-public class PrependOne<T> implements Iterable<T> {
+public final class PrependOne<T> implements Iterable<T> {
 
     private final T value;
     private final Iterable<T> source;

@@ -3,7 +3,7 @@ package org.davidmoten.kool.internal.operators;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-public class First<T> implements Iterable<T> {
+public final class First<T> implements Iterable<T> {
 
     private final Iterable<T> source;
 

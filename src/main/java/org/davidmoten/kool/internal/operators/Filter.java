@@ -4,7 +4,7 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.function.Predicate;
 
-public class Filter<T> implements Iterable<T> {
+public final class Filter<T> implements Iterable<T> {
 
     private final Predicate<? super T> predicate;
     private final Iterable<? extends T> source;

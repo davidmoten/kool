@@ -3,7 +3,7 @@ package org.davidmoten.kool.internal.operators;
 import java.util.Iterator;
 import java.util.function.Function;
 
-public class Map<T, R> implements Iterable<R> {
+public final class Map<T, R> implements Iterable<R> {
 
     private final Function<? super T, ? extends R> function;
     private final Iterable<T> source;

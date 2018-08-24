@@ -6,7 +6,7 @@ import java.util.function.BiFunction;
 
 import org.davidmoten.kool.Maybe;
 
-public class Reduce1<T> implements Iterable<Maybe<T>> {
+public final class Reduce1<T> implements Iterable<Maybe<T>> {
 
     private final BiFunction<? super T, ? super T, ? extends T> reducer;
     private final Iterable<T> source;

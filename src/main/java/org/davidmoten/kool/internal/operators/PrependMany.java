@@ -3,7 +3,7 @@ package org.davidmoten.kool.internal.operators;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-public class PrependMany<T> implements Iterable<T> {
+public final class PrependMany<T> implements Iterable<T> {
 
     private final Iterable<? extends T> source1;
     private final Iterable<? extends T> source2;
