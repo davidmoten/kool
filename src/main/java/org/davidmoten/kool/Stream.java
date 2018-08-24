@@ -19,6 +19,7 @@ import org.davidmoten.kool.internal.operators.Map;
 import org.davidmoten.kool.internal.operators.OnValue;
 import org.davidmoten.kool.internal.operators.PrependMany;
 import org.davidmoten.kool.internal.operators.PrependOne;
+import org.davidmoten.kool.internal.operators.Range;
 import org.davidmoten.kool.internal.operators.Reduce1;
 import org.davidmoten.kool.internal.operators.Take;
 import org.davidmoten.kool.internal.util.Iterables;
@@ -185,6 +186,10 @@ public final class Stream<T> implements Seq<T> {
 
     public static <T> Stream<T> from(Iterable<T> iterable) {
         return create(LinkedList.from(iterable));
+    }
+    
+    public static Stream<Integer> range(int start, int length){
+        return create(new Range(start, length));
     }
 
     @SuppressWarnings("unchecked")
