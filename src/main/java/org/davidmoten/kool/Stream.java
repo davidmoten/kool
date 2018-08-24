@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -15,6 +16,7 @@ import org.davidmoten.kool.internal.operators.First;
 import org.davidmoten.kool.internal.operators.FlatMap;
 import org.davidmoten.kool.internal.operators.Last;
 import org.davidmoten.kool.internal.operators.Map;
+import org.davidmoten.kool.internal.operators.OnValue;
 import org.davidmoten.kool.internal.operators.PrependMany;
 import org.davidmoten.kool.internal.operators.PrependOne;
 import org.davidmoten.kool.internal.operators.Reduce1;
@@ -124,6 +126,10 @@ public final class Stream<T> implements Seq<T> {
     @Override
     public Maybe<T> first() {
         return first(create(new First<T>(source)).iterator());
+    }
+    
+    public Stream<T> onValue(Consumer<? super T> consumer) {
+        return create(new OnValue<T>(consumer, source));
     }
 
     private static <T> Maybe<T> first(Iterator<T> it) {

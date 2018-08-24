@@ -4,6 +4,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.Test;
 
 import com.github.davidmoten.guavamini.Lists;
@@ -66,20 +69,26 @@ public class StreamTest {
         assertFalse(Stream.empty().first().isPresent());
     }
 
-   @Test
-   public void testFirst() {
-       assertEquals(1, (int) Stream.of(1, 2, 3).first().get());
-   }
+    @Test
+    public void testFirst() {
+        assertEquals(1, (int) Stream.of(1, 2, 3).first().get());
+    }
 
-   @Test
-   public void testLastOfEmpty() {
-       assertFalse(Stream.empty().last().isPresent());
-   }
+    @Test
+    public void testLastOfEmpty() {
+        assertFalse(Stream.empty().last().isPresent());
+    }
 
-  @Test
-  public void testLast() {
-      assertEquals(3, (int) Stream.of(1, 2, 3).last().get());
-  }
+    @Test
+    public void testLast() {
+        assertEquals(3, (int) Stream.of(1, 2, 3).last().get());
+    }
 
-   
+    @Test
+    public void testOnValue() {
+        List<Integer> list = new ArrayList<>();
+        Stream.of(1, 2, 3).onValue(x -> list.add(x)).count();
+        assertEquals(Lists.newArrayList(1, 2, 3), list);
+    }
+
 }
