@@ -148,8 +148,7 @@ public final class Stream<T> implements Seq<T> {
 
     @Override
     public Maybe<T> get(int index) {
-        // TODO Auto-generated method stub
-        return null;
+        return take(index + 1).last();
     }
 
     public static <T> Stream<T> of(T t) {

@@ -106,7 +106,14 @@ public class StreamTest {
         assertEquals(Lists.newArrayList(1,2, 3), Stream.of(1, 2, 3).take(100).toJavaArrayList());
     }
     
+    @Test
+    public void testGetEmpty() {
+        assertFalse(Stream.empty().get(0).isPresent());
+    }
     
-        
+    @Test
+    public void testGetWithin() {
+        assertEquals(2, (int) Stream.of(1, 2, 3).get(1).get());
+    }
     
 }
