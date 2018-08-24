@@ -174,5 +174,14 @@ public final class Stream<T> implements Seq<T> {
     public static <T> Stream<T> from(Iterable<T> iterable) {
         return create(LinkedList.from(iterable));
     }
+    
+    @SuppressWarnings("unchecked")
+    public static <T> Stream<T> empty() {
+        return (Stream<T>) EmptyHolder.EMPTY;
+    }
+    
+    private static final class EmptyHolder {
+        public static final Stream<Object> EMPTY = Stream.create(Collections.emptyList());
+    }
 
 }

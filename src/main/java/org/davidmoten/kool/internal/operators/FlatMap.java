@@ -1,9 +1,7 @@
 package org.davidmoten.kool.internal.operators;
 
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.NoSuchElementException;
-import java.util.Queue;
 import java.util.function.Function;
 
 import org.davidmoten.kool.Seq;
@@ -22,28 +20,54 @@ public final class FlatMap<T, R> implements Iterable<R> {
     public Iterator<R> iterator() {
         return new Iterator<R>() {
 
-            Iterator<T> it = source.iterator();
-            Queue<R> queue = new LinkedList<R>();
+            final Iterator<T> a = source.iterator();
+            Iterator<? extends R> b;
+            R r;
 
             @Override
             public boolean hasNext() {
-                checkNext();
-                return !queue.isEmpty();
+                loadNext();
+                return r != null;
             }
 
             @Override
             public R next() {
-                checkNext();
-                R r = queue.poll();
+                loadNext();
                 if (r == null) {
                     throw new NoSuchElementException();
                 } else {
-                    return r;
+                    R r2 = r;
+                    r = null;
+                    return r2;
                 }
             }
 
-            private void checkNext() {
-                //TODO
+            private void loadNext() {
+                if (r != null) {
+                    return;
+                }
+                while (true) {
+                    if (b == null) {
+                        if (a.hasNext()) {
+                            b = function.apply(a.next()).iterator();
+                            if (b.hasNext()) {
+                                r = b.next();
+                                return;
+                            } else {
+                                b = null;
+                            }
+                        } else {
+                            return;
+                        }
+                    } else {
+                        if (b.hasNext()) {
+                            r = b.next();
+                            return;
+                        } else {
+                            b = null;
+                        }
+                    }
+                }
             }
 
         };
