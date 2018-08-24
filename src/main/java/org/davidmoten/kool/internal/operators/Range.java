@@ -3,36 +3,36 @@ package org.davidmoten.kool.internal.operators;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-public class  Range implements Iterable<Integer> {
+public class Range implements Iterable<Long> {
 
-    private final int start;
-    private final int length;
+    private final long start;
+    private final long length;
 
-    public Range(int start, int length) {
+    public Range(long start, long length) {
         this.start = start;
         this.length = length;
     }
 
     @Override
-    public Iterator<Integer> iterator() {
-        return new Iterator<Integer>() {
+    public Iterator<Long> iterator() {
+        return new Iterator<Long>() {
 
-            int i = start;
-            
+            long i = start;
+
             @Override
             public boolean hasNext() {
-                return i < start + length;
+                return i - start < length;
             }
 
             @Override
-            public Integer next() {
-                if (i < start + length) {
+            public Long next() {
+                if (i - start < length) {
                     return i++;
                 } else {
                     throw new NoSuchElementException();
                 }
             }
-            
+
         };
     }
 

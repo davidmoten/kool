@@ -7,7 +7,6 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.davidmoten.kool.internal.operators.Range;
 import org.junit.Test;
 
 import com.github.davidmoten.guavamini.Lists;
@@ -124,8 +123,12 @@ public class StreamTest {
 
     @Test
     public void testRange() {
-        new Range(1, 3).forEach(System.out::println);
-        assertEquals(Lists.newArrayList(1, 2, 3), Stream.range(1, 3).toJavaArrayList());
+        assertEquals(Lists.newArrayList(1L, 2L, 3L), Stream.range(1, 3).toJavaArrayList());
+    }
+
+    @Test
+    public void testOrdinals() {
+        assertEquals(Lists.newArrayList(1L, 2L, 3L), Stream.ordinals().take(3).toJavaArrayList());
     }
 
 }

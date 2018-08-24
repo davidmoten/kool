@@ -129,7 +129,7 @@ public final class Stream<T> implements Seq<T> {
     public Maybe<T> first() {
         return first(create(new First<T>(source)).iterator());
     }
-    
+
     public Stream<T> onValue(Consumer<? super T> consumer) {
         return create(new OnValue<T>(consumer, source));
     }
@@ -187,9 +187,13 @@ public final class Stream<T> implements Seq<T> {
     public static <T> Stream<T> from(Iterable<T> iterable) {
         return create(LinkedList.from(iterable));
     }
-    
-    public static Stream<Integer> range(int start, int length){
+
+    public static Stream<Long> range(long start, long length) {
         return create(new Range(start, length));
+    }
+
+    public static Stream<Long> ordinals() {
+        return range(1, Long.MAX_VALUE);
     }
 
     @SuppressWarnings("unchecked")
