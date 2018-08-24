@@ -450,4 +450,9 @@ public final class LinkedList<T> implements Seq<T> {
         return LinkedList.<T>nil().prepend(a);
     }
 
+    @Override
+    public Seq<T> take(long n) {
+        throw new UnsupportedOperationException();
+    }
+
 }

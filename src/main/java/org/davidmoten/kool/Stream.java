@@ -20,6 +20,7 @@ import org.davidmoten.kool.internal.operators.OnValue;
 import org.davidmoten.kool.internal.operators.PrependMany;
 import org.davidmoten.kool.internal.operators.PrependOne;
 import org.davidmoten.kool.internal.operators.Reduce1;
+import org.davidmoten.kool.internal.operators.Take;
 import org.davidmoten.kool.internal.util.Iterables;
 
 public final class Stream<T> implements Seq<T> {
@@ -194,6 +195,11 @@ public final class Stream<T> implements Seq<T> {
 
     private static final class EmptyHolder {
         public static final Stream<Object> EMPTY = Stream.create(Collections.emptyList());
+    }
+
+    @Override
+    public Stream<T> take(long n) {
+        return create(new Take<T>(n, source));
     }
 
 }

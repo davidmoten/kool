@@ -47,6 +47,8 @@ public interface Seq<T> extends Iterable<T> {
     Seq<T> prepend(List<? extends T> values);
 
     <R> Seq<R> flatMap(Function<? super T, ? extends Seq<? extends R>> function);
+    
+    Seq<T> take(long n);
 
     Maybe<T> findFirst(Predicate<? super T> predicate);
 
