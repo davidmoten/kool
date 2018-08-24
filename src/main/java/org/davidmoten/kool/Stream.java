@@ -11,6 +11,7 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import org.davidmoten.kool.internal.operators.Filter;
+import org.davidmoten.kool.internal.operators.First;
 import org.davidmoten.kool.internal.operators.FlatMap;
 import org.davidmoten.kool.internal.operators.Map;
 import org.davidmoten.kool.internal.operators.PrependMany;
@@ -41,7 +42,7 @@ public final class Stream<T> implements Seq<T> {
     }
 
     @Override
-    public Optional<T> reduce(BiFunction<? super T, ? super T, ? extends T> reducer) {
+    public Maybe<T> reduce(BiFunction<? super T, ? super T, ? extends T> reducer) {
         return create(new Reduce1<T>(reducer, source)).iterator().next();
     }
 
@@ -52,8 +53,7 @@ public final class Stream<T> implements Seq<T> {
     }
 
     @Override
-    public <R> R reduce(Supplier<R> initialValueFactory,
-            BiFunction<? super R, ? super T, ? extends R> reducer) {
+    public <R> R reduce(Supplier<R> initialValueFactory, BiFunction<? super R, ? super T, ? extends R> reducer) {
         // TODO Auto-generated method stub
         return null;
     }
@@ -111,7 +111,7 @@ public final class Stream<T> implements Seq<T> {
     }
 
     @Override
-    public Optional<T> findFirst(Predicate<? super T> predicate) {
+    public Maybe<T> findFirst(Predicate<? super T> predicate) {
         // TODO Auto-generated method stub
         return null;
     }
@@ -122,19 +122,23 @@ public final class Stream<T> implements Seq<T> {
     }
 
     @Override
-    public Optional<T> first() {
+    public Maybe<T> first() {
+        Iterator<T> it = create(new First<T>(source)).iterator();
+        if (it.hasNext()) {
+            return Maybe.of(it.next());
+        } else {
+            return Maybe.empty();
+        }
+    }
+
+    @Override
+    public Maybe<T> last() {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public Optional<T> last() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public Optional<T> get(int index) {
+    public Maybe<T> get(int index) {
         // TODO Auto-generated method stub
         return null;
     }
@@ -174,12 +178,12 @@ public final class Stream<T> implements Seq<T> {
     public static <T> Stream<T> from(Iterable<T> iterable) {
         return create(LinkedList.from(iterable));
     }
-    
+
     @SuppressWarnings("unchecked")
     public static <T> Stream<T> empty() {
         return (Stream<T>) EmptyHolder.EMPTY;
     }
-    
+
     private static final class EmptyHolder {
         public static final Stream<Object> EMPTY = Stream.create(Collections.emptyList());
     }

@@ -15,7 +15,7 @@ public interface Seq<T> extends Iterable<T> {
 
     boolean isEmpty();
 
-    Optional<T> reduce(BiFunction<? super T, ? super T, ? extends T> reducer);
+    Maybe<T> reduce(BiFunction<? super T, ? super T, ? extends T> reducer);
 
     <R> R reduce(R initialValue, BiFunction<? super R, ? super T, ? extends R> reducer);
 
@@ -48,14 +48,14 @@ public interface Seq<T> extends Iterable<T> {
 
     <R> Seq<R> flatMap(Function<? super T, ? extends Seq<? extends R>> function);
 
-    Optional<T> findFirst(Predicate<? super T> predicate);
+    Maybe<T> findFirst(Predicate<? super T> predicate);
 
     Iterator<T> iterator();
     
-    Optional<T> first();
+    Maybe<T> first();
     
-    Optional<T> last();
+    Maybe<T> last();
     
-    Optional<T> get(int index);
+    Maybe<T> get(int index);
 
 }

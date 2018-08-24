@@ -62,12 +62,12 @@ public final class LinkedList<T> implements Seq<T> {
      * @see org.davidmoten.kool.Seq#reduce(java.util.function.BiFunction)
      */
     @Override
-    public Optional<T> reduce(BiFunction<? super T, ? super T, ? extends T> reducer) {
+    public Maybe<T> reduce(BiFunction<? super T, ? super T, ? extends T> reducer) {
         if (isEmpty()) {
             // TODO better exception name?
-            return Optional.empty();
+            return Maybe.empty();
         } else {
-            return Optional.of(tail.<T>reduce(head, reducer));
+            return Maybe.of(tail.<T>reduce(head, reducer));
         }
     }
 
@@ -290,36 +290,36 @@ public final class LinkedList<T> implements Seq<T> {
      * @see org.davidmoten.kool.Seq#findFirst(java.util.function.Predicate)
      */
     @Override
-    public Optional<T> findFirst(Predicate<? super T> predicate) {
+    public Maybe<T> findFirst(Predicate<? super T> predicate) {
         LinkedList<T> x = this;
         while (!x.isEmpty()) {
             if (predicate.test(x.head)) {
-                return Optional.of(x.head);
+                return Maybe.of(x.head);
             }
             x = x.tail;
         }
-        return Optional.empty();
+        return Maybe.empty();
     }
 
     @Override
-    public Optional<T> first() {
+    public Maybe<T> first() {
         if (isEmpty()) {
-            return Optional.empty();
+            return Maybe.empty();
         } else {
-            return Optional.of(head);
+            return Maybe.of(head);
         }
     }
 
     @Override
-    public Optional<T> last() {
+    public Maybe<T> last() {
         LinkedList<T> x = this;
         while (!x.isEmpty()) {
             if (x.tail.isEmpty()) {
-                return Optional.of(x.head);
+                return Maybe.of(x.head);
             }
             x = x.tail;
         }
-        return Optional.empty();
+        return Maybe.empty();
     }
 
     /*
@@ -383,19 +383,19 @@ public final class LinkedList<T> implements Seq<T> {
     }
 
     @Override
-    public Optional<T> get(int index) {
+    public Maybe<T> get(int index) {
         LinkedList<T> x = this;
         while (index > 0) {
             if (x.isEmpty()) {
-                return Optional.empty();
+                return Maybe.empty();
             }
             index--;
             x = x.tail;
         }
         if (x.isEmpty()) {
-            return Optional.empty();
+            return Maybe.empty();
         } else {
-            return Optional.of(x.head);
+            return Maybe.of(x.head);
         }
     }
 

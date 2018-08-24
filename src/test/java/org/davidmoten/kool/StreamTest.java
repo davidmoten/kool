@@ -1,6 +1,7 @@
 package org.davidmoten.kool;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
@@ -59,4 +60,15 @@ public class StreamTest {
                 .flatMap(x -> Stream.of(x * 10, x * 10 + 1)) //
                 .toJavaArrayList());
     }
+
+    @Test
+    public void testFirstOfEmpty() {
+        assertFalse(Stream.empty().first().isPresent());
+    }
+
+   @Test
+   public void testFirst() {
+       assertEquals(1, (int) Stream.of(1, 2, 3).first().get());
+   }
+
 }

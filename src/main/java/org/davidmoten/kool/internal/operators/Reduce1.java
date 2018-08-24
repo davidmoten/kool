@@ -4,9 +4,9 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.function.BiFunction;
 
-import org.davidmoten.kool.Optional;
+import org.davidmoten.kool.Maybe;
 
-public class Reduce1<T> implements Iterable<Optional<T>> {
+public class Reduce1<T> implements Iterable<Maybe<T>> {
 
     private final BiFunction<? super T, ? super T, ? extends T> reducer;
     private final Iterable<T> source;
@@ -17,8 +17,8 @@ public class Reduce1<T> implements Iterable<Optional<T>> {
     }
 
     @Override
-    public Iterator<Optional<T>> iterator() {
-        return new Iterator<Optional<T>>() {
+    public Iterator<Maybe<T>> iterator() {
+        return new Iterator<Maybe<T>>() {
 
             Iterator<T> it = source.iterator();
             T value = null;
@@ -31,7 +31,7 @@ public class Reduce1<T> implements Iterable<Optional<T>> {
             }
 
             @Override
-            public Optional<T> next() {
+            public Maybe<T> next() {
                 if (finished) {
                     throw new NoSuchElementException();
                 }
@@ -40,9 +40,9 @@ public class Reduce1<T> implements Iterable<Optional<T>> {
                 T t = value;
                 if (t != null) {
                     value = null;
-                    return Optional.of(t);
+                    return Maybe.of(t);
                 } else {
-                    return Optional.empty();
+                    return Maybe.empty();
                 }
             }
 

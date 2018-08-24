@@ -45,15 +45,15 @@ import java.util.function.Supplier;
  * <p>This is a <a href="../lang/doc-files/ValueBased.html">value-based</a>
  * class; use of identity-sensitive operations (including reference equality
  * ({@code ==}), identity hash code, or synchronization) on instances of
- * {@code Optional} may have unpredictable results and should be avoided.
+ * {@code Maybe} may have unpredictable results and should be avoided.
  *
  * @since 1.8
  */
-public final class Optional<T> {
+public final class Maybe<T> {
     /**
      * Common instance for {@code empty()}.
      */
-    private static final Optional<?> EMPTY = new Optional<>();
+    private static final Maybe<?> EMPTY = new Maybe<>();
 
     /**
      * If non-null, the value; if null, indicates no value is present
@@ -63,16 +63,16 @@ public final class Optional<T> {
     /**
      * Constructs an empty instance.
      *
-     * @implNote Generally only one empty instance, {@link Optional#EMPTY},
+     * @implNote Generally only one empty instance, {@link Maybe#EMPTY},
      * should exist per VM.
      */
-    private Optional() {
+    private Maybe() {
         this.value = null;
     }
 
     /**
-     * Returns an empty {@code Optional} instance.  No value is present for this
-     * Optional.
+     * Returns an empty {@code Maybe} instance.  No value is present for this
+     * Maybe.
      *
      * @apiNote Though it may be tempting to do so, avoid testing if an object
      * is empty by comparing with {@code ==} against instances returned by
@@ -80,11 +80,11 @@ public final class Optional<T> {
      * Instead, use {@link #isPresent()}.
      *
      * @param <T> Type of the non-existent value
-     * @return an empty {@code Optional}
+     * @return an empty {@code Maybe}
      */
-    public static<T> Optional<T> empty() {
+    public static<T> Maybe<T> empty() {
         @SuppressWarnings("unchecked")
-        Optional<T> t = (Optional<T>) EMPTY;
+        Maybe<T> t = (Maybe<T>) EMPTY;
         return t;
     }
 
@@ -94,43 +94,43 @@ public final class Optional<T> {
      * @param value the non-null value to be present
      * @throws NullPointerException if value is null
      */
-    private Optional(T value) {
+    private Maybe(T value) {
         this.value = Objects.requireNonNull(value);
     }
 
     /**
-     * Returns an {@code Optional} with the specified present non-null value.
+     * Returns an {@code Maybe} with the specified present non-null value.
      *
      * @param <T> the class of the value
      * @param value the value to be present, which must be non-null
-     * @return an {@code Optional} with the value present
+     * @return an {@code Maybe} with the value present
      * @throws NullPointerException if value is null
      */
-    public static <T> Optional<T> of(T value) {
-        return new Optional<>(value);
+    public static <T> Maybe<T> of(T value) {
+        return new Maybe<>(value);
     }
 
     /**
-     * Returns an {@code Optional} describing the specified value, if non-null,
-     * otherwise returns an empty {@code Optional}.
+     * Returns an {@code Maybe} describing the specified value, if non-null,
+     * otherwise returns an empty {@code Maybe}.
      *
      * @param <T> the class of the value
      * @param value the possibly-null value to describe
-     * @return an {@code Optional} with a present value if the specified value
-     * is non-null, otherwise an empty {@code Optional}
+     * @return an {@code Maybe} with a present value if the specified value
+     * is non-null, otherwise an empty {@code Maybe}
      */
-    public static <T> Optional<T> ofNullable(T value) {
+    public static <T> Maybe<T> ofNullable(T value) {
         return value == null ? empty() : of(value);
     }
 
     /**
-     * If a value is present in this {@code Optional}, returns the value,
+     * If a value is present in this {@code Maybe}, returns the value,
      * otherwise throws {@code NoSuchElementException}.
      *
-     * @return the non-null value held by this {@code Optional}
+     * @return the non-null value held by this {@code Maybe}
      * @throws NoSuchElementException if there is no value present
      *
-     * @see Optional#isPresent()
+     * @see Maybe#isPresent()
      */
     public T get() {
         if (value == null) {
@@ -163,16 +163,16 @@ public final class Optional<T> {
 
     /**
      * If a value is present, and the value matches the given predicate,
-     * return an {@code Optional} describing the value, otherwise return an
-     * empty {@code Optional}.
+     * return an {@code Maybe} describing the value, otherwise return an
+     * empty {@code Maybe}.
      *
      * @param predicate a predicate to apply to the value, if present
-     * @return an {@code Optional} describing the value of this {@code Optional}
+     * @return an {@code Maybe} describing the value of this {@code Maybe}
      * if a value is present and the value matches the given predicate,
-     * otherwise an empty {@code Optional}
+     * otherwise an empty {@code Maybe}
      * @throws NullPointerException if the predicate is null
      */
-    public Optional<T> filter(Predicate<? super T> predicate) {
+    public Maybe<T> filter(Predicate<? super T> predicate) {
         Objects.requireNonNull(predicate);
         if (!isPresent())
             return this;
@@ -182,60 +182,60 @@ public final class Optional<T> {
 
     /**
      * If a value is present, apply the provided mapping function to it,
-     * and if the result is non-null, return an {@code Optional} describing the
-     * result.  Otherwise return an empty {@code Optional}.
+     * and if the result is non-null, return an {@code Maybe} describing the
+     * result.  Otherwise return an empty {@code Maybe}.
      *
      * @apiNote This method supports post-processing on optional values, without
      * the need to explicitly check for a return status.  For example, the
      * following code traverses a stream of file names, selects one that has
      * not yet been processed, and then opens that file, returning an
-     * {@code Optional<FileInputStream>}:
+     * {@code Maybe<FileInputStream>}:
      *
      * <pre>{@code
-     *     Optional<FileInputStream> fis =
+     *     Maybe<FileInputStream> fis =
      *         names.stream().filter(name -> !isProcessedYet(name))
      *                       .findFirst()
      *                       .map(name -> new FileInputStream(name));
      * }</pre>
      *
-     * Here, {@code findFirst} returns an {@code Optional<String>}, and then
-     * {@code map} returns an {@code Optional<FileInputStream>} for the desired
+     * Here, {@code findFirst} returns an {@code Maybe<String>}, and then
+     * {@code map} returns an {@code Maybe<FileInputStream>} for the desired
      * file if one exists.
      *
      * @param <U> The type of the result of the mapping function
      * @param mapper a mapping function to apply to the value, if present
-     * @return an {@code Optional} describing the result of applying a mapping
-     * function to the value of this {@code Optional}, if a value is present,
-     * otherwise an empty {@code Optional}
+     * @return an {@code Maybe} describing the result of applying a mapping
+     * function to the value of this {@code Maybe}, if a value is present,
+     * otherwise an empty {@code Maybe}
      * @throws NullPointerException if the mapping function is null
      */
-    public<U> Optional<U> map(Function<? super T, ? extends U> mapper) {
+    public<U> Maybe<U> map(Function<? super T, ? extends U> mapper) {
         Objects.requireNonNull(mapper);
         if (!isPresent())
             return empty();
         else {
-            return Optional.ofNullable(mapper.apply(value));
+            return Maybe.ofNullable(mapper.apply(value));
         }
     }
 
     /**
-     * If a value is present, apply the provided {@code Optional}-bearing
+     * If a value is present, apply the provided {@code Maybe}-bearing
      * mapping function to it, return that result, otherwise return an empty
-     * {@code Optional}.  This method is similar to {@link #map(Function)},
-     * but the provided mapper is one whose result is already an {@code Optional},
+     * {@code Maybe}.  This method is similar to {@link #map(Function)},
+     * but the provided mapper is one whose result is already an {@code Maybe},
      * and if invoked, {@code flatMap} does not wrap it with an additional
-     * {@code Optional}.
+     * {@code Maybe}.
      *
-     * @param <U> The type parameter to the {@code Optional} returned by
+     * @param <U> The type parameter to the {@code Maybe} returned by
      * @param mapper a mapping function to apply to the value, if present
      *           the mapping function
-     * @return the result of applying an {@code Optional}-bearing mapping
-     * function to the value of this {@code Optional}, if a value is present,
-     * otherwise an empty {@code Optional}
+     * @return the result of applying an {@code Maybe}-bearing mapping
+     * function to the value of this {@code Maybe}, if a value is present,
+     * otherwise an empty {@code Maybe}
      * @throws NullPointerException if the mapping function is null or returns
      * a null result
      */
-    public<U> Optional<U> flatMap(Function<? super T, Optional<U>> mapper) {
+    public<U> Maybe<U> flatMap(Function<? super T, Maybe<U>> mapper) {
         Objects.requireNonNull(mapper);
         if (!isPresent())
             return empty();
@@ -294,10 +294,10 @@ public final class Optional<T> {
     }
 
     /**
-     * Indicates whether some other object is "equal to" this Optional. The
+     * Indicates whether some other object is "equal to" this Maybe. The
      * other object is considered equal if:
      * <ul>
-     * <li>it is also an {@code Optional} and;
+     * <li>it is also an {@code Maybe} and;
      * <li>both instances have no value present or;
      * <li>the present values are "equal to" each other via {@code equals()}.
      * </ul>
@@ -312,11 +312,11 @@ public final class Optional<T> {
             return true;
         }
 
-        if (!(obj instanceof Optional)) {
+        if (!(obj instanceof Maybe)) {
             return false;
         }
 
-        Optional<?> other = (Optional<?>) obj;
+        Maybe<?> other = (Maybe<?>) obj;
         return Objects.equals(value, other.value);
     }
 
@@ -332,12 +332,12 @@ public final class Optional<T> {
     }
 
     /**
-     * Returns a non-empty string representation of this Optional suitable for
+     * Returns a non-empty string representation of this Maybe suitable for
      * debugging. The exact presentation format is unspecified and may vary
      * between implementations and versions.
      *
      * @implSpec If a value is present the result must include its string
-     * representation in the result. Empty and present Optionals must be
+     * representation in the result. Empty and present Maybes must be
      * unambiguously differentiable.
      *
      * @return the string representation of this instance
@@ -345,8 +345,8 @@ public final class Optional<T> {
     @Override
     public String toString() {
         return value != null
-            ? String.format("Optional[%s]", value)
-            : "Optional.empty";
+            ? String.format("Maybe[%s]", value)
+            : "Maybe.empty";
     }
     
     //additions for kool
