@@ -13,6 +13,7 @@ import java.util.function.Supplier;
 import org.davidmoten.kool.internal.operators.Filter;
 import org.davidmoten.kool.internal.operators.First;
 import org.davidmoten.kool.internal.operators.FlatMap;
+import org.davidmoten.kool.internal.operators.Last;
 import org.davidmoten.kool.internal.operators.Map;
 import org.davidmoten.kool.internal.operators.PrependMany;
 import org.davidmoten.kool.internal.operators.PrependOne;
@@ -112,8 +113,7 @@ public final class Stream<T> implements Seq<T> {
 
     @Override
     public Maybe<T> findFirst(Predicate<? super T> predicate) {
-        // TODO Auto-generated method stub
-        return null;
+        return filter(predicate).first();
     }
 
     @Override
@@ -123,7 +123,10 @@ public final class Stream<T> implements Seq<T> {
 
     @Override
     public Maybe<T> first() {
-        Iterator<T> it = create(new First<T>(source)).iterator();
+        return first(create(new First<T>(source)).iterator());
+    }
+
+    private static <T> Maybe<T> first(Iterator<T> it) {
         if (it.hasNext()) {
             return Maybe.of(it.next());
         } else {
@@ -133,8 +136,7 @@ public final class Stream<T> implements Seq<T> {
 
     @Override
     public Maybe<T> last() {
-        // TODO Auto-generated method stub
-        return null;
+        return first(create(new Last<T>(source)).iterator());
     }
 
     @Override

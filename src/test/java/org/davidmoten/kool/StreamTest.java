@@ -71,4 +71,15 @@ public class StreamTest {
        assertEquals(1, (int) Stream.of(1, 2, 3).first().get());
    }
 
+   @Test
+   public void testLastOfEmpty() {
+       assertFalse(Stream.empty().last().isPresent());
+   }
+
+  @Test
+  public void testLast() {
+      assertEquals(3, (int) Stream.of(1, 2, 3).last().get());
+  }
+
+   
 }
