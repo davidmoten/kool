@@ -11,6 +11,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
+import org.davidmoten.kool.internal.operators.Defer;
 import org.davidmoten.kool.internal.operators.Filter;
 import org.davidmoten.kool.internal.operators.First;
 import org.davidmoten.kool.internal.operators.FlatMap;
@@ -58,7 +59,8 @@ public final class Stream<T> implements Seq<T> {
     }
 
     @Override
-    public <R> R reduce(Supplier<R> initialValueFactory, BiFunction<? super R, ? super T, ? extends R> reducer) {
+    public <R> R reduce(Supplier<R> initialValueFactory,
+            BiFunction<? super R, ? super T, ? extends R> reducer) {
         // TODO Auto-generated method stub
         return null;
     }
@@ -194,6 +196,10 @@ public final class Stream<T> implements Seq<T> {
 
     public static Stream<Long> ordinals() {
         return range(1, Long.MAX_VALUE);
+    }
+    
+    public static <T> Seq<T> defer(Supplier<? extends Stream<? extends T>> supplier) {
+        return create(new Defer<T>(supplier));
     }
 
     @SuppressWarnings("unchecked")

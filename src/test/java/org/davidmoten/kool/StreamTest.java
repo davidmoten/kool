@@ -24,7 +24,8 @@ public class StreamTest {
 
     @Test
     public void testPrepend() {
-        assertEquals(Lists.newArrayList(0, 1, 2, 3), Stream.of(1, 2, 3).prepend(0).toJavaArrayList());
+        assertEquals(Lists.newArrayList(0, 1, 2, 3),
+                Stream.of(1, 2, 3).prepend(0).toJavaArrayList());
     }
 
     @Test
@@ -129,6 +130,12 @@ public class StreamTest {
     @Test
     public void testOrdinals() {
         assertEquals(Lists.newArrayList(1L, 2L, 3L), Stream.ordinals().take(3).toJavaArrayList());
+    }
+
+    @Test
+    public void testDefer() {
+        assertEquals(Lists.newArrayList(1, 2, 3),
+                Stream.defer(() -> Stream.of(1, 2, 3)).toJavaArrayList());
     }
 
 }
