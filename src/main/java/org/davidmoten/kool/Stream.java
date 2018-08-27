@@ -83,7 +83,11 @@ public final class Stream<T> implements Seq<T> {
 
     @Override
     public Stream<T> filter(Predicate<? super T> function) {
-        return create(new Filter<T>(function, source));
+        if (function == Predicates.alwaysTrue()) {
+            return this;
+        } else {
+            return create(new Filter<T>(function, source));
+        }
     }
 
     @Override
@@ -119,7 +123,11 @@ public final class Stream<T> implements Seq<T> {
 
     @Override
     public Maybe<T> findFirst(Predicate<? super T> predicate) {
-        return filter(predicate).first();
+        if (predicate == Predicates.alwaysFalse()) {
+            return Maybe.empty();
+        } else {
+            return filter(predicate).first();
+        }
     }
 
     @Override
@@ -197,7 +205,7 @@ public final class Stream<T> implements Seq<T> {
     public static Stream<Long> ordinals() {
         return range(1, Long.MAX_VALUE);
     }
-    
+
     public static <T> Seq<T> defer(Supplier<? extends Stream<? extends T>> supplier) {
         return create(new Defer<T>(supplier));
     }

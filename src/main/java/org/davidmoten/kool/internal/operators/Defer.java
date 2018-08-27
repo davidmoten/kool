@@ -3,7 +3,7 @@ package org.davidmoten.kool.internal.operators;
 import java.util.Iterator;
 import java.util.function.Supplier;
 
-public class Defer<T> implements Iterable<T> {
+public final class Defer<T> implements Iterable<T> {
 
     private final Supplier<? extends Iterable<? extends T>> supplier;
 

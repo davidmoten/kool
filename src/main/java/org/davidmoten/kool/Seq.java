@@ -39,7 +39,7 @@ public interface Seq<T> extends Iterable<T> {
      * @return the number of elements in the list
      */
     long count();
-
+    
     Seq<T> prepend(T value);
 
     Seq<T> prepend(T[] values);
