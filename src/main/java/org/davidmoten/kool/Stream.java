@@ -24,6 +24,7 @@ import org.davidmoten.kool.internal.operators.Range;
 import org.davidmoten.kool.internal.operators.Reduce1;
 import org.davidmoten.kool.internal.operators.Take;
 import org.davidmoten.kool.internal.util.Iterables;
+import org.davidmoten.kool.internal.util.StreamImpl;
 import org.davidmoten.kool.internal.util.StreamUtils;
 
 public interface Stream<T> extends Iterable<T> {

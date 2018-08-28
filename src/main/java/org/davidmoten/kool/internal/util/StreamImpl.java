@@ -1,6 +1,8 @@
-package org.davidmoten.kool;
+package org.davidmoten.kool.internal.util;
 
 import java.util.Iterator;
+
+import org.davidmoten.kool.Stream;
 
 public class StreamImpl<T> implements Stream<T> {
 
