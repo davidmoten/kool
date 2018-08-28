@@ -186,7 +186,12 @@ public class StreamTest {
                 .doOnNext(n -> list.add(n)) //
                 .doOnComplete(() -> list.add(3)) //
                 .forEach();
-        assertEquals(Lists.newArrayList(1,2,3), list);
+        assertEquals(Lists.newArrayList(1, 2, 3), list);
+    }
+
+    @Test
+    public void testZip() {
+        assertEquals(Lists.newArrayList(3, 8), Stream.of(1, 2).zipWith(Stream.of(3, 4), (x, y) -> x * y).toList());
     }
 
 }

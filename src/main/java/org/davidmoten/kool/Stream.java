@@ -29,6 +29,7 @@ import org.davidmoten.kool.internal.operators.Reduce1;
 import org.davidmoten.kool.internal.operators.SwitchOnError;
 import org.davidmoten.kool.internal.operators.Take;
 import org.davidmoten.kool.internal.operators.Transform;
+import org.davidmoten.kool.internal.operators.Zip;
 import org.davidmoten.kool.internal.util.Iterables;
 import org.davidmoten.kool.internal.util.StreamImpl;
 import org.davidmoten.kool.internal.util.StreamUtils;
@@ -168,6 +169,10 @@ public interface Stream<T> extends Iterable<T> {
     public default void forEach() {
         count();
     }
+    
+    public default void ignoreElements() {
+        count();
+    }
 
     public default long count() {
         Iterator<T> it = this.iterator();
@@ -242,5 +247,12 @@ public interface Stream<T> extends Iterable<T> {
     public default Stream<T> switchOnError(Function<? super Throwable, ? extends Stream<? extends T>> function) {
         return new SwitchOnError<T>(function, this);
     }
+    
+    public default <R, S> Stream<S> zipWith(Stream<? extends R> stream, BiFunction<T, R, S> combiner) {
+        return new Zip<R, S, T>(this, stream, combiner);
+    }
+    
+    //TODO
+    // takeUntil, takeWhile, buffer, toMap, toStreamJava , mapWithIndex, zipWith
 
 }
