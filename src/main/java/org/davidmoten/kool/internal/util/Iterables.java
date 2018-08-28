@@ -1,5 +1,6 @@
 package org.davidmoten.kool.internal.util;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
@@ -38,17 +39,17 @@ public final class Iterables {
             }
         };
     }
-    
+
     @SafeVarargs
     public static <T> Iterable<T> ofNoCopy(T... values) {
         return new Iterable<T>() {
-            
+
             @Override
             public Iterator<T> iterator() {
                 return new Iterator<T>() {
 
                     int i = 0;
-                    
+
                     @Override
                     public boolean hasNext() {
                         return i < values.length;
@@ -64,13 +65,13 @@ public final class Iterables {
                             return t;
                         }
                     }
-                    
+
                 };
             }
-            
+
         };
     }
-    
+
     public static <T> Maybe<T> first(Iterator<T> it) {
         if (it.hasNext()) {
             return Maybe.of(it.next());
@@ -78,5 +79,13 @@ public final class Iterables {
             return Maybe.empty();
         }
     }
-    
+
+    public static <R extends Collection<S>, S, T extends S> R addAll(R collection, Iterable<T> iterable) {
+        Iterator<T> it = iterable.iterator();
+        while (it.hasNext()) {
+            collection.add(it.next());
+        }
+        return collection;
+    }
+
 }

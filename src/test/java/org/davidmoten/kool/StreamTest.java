@@ -24,8 +24,7 @@ public class StreamTest {
 
     @Test
     public void testPrepend() {
-        assertEquals(Lists.newArrayList(0, 1, 2, 3),
-                Stream.of(1, 2, 3).prepend(0).toJavaArrayList());
+        assertEquals(Lists.newArrayList(0, 1, 2, 3), Stream.of(1, 2, 3).prepend(0).toList());
     }
 
     @Test
@@ -33,7 +32,7 @@ public class StreamTest {
         assertEquals(Lists.newArrayList(0, 1, 2, 3), //
                 Stream.of(2, 3) //
                         .prepend(new Integer[] { 0, 1 }) //
-                        .toJavaArrayList());
+                        .toList());
     }
 
     @Test
@@ -55,14 +54,14 @@ public class StreamTest {
                     else
                         return Stream.of(4, 5);
                 }) //
-                .toJavaArrayList());
+                .toList());
     }
 
     @Test
     public void testFlatMapToSomething() {
         assertEquals(Lists.newArrayList(10, 11, 20, 21, 30, 31), Stream.of(1, 2, 3) //
                 .flatMap(x -> Stream.of(x * 10, x * 10 + 1)) //
-                .toJavaArrayList());
+                .toList());
     }
 
     @Test
@@ -99,12 +98,12 @@ public class StreamTest {
 
     @Test
     public void testTakeElements() {
-        assertEquals(Lists.newArrayList(1, 2), Stream.of(1, 2, 3).take(2).toJavaArrayList());
+        assertEquals(Lists.newArrayList(1, 2), Stream.of(1, 2, 3).take(2).toList());
     }
 
     @Test
     public void testTakeMoreThanAvailable() {
-        assertEquals(Lists.newArrayList(1, 2, 3), Stream.of(1, 2, 3).take(100).toJavaArrayList());
+        assertEquals(Lists.newArrayList(1, 2, 3), Stream.of(1, 2, 3).take(100).toList());
     }
 
     @Test
@@ -124,18 +123,28 @@ public class StreamTest {
 
     @Test
     public void testRange() {
-        assertEquals(Lists.newArrayList(1L, 2L, 3L), Stream.range(1, 3).toJavaArrayList());
+        assertEquals(Lists.newArrayList(1L, 2L, 3L), Stream.range(1, 3).toList());
     }
 
     @Test
     public void testOrdinals() {
-        assertEquals(Lists.newArrayList(1L, 2L, 3L), Stream.ordinals().take(3).toJavaArrayList());
+        assertEquals(Lists.newArrayList(1L, 2L, 3L), Stream.ordinals().take(3).toList());
     }
 
     @Test
     public void testDefer() {
+        assertEquals(Lists.newArrayList(1, 2, 3), Stream.defer(() -> Stream.of(1, 2, 3)).toList());
+    }
+
+    @Test
+    public void testTransform() {
+        assertEquals(Lists.newArrayList(4, 5), Stream.of(1, 2).transform(s -> s.map(x -> x + 3)).toList());
+    }
+
+    @Test
+    public void testCollect() {
         assertEquals(Lists.newArrayList(1, 2, 3),
-                Stream.defer(() -> Stream.of(1, 2, 3)).toJavaArrayList());
+                Stream.of(1, 2, 3).collect(() -> new ArrayList<>(), (c, x) -> c.add(x)));
     }
 
 }
