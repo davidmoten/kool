@@ -1,9 +1,9 @@
 package org.davidmoten.kool.internal.operators;
 
-import java.util.Iterator;
 import java.util.function.BiFunction;
 
 import org.davidmoten.kool.Stream;
+import org.davidmoten.kool.StreamIterator;
 
 public class Zip<R, S, T> implements Stream<S> {
 
@@ -18,11 +18,11 @@ public class Zip<R, S, T> implements Stream<S> {
     }
 
     @Override
-    public Iterator<S> iterator() {
-        return new Iterator<S>() {
+    public StreamIterator<S> iterator() {
+        return new StreamIterator<S>() {
 
-            Iterator<T> a = source1.iterator();
-            Iterator<? extends R> b = source2.iterator();
+            StreamIterator<T> a = source1.iterator();
+            StreamIterator<? extends R> b = source2.iterator();
 
             @Override
             public boolean hasNext() {
@@ -31,6 +31,8 @@ public class Zip<R, S, T> implements Stream<S> {
                 if (hasA && hasB || !hasA && !hasB) {
                     return hasA;
                 } else {
+                    a.cancel();
+                    b.cancel();
                     throw new RuntimeException("streams must have same length to be zipped");
                 }
             }
@@ -38,6 +40,12 @@ public class Zip<R, S, T> implements Stream<S> {
             @Override
             public S next() {
                 return combiner.apply(a.next(), b.next());
+            }
+
+            @Override
+            public void cancel() {
+                a.cancel();
+                b.cancel();
             }
 
         };

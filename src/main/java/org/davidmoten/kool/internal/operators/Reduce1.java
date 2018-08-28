@@ -1,27 +1,28 @@
 package org.davidmoten.kool.internal.operators;
 
-import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.function.BiFunction;
 
 import org.davidmoten.kool.Maybe;
 import org.davidmoten.kool.Stream;
+import org.davidmoten.kool.StreamIterable;
+import org.davidmoten.kool.StreamIterator;
 
 public final class Reduce1<T> implements Stream<Maybe<T>> {
 
     private final BiFunction<? super T, ? super T, ? extends T> reducer;
-    private final Iterable<T> source;
+    private final StreamIterable<T> source;
 
-    public Reduce1(BiFunction<? super T, ? super T, ? extends T> reducer, Iterable<T> source) {
+    public Reduce1(BiFunction<? super T, ? super T, ? extends T> reducer, StreamIterable<T> source) {
         this.reducer = reducer;
         this.source = source;
     }
 
     @Override
-    public Iterator<Maybe<T>> iterator() {
-        return new Iterator<Maybe<T>>() {
+    public StreamIterator<Maybe<T>> iterator() {
+        return new StreamIterator<Maybe<T>>() {
 
-            Iterator<T> it = source.iterator();
+            final StreamIterator<T> it = source.iterator();
             T value = null;
             boolean finished;
 
@@ -68,6 +69,11 @@ public final class Reduce1<T> implements Stream<Maybe<T>> {
                     }
                     value = v;
                 }
+            }
+
+            @Override
+            public void cancel() {
+                it.cancel();
             }
 
         };

@@ -1,26 +1,27 @@
 package org.davidmoten.kool.internal.operators;
 
-import java.util.Iterator;
 import java.util.function.Function;
 
 import org.davidmoten.kool.Stream;
+import org.davidmoten.kool.StreamIterable;
+import org.davidmoten.kool.StreamIterator;
 
 public final class Map<T, R> implements Stream<R> {
 
     private final Function<? super T, ? extends R> function;
-    private final Iterable<T> source;
+    private final StreamIterable<T> source;
 
-    public Map(Function<? super T, ? extends R> function, Iterable<T> source) {
+    public Map(Function<? super T, ? extends R> function, StreamIterable<T> source) {
         this.function = function;
         this.source = source;
 
     }
 
     @Override
-    public Iterator<R> iterator() {
-        return new Iterator<R>() {
+    public StreamIterator<R> iterator() {
+        return new StreamIterator<R>() {
 
-            final Iterator<T> it = source.iterator();
+            final StreamIterator<T> it = source.iterator();
 
             @Override
             public boolean hasNext() {
@@ -30,6 +31,11 @@ public final class Map<T, R> implements Stream<R> {
             @Override
             public R next() {
                 return function.apply(it.next());
+            }
+
+            @Override
+            public void cancel() {
+                it.cancel();
             }
 
         };

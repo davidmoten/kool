@@ -1,9 +1,9 @@
 package org.davidmoten.kool.internal.operators;
 
-import java.util.Iterator;
 import java.util.function.Function;
 
 import org.davidmoten.kool.Stream;
+import org.davidmoten.kool.StreamIterator;
 
 public final class Transform<T, R> implements Stream<R>{
 
@@ -17,8 +17,8 @@ public final class Transform<T, R> implements Stream<R>{
 
     @SuppressWarnings("unchecked")
     @Override
-    public Iterator<R> iterator() {
-        return (Iterator<R>) transformer.apply(source).iterator();
+    public StreamIterator<R> iterator() {
+        return (StreamIterator<R>) transformer.apply(source).iterator();
     }
 
 }

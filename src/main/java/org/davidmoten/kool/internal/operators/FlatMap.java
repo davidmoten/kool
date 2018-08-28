@@ -1,27 +1,29 @@
 package org.davidmoten.kool.internal.operators;
 
-import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.function.Function;
 
 import org.davidmoten.kool.Stream;
+import org.davidmoten.kool.StreamIterable;
+import org.davidmoten.kool.StreamIterator;
 
 public final class FlatMap<T, R> implements Stream<R> {
 
     private final Function<? super T, ? extends Stream<? extends R>> function;
-    private final Iterable<T> source;
+    private final StreamIterable<T> source;
 
-    public FlatMap(Function<? super T, ? extends Stream<? extends R>> function, Iterable<T> source) {
+    public FlatMap(Function<? super T, ? extends Stream<? extends R>> function,
+            StreamIterable<T> source) {
         this.function = function;
         this.source = source;
     }
 
     @Override
-    public Iterator<R> iterator() {
-        return new Iterator<R>() {
+    public StreamIterator<R> iterator() {
+        return new StreamIterator<R>() {
 
-            final Iterator<T> a = source.iterator();
-            Iterator<? extends R> b;
+            final StreamIterator<T> a = source.iterator();
+            StreamIterator<? extends R> b;
             R r;
 
             @Override
@@ -54,6 +56,7 @@ public final class FlatMap<T, R> implements Stream<R> {
                                 r = b.next();
                                 return;
                             } else {
+                                b.cancel();
                                 b = null;
                             }
                         } else {
@@ -64,9 +67,20 @@ public final class FlatMap<T, R> implements Stream<R> {
                             r = b.next();
                             return;
                         } else {
+                            b.cancel();
                             b = null;
                         }
                     }
+                }
+            }
+
+            @Override
+            public void cancel() {
+                if (a != null) {
+                    a.cancel();
+                }
+                if (b != null) {
+                    b.cancel();
                 }
             }
 

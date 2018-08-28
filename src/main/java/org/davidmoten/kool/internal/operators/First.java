@@ -1,23 +1,24 @@
 package org.davidmoten.kool.internal.operators;
 
-import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 import org.davidmoten.kool.Stream;
+import org.davidmoten.kool.StreamIterable;
+import org.davidmoten.kool.StreamIterator;
 
 public final class First<T> implements Stream<T> {
 
-    private final Iterable<T> source;
+    private final StreamIterable<T> source;
 
-    public First(Iterable<T> source) {
+    public First(StreamIterable<T> source) {
         this.source = source;
     }
 
     @Override
-    public Iterator<T> iterator() {
-        return new Iterator<T>() {
+    public StreamIterator<T> iterator() {
+        return new StreamIterator<T>() {
 
-            Iterator<T> it = source.iterator();
+            StreamIterator<T> it = source.iterator();
             T value;
 
             @Override
@@ -30,8 +31,10 @@ public final class First<T> implements Stream<T> {
             public T next() {
                 loadNext();
                 if (value == null || it == null) {
+                    cancel();
                     throw new NoSuchElementException();
                 } else {
+                    cancel();
                     it = null;
                     return value;
                 }
@@ -40,6 +43,13 @@ public final class First<T> implements Stream<T> {
             private void loadNext() {
                 if (value == null && it != null && it.hasNext()) {
                     value = it.next();
+                }
+            }
+
+            @Override
+            public void cancel() {
+                if (it != null) {
+                    it.cancel();
                 }
             }
 

@@ -3,6 +3,7 @@ package org.davidmoten.kool.internal.util;
 import java.util.Iterator;
 
 import org.davidmoten.kool.Stream;
+import org.davidmoten.kool.StreamIterator;
 
 public final class StreamImpl<T> implements Stream<T> {
 
@@ -13,8 +14,27 @@ public final class StreamImpl<T> implements Stream<T> {
     }
 
     @Override
-    public Iterator<T> iterator() {
-        return source.iterator();
+    public StreamIterator<T> iterator() {
+        return new StreamIterator<T>() {
+
+            Iterator<T> it = source.iterator();
+
+            @Override
+            public boolean hasNext() {
+                return it.hasNext();
+            }
+
+            @Override
+            public T next() {
+                return it.next();
+            }
+
+            @Override
+            public void cancel() {
+                // do nothing
+            }
+
+        };
     }
 
 }

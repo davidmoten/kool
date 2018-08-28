@@ -3,21 +3,23 @@ package org.davidmoten.kool.internal.operators;
 import java.util.Iterator;
 
 import org.davidmoten.kool.Stream;
+import org.davidmoten.kool.StreamIterable;
+import org.davidmoten.kool.StreamIterator;
 
 public final class PrependOne<T> implements Stream<T> {
 
     private final T value;
-    private final Iterable<T> source;
+    private final StreamIterable<T> source;
 
-    public PrependOne(T value, Iterable<T> source) {
+    public PrependOne(T value, StreamIterable<T> source) {
         this.value = value;
         this.source = source;
     }
 
     @Override
-    public Iterator<T> iterator() {
-        return new Iterator<T>() {
-            final Iterator<T> it = source.iterator();
+    public StreamIterator<T> iterator() {
+        return new StreamIterator<T>() {
+            final StreamIterator<T> it = source.iterator();
             T value = PrependOne.this.value;
 
             @Override
@@ -38,6 +40,11 @@ public final class PrependOne<T> implements Stream<T> {
                 } else {
                     return it.next();
                 }
+            }
+
+            @Override
+            public void cancel() {
+                it.cancel();
             }
 
         };

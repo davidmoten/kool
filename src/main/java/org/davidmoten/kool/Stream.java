@@ -41,6 +41,10 @@ public interface Stream<T> extends StreamIterable<T> {
     static <T> Stream<T> create(StreamIterable<T> source) {
         return new StreamImpl<T>(source);
     }
+    
+    static <T> Stream<T> create(Iterable<T> source) {
+        return new StreamImpl<T>(source);
+    }
 
     public static <T> Stream<T> of(T t) {
         return create(Collections.singleton(t));
@@ -189,7 +193,7 @@ public interface Stream<T> extends StreamIterable<T> {
     }
 
     public default Stream<T> prepend(T[] values) {
-        return new Concat<T>(Iterables.fromArray(values), this);
+        return new Concat<T>(create(Iterables.fromArray(values)), this);
     }
 
     public default Stream<T> prepend(StreamIterable<? extends T> values) {

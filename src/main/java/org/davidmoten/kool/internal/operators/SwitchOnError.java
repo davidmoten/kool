@@ -4,26 +4,30 @@ import java.util.Iterator;
 import java.util.function.Function;
 
 import org.davidmoten.kool.Stream;
+import org.davidmoten.kool.StreamIterable;
+import org.davidmoten.kool.StreamIterator;
 
 public final class SwitchOnError<T> implements Stream<T> {
 
-    private final Function<? super Throwable, ? extends Iterable<? extends T>> function;
+    private final Function<? super Throwable, ? extends StreamIterable<? extends T>> function;
     private final Stream<T> source;
 
-    public SwitchOnError(Function<? super Throwable, ? extends Iterable<? extends T>> function, Stream<T> source) {
+    public SwitchOnError(
+            Function<? super Throwable, ? extends StreamIterable<? extends T>> function,
+            Stream<T> source) {
         this.function = function;
         this.source = source;
     }
 
     @Override
-    public Iterator<T> iterator() {
-        return new Iterator<T>() {
+    public StreamIterator<T> iterator() {
+        return new StreamIterator<T>() {
 
-            Iterator<T> it = getIterator();
+            StreamIterator<T> it = getIterator();
             boolean switched = false;
 
             @SuppressWarnings("unchecked")
-            private Iterator<T> getIterator() {
+            private StreamIterator<T> getIterator() {
                 try {
                     return source.iterator();
                 } catch (RuntimeException | Error e) {
@@ -42,7 +46,8 @@ public final class SwitchOnError<T> implements Stream<T> {
                         return it.hasNext();
                     } catch (RuntimeException | Error e) {
                         switched = true;
-                        it = (Iterator<T>) function.apply(e);
+                        it.cancel();
+                        it = (StreamIterator<T>) function.apply(e);
                         return it.hasNext();
                     }
                 }
@@ -58,13 +63,19 @@ public final class SwitchOnError<T> implements Stream<T> {
                         return it.next();
                     } catch (RuntimeException | Error e) {
                         switched = true;
-                        it = (Iterator<T>) function.apply(e);
+                        it.cancel();
+                        it = (StreamIterator<T>) function.apply(e);
                         return it.next();
                     }
                 }
             }
 
+            @Override
+            public void cancel() {
+                it.cancel();
+            }
+
         };
     }
-    
+
 }

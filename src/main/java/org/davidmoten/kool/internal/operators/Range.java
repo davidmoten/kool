@@ -1,9 +1,9 @@
 package org.davidmoten.kool.internal.operators;
 
-import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 import org.davidmoten.kool.Stream;
+import org.davidmoten.kool.StreamIterator;
 
 public class Range implements Stream<Long> {
 
@@ -16,8 +16,8 @@ public class Range implements Stream<Long> {
     }
 
     @Override
-    public Iterator<Long> iterator() {
-        return new Iterator<Long>() {
+    public StreamIterator<Long> iterator() {
+        return new StreamIterator<Long>() {
 
             long i = start;
 
@@ -33,6 +33,11 @@ public class Range implements Stream<Long> {
                 } else {
                     throw new NoSuchElementException();
                 }
+            }
+
+            @Override
+            public void cancel() {
+                // do nothing
             }
 
         };
