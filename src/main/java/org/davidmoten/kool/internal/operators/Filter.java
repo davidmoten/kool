@@ -1,26 +1,27 @@
 package org.davidmoten.kool.internal.operators;
 
-import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.function.Predicate;
 
 import org.davidmoten.kool.Stream;
+import org.davidmoten.kool.StreamIterable;
+import org.davidmoten.kool.StreamIterator;
 
 public final class Filter<T> implements Stream<T> {
 
     private final Predicate<? super T> predicate;
-    private final Iterable<? extends T> source;
+    private final StreamIterable<? extends T> source;
 
-    public Filter(Predicate<? super T> predicate, Iterable<? extends T> source) {
+    public Filter(Predicate<? super T> predicate, StreamIterable<? extends T> source) {
         this.predicate = predicate;
         this.source = source;
     }
 
     @Override
-    public Iterator<T> iterator() {
-        return new Iterator<T>() {
+    public StreamIterator<T> iterator() {
+        return new StreamIterator<T>() {
 
-            Iterator<? extends T> it = source.iterator();
+            StreamIterator<? extends T> it = source.iterator();
             T nextValue = null;
 
             @Override
@@ -33,8 +34,8 @@ public final class Filter<T> implements Stream<T> {
             public T next() {
                 nextValue();
                 if (nextValue != null) {
-                     T t = nextValue;
-                     nextValue = null;
+                    T t = nextValue;
+                    nextValue = null;
                     return t;
                 } else {
                     throw new NoSuchElementException();
@@ -55,6 +56,11 @@ public final class Filter<T> implements Stream<T> {
                         }
                     }
                 }
+            }
+
+            @Override
+            public void cancel() {
+                it.cancel();
             }
 
         };

@@ -1,25 +1,26 @@
 package org.davidmoten.kool.internal.operators;
 
-import java.util.Iterator;
 import java.util.function.Consumer;
 
 import org.davidmoten.kool.Stream;
+import org.davidmoten.kool.StreamIterable;
+import org.davidmoten.kool.StreamIterator;
 
 public final class DoOnNext<T> implements Stream<T> {
 
     private final Consumer<? super T> consumer;
-    private final Iterable<T> source;
+    private final StreamIterable<T> source;
 
-    public DoOnNext(Consumer<? super T> consumer, Iterable<T> source) {
+    public DoOnNext(Consumer<? super T> consumer, StreamIterable<T> source) {
         this.consumer = consumer;
         this.source = source;
     }
 
     @Override
-    public Iterator<T> iterator() {
-        return new Iterator<T>() {
+    public StreamIterator<T> iterator() {
+        return new StreamIterator<T>() {
 
-            final Iterator<T> it = source.iterator();
+            final StreamIterator<T> it = source.iterator();
 
             @Override
             public boolean hasNext() {
@@ -31,6 +32,11 @@ public final class DoOnNext<T> implements Stream<T> {
                 T t = it.next();
                 consumer.accept(t);
                 return t;
+            }
+
+            @Override
+            public void cancel() {
+                it.cancel();
             }
         };
     }

@@ -1,9 +1,9 @@
 package org.davidmoten.kool.internal.operators;
 
-import java.util.Iterator;
 import java.util.function.Consumer;
 
 import org.davidmoten.kool.Stream;
+import org.davidmoten.kool.StreamIterator;
 
 public final class DoOnError<T> implements Stream<T> {
 
@@ -16,10 +16,10 @@ public final class DoOnError<T> implements Stream<T> {
     }
 
     @Override
-    public Iterator<T> iterator() {
-        return new Iterator<T>() {
+    public StreamIterator<T> iterator() {
+        return new StreamIterator<T>() {
 
-            Iterator<T> it = getIterator();
+            StreamIterator<T> it = getIterator();
 
             @Override
             public boolean hasNext() {
@@ -40,14 +40,19 @@ public final class DoOnError<T> implements Stream<T> {
                     throw t;
                 }
             }
-            
-            private Iterator<T> getIterator() {
+
+            private StreamIterator<T> getIterator() {
                 try {
                     return source.iterator();
                 } catch (RuntimeException | Error t) {
                     consumer.accept(t);
                     throw t;
                 }
+            }
+
+            @Override
+            public void cancel() {
+                it.cancel();
             }
 
         };

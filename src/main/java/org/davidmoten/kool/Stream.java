@@ -13,6 +13,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
+import org.davidmoten.kool.internal.operators.Concat;
 import org.davidmoten.kool.internal.operators.Defer;
 import org.davidmoten.kool.internal.operators.DoOnComplete;
 import org.davidmoten.kool.internal.operators.DoOnError;
@@ -22,7 +23,6 @@ import org.davidmoten.kool.internal.operators.First;
 import org.davidmoten.kool.internal.operators.FlatMap;
 import org.davidmoten.kool.internal.operators.Last;
 import org.davidmoten.kool.internal.operators.Map;
-import org.davidmoten.kool.internal.operators.Concat;
 import org.davidmoten.kool.internal.operators.PrependOne;
 import org.davidmoten.kool.internal.operators.Range;
 import org.davidmoten.kool.internal.operators.Reduce1;
@@ -34,11 +34,11 @@ import org.davidmoten.kool.internal.util.Iterables;
 import org.davidmoten.kool.internal.util.StreamImpl;
 import org.davidmoten.kool.internal.util.StreamUtils;
 
-public interface Stream<T> extends Iterable<T> {
+public interface Stream<T> extends StreamIterable<T> {
 
     public static final int DEFAULT_BUFFER_SIZE = 16;
 
-    static <T> Stream<T> create(Iterable<T> source) {
+    static <T> Stream<T> create(StreamIterable<T> source) {
         return new StreamImpl<T>(source);
     }
 
@@ -192,11 +192,11 @@ public interface Stream<T> extends Iterable<T> {
         return new Concat<T>(Iterables.fromArray(values), this);
     }
 
-    public default Stream<T> prepend(Iterable<? extends T> values) {
+    public default Stream<T> prepend(StreamIterable<? extends T> values) {
         return new Concat<T>(values, this);
     }
 
-    public default Stream<T> concatWith(Iterable<? extends T> values) {
+    public default Stream<T> concatWith(StreamIterable<? extends T> values) {
         return new Concat<T>(this, values);
     }
 

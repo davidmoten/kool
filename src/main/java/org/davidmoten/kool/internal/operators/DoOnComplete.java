@@ -1,8 +1,7 @@
 package org.davidmoten.kool.internal.operators;
 
-import java.util.Iterator;
-
 import org.davidmoten.kool.Stream;
+import org.davidmoten.kool.StreamIterator;
 
 public class DoOnComplete<T> implements Stream<T> {
 
@@ -15,18 +14,19 @@ public class DoOnComplete<T> implements Stream<T> {
     }
 
     @Override
-    public Iterator<T> iterator() {
-        return new Iterator<T>() {
+    public StreamIterator<T> iterator() {
+        return new StreamIterator<T>() {
 
-            Iterator<T> it = source.iterator();
+            StreamIterator<T> it = source.iterator();
             boolean completed = false;
-            
+
             @Override
             public boolean hasNext() {
                 boolean r = it.hasNext();
                 if (!r && !completed) {
                     completed = true;
                     action.run();
+                    it.cancel();
                 }
                 return r;
             }
@@ -35,7 +35,12 @@ public class DoOnComplete<T> implements Stream<T> {
             public T next() {
                 return it.next();
             }
-            
+
+            @Override
+            public void cancel() {
+                it.cancel();
+            }
+
         };
     }
 
