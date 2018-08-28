@@ -1,6 +1,5 @@
 package org.davidmoten.kool.internal.operators;
 
-import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 import org.davidmoten.kool.Stream;

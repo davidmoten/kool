@@ -1,7 +1,5 @@
 package org.davidmoten.kool.internal.operators;
 
-import java.util.Iterator;
-
 import org.davidmoten.kool.Stream;
 import org.davidmoten.kool.StreamIterable;
 import org.davidmoten.kool.StreamIterator;

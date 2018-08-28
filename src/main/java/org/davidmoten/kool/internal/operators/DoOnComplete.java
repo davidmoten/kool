@@ -17,7 +17,7 @@ public class DoOnComplete<T> implements Stream<T> {
     public StreamIterator<T> iterator() {
         return new StreamIterator<T>() {
 
-            StreamIterator<T> it = source.iterator();
+            final StreamIterator<T> it = source.iterator();
             boolean completed = false;
 
             @Override

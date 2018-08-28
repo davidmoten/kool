@@ -5,6 +5,8 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 import org.davidmoten.kool.Maybe;
+import org.davidmoten.kool.StreamIterable;
+import org.davidmoten.kool.StreamIterator;
 
 public final class Iterables {
 
@@ -80,11 +82,12 @@ public final class Iterables {
         }
     }
 
-    public static <R extends Collection<S>, S, T extends S> R addAll(R collection, Iterable<T> iterable) {
-        Iterator<T> it = iterable.iterator();
+    public static <R extends Collection<S>, S, T extends S> R addAll(R collection, StreamIterable<T> iterable) {
+        StreamIterator<T> it = iterable.iterator();
         while (it.hasNext()) {
             collection.add(it.next());
         }
+        it.cancel();
         return collection;
     }
 

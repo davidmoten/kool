@@ -41,7 +41,7 @@ public interface Stream<T> extends StreamIterable<T> {
     static <T> Stream<T> create(StreamIterable<T> source) {
         return new StreamImpl<T>(source);
     }
-    
+
     static <T> Stream<T> create(Iterable<T> source) {
         return new StreamImpl<T>(source);
     }
@@ -79,9 +79,9 @@ public interface Stream<T> extends StreamIterable<T> {
     }
 
     public static <T> Stream<T> error(Throwable e) {
-        return Stream.from(new Iterable<T>() {
+        return Stream.from(new StreamIterable<T>() {
             @Override
-            public Iterator<T> iterator() {
+            public StreamIterator<T> iterator() {
                 if (e instanceof RuntimeException) {
                     throw (RuntimeException) e;
                 } else if (e instanceof Error) {
@@ -115,7 +115,10 @@ public interface Stream<T> extends StreamIterable<T> {
     }
 
     public default boolean isEmpty() {
-        return !iterator().hasNext();
+        StreamIterator<T> it = iterator();
+        boolean r = !it.hasNext();
+        it.cancel();
+        return r;
     }
 
     public default <R> Stream<R> map(Function<? super T, ? extends R> function) {
@@ -126,7 +129,8 @@ public interface Stream<T> extends StreamIterable<T> {
         return new Reduce1<T>(reducer, this).iterator().next();
     }
 
-    public default <R> R reduce(R initialValue, BiFunction<? super R, ? super T, ? extends R> reducer) {
+    public default <R> R reduce(R initialValue,
+            BiFunction<? super R, ? super T, ? extends R> reducer) {
         // TODO Auto-generated method stub
         return null;
     }
@@ -137,12 +141,14 @@ public interface Stream<T> extends StreamIterable<T> {
         return null;
     }
 
-    public default <R> R collect(Supplier<? extends R> factory, BiConsumer<? super R, ? super T> collector) {
-        Iterator<T> it = iterator();
+    public default <R> R collect(Supplier<? extends R> factory,
+            BiConsumer<? super R, ? super T> collector) {
+        StreamIterator<T> it = iterator();
         R c = factory.get();
         while (it.hasNext()) {
             collector.accept(c, it.next());
         }
+        it.cancel();
         return c;
     }
 
@@ -179,12 +185,13 @@ public interface Stream<T> extends StreamIterable<T> {
     }
 
     public default long count() {
-        Iterator<T> it = this.iterator();
+        StreamIterator<T> it = this.iterator();
         int i = 0;
         while (it.hasNext()) {
             it.next();
             i++;
         }
+        it.cancel();
         return i;
     }
 
@@ -204,7 +211,8 @@ public interface Stream<T> extends StreamIterable<T> {
         return new Concat<T>(this, values);
     }
 
-    public default <R> Stream<R> flatMap(Function<? super T, ? extends Stream<? extends R>> function) {
+    public default <R> Stream<R> flatMap(
+            Function<? super T, ? extends Stream<? extends R>> function) {
         return new FlatMap<T, R>(function, this);
     }
 
@@ -244,15 +252,18 @@ public interface Stream<T> extends StreamIterable<T> {
         return new Take<T>(n, this);
     }
 
-    public default <R> Stream<R> transform(Function<? super Stream<T>, ? extends Stream<? extends R>> transformer) {
+    public default <R> Stream<R> transform(
+            Function<? super Stream<T>, ? extends Stream<? extends R>> transformer) {
         return new Transform<T, R>(transformer, this);
     }
 
-    public default Stream<T> switchOnError(Function<? super Throwable, ? extends Stream<? extends T>> function) {
+    public default Stream<T> switchOnError(
+            Function<? super Throwable, ? extends Stream<? extends T>> function) {
         return new SwitchOnError<T>(function, this);
     }
 
-    public default <R, S> Stream<S> zipWith(Stream<? extends R> stream, BiFunction<T, R, S> combiner) {
+    public default <R, S> Stream<S> zipWith(Stream<? extends R> stream,
+            BiFunction<T, R, S> combiner) {
         return new Zip<R, S, T>(this, stream, combiner);
     }
 
