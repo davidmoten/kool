@@ -165,11 +165,11 @@ public interface Stream<T> extends Iterable<T> {
             return new Filter<T>(function, this);
         }
     }
-    
+
     public default void forEach() {
         count();
     }
-    
+
     public default void ignoreElements() {
         count();
     }
@@ -195,7 +195,7 @@ public interface Stream<T> extends Iterable<T> {
     public default Stream<T> prepend(Iterable<? extends T> values) {
         return new Concat<T>(values, this);
     }
-    
+
     public default Stream<T> concatWith(Iterable<? extends T> values) {
         return new Concat<T>(this, values);
     }
@@ -223,7 +223,7 @@ public interface Stream<T> extends Iterable<T> {
     public default Stream<T> doOnError(Consumer<? super Throwable> consumer) {
         return new DoOnError<T>(consumer, this);
     }
-    
+
     public default Stream<T> doOnComplete(Runnable action) {
         return new DoOnComplete<T>(action, this);
     }
@@ -247,12 +247,14 @@ public interface Stream<T> extends Iterable<T> {
     public default Stream<T> switchOnError(Function<? super Throwable, ? extends Stream<? extends T>> function) {
         return new SwitchOnError<T>(function, this);
     }
-    
+
     public default <R, S> Stream<S> zipWith(Stream<? extends R> stream, BiFunction<T, R, S> combiner) {
         return new Zip<R, S, T>(this, stream, combiner);
     }
-    
-    //TODO
-    // takeUntil, takeWhile, buffer, toMap, toStreamJava , mapWithIndex, zipWith
+
+    // TODO
+    // takeUntil, takeWhile, buffer, bufferWhile, bufferUntil, toMap, toStreamJava ,
+    // mapWithIndex, skip, skipUntil, skipWhile, sorted, repeat, retry, cache,
+    // groupBy, doOnEmpty, switchIfEmpty, interleave
 
 }
