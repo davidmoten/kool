@@ -114,6 +114,40 @@ public interface Stream<T> extends StreamIterable<T> {
         return (Stream<T>) StreamUtils.EmptyHolder.EMPTY;
     }
 
+    public static <R, T> Stream<T> using(Supplier<R> resourceFactory,
+            Function<? super R, ? extends Stream<? extends T>> streamFactory,
+            Consumer<? super R> closer) {
+        return create(new StreamIterable<T>() {
+
+            @Override
+            public StreamIterator<T> iterator() {
+                return new StreamIterator<T>() {
+
+                    R resource = resourceFactory.get();
+                    @SuppressWarnings("unchecked")
+                    StreamIterator<T> it = (StreamIterator<T>) streamFactory.apply(resource)
+                            .iterator();
+
+                    @Override
+                    public boolean hasNext() {
+                        return it.hasNext();
+                    }
+
+                    @Override
+                    public T next() {
+                        return it.next();
+                    }
+
+                    @Override
+                    public void cancel() {
+                        it.cancel();
+                        closer.accept(resource);
+                    }
+                };
+            }
+        });
+    }
+
     public default boolean isEmpty() {
         StreamIterator<T> it = iterator();
         boolean r = !it.hasNext();
