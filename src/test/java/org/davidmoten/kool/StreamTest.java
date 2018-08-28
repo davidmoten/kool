@@ -168,11 +168,16 @@ public class StreamTest {
         assertEquals(Lists.newArrayList(1, 2, 3), Stream.of(1, 2, 3) //
                 .switchOnError(e -> Stream.of(4)).toList());
     }
-    
+
     @Test
     public void testSwitchOnErrorWhenError() {
         assertEquals(Lists.newArrayList(4), Stream.error(new RuntimeException()) //
                 .switchOnError(e -> Stream.of(4)).toList());
+    }
+
+    @Test
+    public void testConcat() {
+        assertEquals(Lists.newArrayList(1, 2, 3, 4), Stream.of(1, 2).concatWith(Stream.of(3, 4)).toList());
     }
 
 }

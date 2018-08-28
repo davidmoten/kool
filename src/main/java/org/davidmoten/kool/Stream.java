@@ -186,8 +186,12 @@ public interface Stream<T> extends Iterable<T> {
         return new Concat<T>(Iterables.fromArray(values), this);
     }
 
-    public default Stream<T> prepend(List<? extends T> values) {
+    public default Stream<T> prepend(Iterable<? extends T> values) {
         return new Concat<T>(values, this);
+    }
+    
+    public default Stream<T> concatWith(Iterable<? extends T> values) {
+        return new Concat<T>(this, values);
     }
 
     public default <R> Stream<R> flatMap(Function<? super T, ? extends Stream<? extends R>> function) {
