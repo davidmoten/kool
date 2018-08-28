@@ -21,7 +21,7 @@ import org.davidmoten.kool.internal.operators.First;
 import org.davidmoten.kool.internal.operators.FlatMap;
 import org.davidmoten.kool.internal.operators.Last;
 import org.davidmoten.kool.internal.operators.Map;
-import org.davidmoten.kool.internal.operators.PrependMany;
+import org.davidmoten.kool.internal.operators.Concat;
 import org.davidmoten.kool.internal.operators.PrependOne;
 import org.davidmoten.kool.internal.operators.Range;
 import org.davidmoten.kool.internal.operators.Reduce1;
@@ -163,7 +163,7 @@ public interface Stream<T> extends Iterable<T> {
             return new Filter<T>(function, this);
         }
     }
-
+    
     public default void forEach() {
         count();
     }
@@ -183,11 +183,11 @@ public interface Stream<T> extends Iterable<T> {
     }
 
     public default Stream<T> prepend(T[] values) {
-        return new PrependMany<T>(Iterables.fromArray(values), this);
+        return new Concat<T>(Iterables.fromArray(values), this);
     }
 
     public default Stream<T> prepend(List<? extends T> values) {
-        return new PrependMany<T>(values, this);
+        return new Concat<T>(values, this);
     }
 
     public default <R> Stream<R> flatMap(Function<? super T, ? extends Stream<? extends R>> function) {
