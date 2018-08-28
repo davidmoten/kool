@@ -14,12 +14,13 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import org.davidmoten.kool.internal.operators.Defer;
+import org.davidmoten.kool.internal.operators.DoOnError;
+import org.davidmoten.kool.internal.operators.DoOnNext;
 import org.davidmoten.kool.internal.operators.Filter;
 import org.davidmoten.kool.internal.operators.First;
 import org.davidmoten.kool.internal.operators.FlatMap;
 import org.davidmoten.kool.internal.operators.Last;
 import org.davidmoten.kool.internal.operators.Map;
-import org.davidmoten.kool.internal.operators.OnValue;
 import org.davidmoten.kool.internal.operators.PrependMany;
 import org.davidmoten.kool.internal.operators.PrependOne;
 import org.davidmoten.kool.internal.operators.Range;
@@ -147,6 +148,10 @@ public interface Stream<T> extends Iterable<T> {
         }
     }
 
+    public default void forEach() {
+        count();
+    }
+    
     public default long count() {
         Iterator<T> it = this.iterator();
         int i = 0;
@@ -185,10 +190,14 @@ public interface Stream<T> extends Iterable<T> {
         return Iterables.first(new First<T>(this).iterator());
     }
 
-    public default Stream<T> onValue(Consumer<? super T> consumer) {
-        return new OnValue<T>(consumer, this);
+    public default Stream<T> doOnNext(Consumer<? super T> consumer) {
+        return new DoOnNext<T>(consumer, this);
     }
 
+    public default Stream<T> doOnError(Consumer<? super Throwable> consumer) {
+        return new DoOnError<T>(consumer, this);
+    }
+    
     public default Maybe<T> last() {
         return Iterables.first(new Last<T>(this).iterator());
     }

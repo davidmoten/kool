@@ -5,12 +5,12 @@ import java.util.function.Consumer;
 
 import org.davidmoten.kool.Stream;
 
-public final class OnValue<T> implements Stream<T> {
+public final class DoOnNext<T> implements Stream<T> {
 
     private final Consumer<? super T> consumer;
     private final Iterable<T> source;
 
-    public OnValue(Consumer<? super T> consumer, Iterable<T> source) {
+    public DoOnNext(Consumer<? super T> consumer, Iterable<T> source) {
         this.consumer = consumer;
         this.source = source;
     }

@@ -5,8 +5,10 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import com.github.davidmoten.guavamini.Lists;
@@ -87,7 +89,7 @@ public class StreamTest {
     @Test
     public void testOnValue() {
         List<Integer> list = new ArrayList<>();
-        Stream.of(1, 2, 3).onValue(x -> list.add(x)).count();
+        Stream.of(1, 2, 3).doOnNext(x -> list.add(x)).count();
         assertEquals(Lists.newArrayList(1, 2, 3), list);
     }
 
@@ -145,6 +147,25 @@ public class StreamTest {
     public void testCollect() {
         assertEquals(Lists.newArrayList(1, 2, 3),
                 Stream.of(1, 2, 3).collect(() -> new ArrayList<>(), (c, x) -> c.add(x)));
+    }
+
+    @Test
+    public void testDoOnError() {
+        Throwable[] err = new Throwable[1];
+        try {
+            Stream.from(new Iterable<Integer>() {
+                @Override
+                public Iterator<Integer> iterator() {
+                    throw new RuntimeException("boo");
+                }
+            }) //
+                    .doOnError(e -> err[0] = e) //
+                    .forEach();
+            Assert.fail();
+        } catch (RuntimeException t) {
+            assertEquals("boo", t.getMessage());
+            assertEquals("boo", err[0].getMessage());
+        }
     }
 
 }
