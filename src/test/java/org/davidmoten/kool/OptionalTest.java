@@ -16,5 +16,5 @@ public class OptionalTest {
     public void testToLinkedListPresent() {
         assertEquals(1, (int) Maybe.of(1).toStream().first().get());
     }
-
+    
 }

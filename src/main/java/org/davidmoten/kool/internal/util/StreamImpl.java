@@ -4,7 +4,7 @@ import java.util.Iterator;
 
 import org.davidmoten.kool.Stream;
 
-public class StreamImpl<T> implements Stream<T> {
+public final class StreamImpl<T> implements Stream<T> {
 
     private final Iterable<T> source;
 

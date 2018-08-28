@@ -5,7 +5,7 @@ import java.util.NoSuchElementException;
 
 import org.davidmoten.kool.Stream;
 
-public class Take<T> implements Stream<T> {
+public final class Take<T> implements Stream<T> {
 
     private final long n;
     private final Iterable<T> source;
