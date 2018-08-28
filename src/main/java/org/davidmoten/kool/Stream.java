@@ -14,6 +14,7 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import org.davidmoten.kool.internal.operators.Defer;
+import org.davidmoten.kool.internal.operators.DoOnComplete;
 import org.davidmoten.kool.internal.operators.DoOnError;
 import org.davidmoten.kool.internal.operators.DoOnNext;
 import org.davidmoten.kool.internal.operators.Filter;
@@ -216,6 +217,10 @@ public interface Stream<T> extends Iterable<T> {
 
     public default Stream<T> doOnError(Consumer<? super Throwable> consumer) {
         return new DoOnError<T>(consumer, this);
+    }
+    
+    public default Stream<T> doOnComplete(Runnable action) {
+        return new DoOnComplete<T>(action, this);
     }
 
     public default Maybe<T> last() {

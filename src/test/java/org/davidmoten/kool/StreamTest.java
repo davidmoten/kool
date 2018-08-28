@@ -179,4 +179,14 @@ public class StreamTest {
         assertEquals(Lists.newArrayList(1, 2, 3, 4), Stream.of(1, 2).concatWith(Stream.of(3, 4)).toList());
     }
 
+    @Test
+    public void testDoOnComplete() {
+        List<Integer> list = new ArrayList<>();
+        Stream.of(1, 2) //
+                .doOnNext(n -> list.add(n)) //
+                .doOnComplete(() -> list.add(3)) //
+                .forEach();
+        assertEquals(Lists.newArrayList(1,2,3), list);
+    }
+
 }

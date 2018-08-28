@@ -6,5 +6,7 @@ Alternative to `java.uti.stream.Stream` that:
 
 Status: *pre-alpha* (in development)
 
+If you need non-blocking and/or asynchronous streaming use [RxJava](https://github.com/ReactiveX/RxJava).
+
 
 
