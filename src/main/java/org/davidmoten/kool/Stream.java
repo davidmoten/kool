@@ -25,6 +25,7 @@ import org.davidmoten.kool.internal.operators.PrependMany;
 import org.davidmoten.kool.internal.operators.PrependOne;
 import org.davidmoten.kool.internal.operators.Range;
 import org.davidmoten.kool.internal.operators.Reduce1;
+import org.davidmoten.kool.internal.operators.SwitchOnError;
 import org.davidmoten.kool.internal.operators.Take;
 import org.davidmoten.kool.internal.operators.Transform;
 import org.davidmoten.kool.internal.util.Iterables;
@@ -69,6 +70,21 @@ public interface Stream<T> extends Iterable<T> {
 
     public static <T> Stream<T> of(T t1, T t2, T t3, T t4, T t5, T t6, T t7, T t8) {
         return create(Iterables.ofNoCopy(t1, t2, t3, t4, t5, t6, t7, t8));
+    }
+
+    public static <T> Stream<T> error(Throwable e) {
+        return Stream.from(new Iterable<T>() {
+            @Override
+            public Iterator<T> iterator() {
+                if (e instanceof RuntimeException) {
+                    throw (RuntimeException) e;
+                } else if (e instanceof Error) {
+                    throw (Error) e;
+                } else {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
     }
 
     public static <T> Stream<T> from(Iterable<T> iterable) {
@@ -119,7 +135,7 @@ public interface Stream<T> extends Iterable<T> {
         Iterator<T> it = iterator();
         R c = factory.get();
         while (it.hasNext()) {
-           collector.accept(c, it.next()); 
+            collector.accept(c, it.next());
         }
         return c;
     }
@@ -127,11 +143,11 @@ public interface Stream<T> extends Iterable<T> {
     public default List<T> toList() {
         return toList(DEFAULT_BUFFER_SIZE);
     }
-    
+
     public default Set<T> toSet() {
         return toSet(DEFAULT_BUFFER_SIZE);
     }
-    
+
     public default Set<T> toSet(int sizeHint) {
         return Iterables.addAll(new HashSet<T>(sizeHint), this);
     }
@@ -139,7 +155,7 @@ public interface Stream<T> extends Iterable<T> {
     public default List<T> toList(int sizeHint) {
         return Iterables.addAll(new ArrayList<T>(sizeHint), this);
     }
-    
+
     public default Stream<T> filter(Predicate<? super T> function) {
         if (function == Predicates.alwaysTrue()) {
             return this;
@@ -151,7 +167,7 @@ public interface Stream<T> extends Iterable<T> {
     public default void forEach() {
         count();
     }
-    
+
     public default long count() {
         Iterator<T> it = this.iterator();
         int i = 0;
@@ -197,7 +213,7 @@ public interface Stream<T> extends Iterable<T> {
     public default Stream<T> doOnError(Consumer<? super Throwable> consumer) {
         return new DoOnError<T>(consumer, this);
     }
-    
+
     public default Maybe<T> last() {
         return Iterables.first(new Last<T>(this).iterator());
     }
@@ -209,9 +225,13 @@ public interface Stream<T> extends Iterable<T> {
     public default Stream<T> take(long n) {
         return new Take<T>(n, this);
     }
-    
+
     public default <R> Stream<R> transform(Function<? super Stream<T>, ? extends Stream<? extends R>> transformer) {
         return new Transform<T, R>(transformer, this);
+    }
+
+    public default Stream<T> switchOnError(Function<? super Throwable, ? extends Stream<? extends T>> function) {
+        return new SwitchOnError<T>(function, this);
     }
 
 }

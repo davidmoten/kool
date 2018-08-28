@@ -153,12 +153,7 @@ public class StreamTest {
     public void testDoOnError() {
         Throwable[] err = new Throwable[1];
         try {
-            Stream.from(new Iterable<Integer>() {
-                @Override
-                public Iterator<Integer> iterator() {
-                    throw new RuntimeException("boo");
-                }
-            }) //
+            Stream.error(new RuntimeException("boo")) //
                     .doOnError(e -> err[0] = e) //
                     .forEach();
             Assert.fail();
@@ -166,6 +161,18 @@ public class StreamTest {
             assertEquals("boo", t.getMessage());
             assertEquals("boo", err[0].getMessage());
         }
+    }
+
+    @Test
+    public void testSwitchOnErrorNoError() {
+        assertEquals(Lists.newArrayList(1, 2, 3), Stream.of(1, 2, 3) //
+                .switchOnError(e -> Stream.of(4)).toList());
+    }
+    
+    @Test
+    public void testSwitchOnErrorWhenError() {
+        assertEquals(Lists.newArrayList(4), Stream.error(new RuntimeException()) //
+                .switchOnError(e -> Stream.of(4)).toList());
     }
 
 }
