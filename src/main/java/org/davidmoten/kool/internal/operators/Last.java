@@ -3,7 +3,9 @@ package org.davidmoten.kool.internal.operators;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-public class Last<T> implements Iterable<T> {
+import org.davidmoten.kool.Stream;
+
+public class Last<T> implements Stream<T> {
 
     private Iterable<T> source;
 

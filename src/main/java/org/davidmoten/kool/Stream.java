@@ -24,75 +24,67 @@ import org.davidmoten.kool.internal.operators.Range;
 import org.davidmoten.kool.internal.operators.Reduce1;
 import org.davidmoten.kool.internal.operators.Take;
 import org.davidmoten.kool.internal.util.Iterables;
+import org.davidmoten.kool.internal.util.StreamUtils;
 
-public final class Stream<T> implements Seq<T> {
-
-    private final Iterable<T> source;
-
-    Stream(Iterable<T> source) {
-        this.source = source;
-    }
+public interface Stream<T> extends Iterable<T> {
+    
+    public static final int DEFAULT_BUFFER_SIZE = 16;
 
     static <T> Stream<T> create(Iterable<T> source) {
-        return new Stream<T>(source);
+        return new StreamImpl<T>(source);
     }
 
-    @Override
-    public boolean isEmpty() {
-        return !source.iterator().hasNext();
+    public default boolean isEmpty() {
+        return !iterator().hasNext();
     }
 
-    @Override
-    public <R> Stream<R> map(Function<? super T, ? extends R> function) {
-        return create(new Map<T, R>(function, source));
+    public default <R> Stream<R> map(Function<? super T, ? extends R> function) {
+        return new Map<T, R>(function, this);
     }
 
-    @Override
-    public Maybe<T> reduce(BiFunction<? super T, ? super T, ? extends T> reducer) {
-        return create(new Reduce1<T>(reducer, source)).iterator().next();
+    public default Maybe<T> reduce(BiFunction<? super T, ? super T, ? extends T> reducer) {
+        return new Reduce1<T>(reducer, this).iterator().next();
     }
 
-    @Override
-    public <R> R reduce(R initialValue, BiFunction<? super R, ? super T, ? extends R> reducer) {
+    public default <R> R reduce(R initialValue, BiFunction<? super R, ? super T, ? extends R> reducer) {
         // TODO Auto-generated method stub
         return null;
     }
 
-    @Override
-    public <R> R reduce(Supplier<R> initialValueFactory,
+    public default <R> R reduce(Supplier<R> initialValueFactory,
             BiFunction<? super R, ? super T, ? extends R> reducer) {
         // TODO Auto-generated method stub
         return null;
     }
 
-    @Override
-    public <R> R collect(Supplier<R> factory, BiConsumer<? super R, ? super T> collector) {
+    public default <R> R collect(Supplier<R> factory, BiConsumer<? super R, ? super T> collector) {
         // TODO Auto-generated method stub
         return null;
     }
 
-    @Override
-    public ArrayList<T> toJavaArrayList(int sizeHint) {
+    public default ArrayList<T> toJavaArrayList() {
+        return toJavaArrayList(DEFAULT_BUFFER_SIZE);
+    }
+    
+    public default ArrayList<T> toJavaArrayList(int sizeHint) {
         ArrayList<T> a = new ArrayList<>(sizeHint);
-        Iterator<T> it = source.iterator();
+        Iterator<T> it = this.iterator();
         while (it.hasNext()) {
             a.add(it.next());
         }
         return a;
     }
 
-    @Override
-    public Stream<T> filter(Predicate<? super T> function) {
+    public default Stream<T> filter(Predicate<? super T> function) {
         if (function == Predicates.alwaysTrue()) {
             return this;
         } else {
-            return create(new Filter<T>(function, source));
+            return new Filter<T>(function, this);
         }
     }
 
-    @Override
-    public long count() {
-        Iterator<T> it = source.iterator();
+    public default long count() {
+        Iterator<T> it = this.iterator();
         int i = 0;
         while (it.hasNext()) {
             it.next();
@@ -101,28 +93,23 @@ public final class Stream<T> implements Seq<T> {
         return i;
     }
 
-    @Override
-    public Stream<T> prepend(T value) {
-        return create(new PrependOne<T>(value, source));
+    public default Stream<T> prepend(T value) {
+        return new PrependOne<T>(value, this);
     }
 
-    @Override
-    public Stream<T> prepend(T[] values) {
-        return create(new PrependMany<T>(Iterables.fromArray(values), source));
+    public default Stream<T> prepend(T[] values) {
+        return new PrependMany<T>(Iterables.fromArray(values), this);
     }
 
-    @Override
-    public Stream<T> prepend(List<? extends T> values) {
-        return create(new PrependMany<T>(values, source));
+    public default Stream<T> prepend(List<? extends T> values) {
+        return new PrependMany<T>(values, this);
     }
 
-    @Override
-    public <R> Stream<R> flatMap(Function<? super T, ? extends Seq<? extends R>> function) {
-        return create(new FlatMap<T, R>(function, source));
+    public default <R> Stream<R> flatMap(Function<? super T, ? extends Stream<? extends R>> function) {
+        return new FlatMap<T, R>(function, this);
     }
 
-    @Override
-    public Maybe<T> findFirst(Predicate<? super T> predicate) {
+    public default Maybe<T> findFirst(Predicate<? super T> predicate) {
         if (predicate == Predicates.alwaysFalse()) {
             return Maybe.empty();
         } else {
@@ -130,36 +117,24 @@ public final class Stream<T> implements Seq<T> {
         }
     }
 
-    @Override
-    public Iterator<T> iterator() {
-        return source.iterator();
+    public default Maybe<T> first() {
+        return Iterables.first(new First<T>(this).iterator());
     }
 
-    @Override
-    public Maybe<T> first() {
-        return first(create(new First<T>(source)).iterator());
+    public default Stream<T> onValue(Consumer<? super T> consumer) {
+        return new OnValue<T>(consumer, this);
     }
 
-    public Stream<T> onValue(Consumer<? super T> consumer) {
-        return create(new OnValue<T>(consumer, source));
+    public default Maybe<T> last() {
+        return Iterables.first(new Last<T>(this).iterator());
     }
 
-    private static <T> Maybe<T> first(Iterator<T> it) {
-        if (it.hasNext()) {
-            return Maybe.of(it.next());
-        } else {
-            return Maybe.empty();
-        }
-    }
-
-    @Override
-    public Maybe<T> last() {
-        return first(create(new Last<T>(source)).iterator());
-    }
-
-    @Override
-    public Maybe<T> get(int index) {
+    public default Maybe<T> get(int index) {
         return take(index + 1).last();
+    }
+    
+    public default Stream<T> take(long n) {
+        return new Take<T>(n, this);
     }
 
     public static <T> Stream<T> of(T t) {
@@ -167,35 +142,35 @@ public final class Stream<T> implements Seq<T> {
     }
 
     public static <T> Stream<T> of(T t1, T t2) {
-        return create(LinkedList.of(t1, t2));
+        return create(Iterables.ofNoCopy(t1,t2));
     }
 
     public static <T> Stream<T> of(T t1, T t2, T t3) {
-        return create(LinkedList.of(t1, t2, t3));
+        return create(Iterables.ofNoCopy(t1, t2, t3));
     }
 
     public static <T> Stream<T> of(T t1, T t2, T t3, T t4) {
-        return create(LinkedList.of(t1, t2, t3, t4));
+        return create(Iterables.ofNoCopy(t1, t2, t3));
     }
 
     public static <T> Stream<T> of(T t1, T t2, T t3, T t4, T t5) {
-        return create(LinkedList.of(t1, t2, t3, t4, t5));
+        return create(Iterables.ofNoCopy(t1, t2, t3));
     }
 
     public static <T> Stream<T> of(T t1, T t2, T t3, T t4, T t5, T t6) {
-        return create(LinkedList.of(t1, t2, t3, t4, t5, t6));
+        return create(Iterables.ofNoCopy(t1, t2, t3));
     }
 
     public static <T> Stream<T> of(T t1, T t2, T t3, T t4, T t5, T t6, T t7) {
-        return create(LinkedList.of(t1, t2, t3, t4, t5, t6, t7));
+        return create(Iterables.ofNoCopy(t1, t2, t3));
     }
 
     public static <T> Stream<T> of(T t1, T t2, T t3, T t4, T t5, T t6, T t7, T t8) {
-        return create(LinkedList.of(t1, t2, t3, t4, t5, t6, t7, t8));
+        return create(Iterables.ofNoCopy(t1, t2, t3));
     }
 
     public static <T> Stream<T> from(Iterable<T> iterable) {
-        return create(LinkedList.from(iterable));
+        return create(iterable);
     }
 
     public static Stream<Long> range(long start, long length) {
@@ -206,22 +181,14 @@ public final class Stream<T> implements Seq<T> {
         return range(1, Long.MAX_VALUE);
     }
 
-    public static <T> Seq<T> defer(Supplier<? extends Stream<? extends T>> supplier) {
-        return create(new Defer<T>(supplier));
+    public static <T> Stream<T> defer(Supplier<? extends Stream<? extends T>> supplier) {
+        return new Defer<T>(supplier);
     }
 
     @SuppressWarnings("unchecked")
     public static <T> Stream<T> empty() {
-        return (Stream<T>) EmptyHolder.EMPTY;
+        return (Stream<T>) StreamUtils.EmptyHolder.EMPTY;
     }
 
-    private static final class EmptyHolder {
-        public static final Stream<Object> EMPTY = Stream.create(Collections.emptyList());
-    }
-
-    @Override
-    public Stream<T> take(long n) {
-        return create(new Take<T>(n, source));
-    }
 
 }

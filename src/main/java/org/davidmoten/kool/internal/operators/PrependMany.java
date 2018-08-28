@@ -3,7 +3,9 @@ package org.davidmoten.kool.internal.operators;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-public final class PrependMany<T> implements Iterable<T> {
+import org.davidmoten.kool.Stream;
+
+public final class PrependMany<T> implements Stream<T> {
 
     private final Iterable<? extends T> source1;
     private final Iterable<? extends T> source2;

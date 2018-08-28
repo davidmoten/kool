@@ -350,11 +350,11 @@ public final class Maybe<T> {
     }
     
     //additions for kool
-    public LinkedList<T> toLinkedList() {
+    public Stream<T> toStream() {
         if (!isPresent()) {
-            return LinkedList.nil();
+            return Stream.empty();
         } else {
-            return LinkedList.of(get());
+            return Stream.of(get());
         }
     }
 }

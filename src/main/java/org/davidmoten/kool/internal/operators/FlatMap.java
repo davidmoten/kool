@@ -4,14 +4,14 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.function.Function;
 
-import org.davidmoten.kool.Seq;
+import org.davidmoten.kool.Stream;
 
-public final class FlatMap<T, R> implements Iterable<R> {
+public final class FlatMap<T, R> implements Stream<R> {
 
-    private final Function<? super T, ? extends Seq<? extends R>> function;
+    private final Function<? super T, ? extends Stream<? extends R>> function;
     private final Iterable<T> source;
 
-    public FlatMap(Function<? super T, ? extends Seq<? extends R>> function, Iterable<T> source) {
+    public FlatMap(Function<? super T, ? extends Stream<? extends R>> function, Iterable<T> source) {
         this.function = function;
         this.source = source;
     }

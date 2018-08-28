@@ -3,7 +3,9 @@ package org.davidmoten.kool.internal.operators;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-public class Range implements Iterable<Long> {
+import org.davidmoten.kool.Stream;
+
+public class Range implements Stream<Long> {
 
     private final long start;
     private final long length;

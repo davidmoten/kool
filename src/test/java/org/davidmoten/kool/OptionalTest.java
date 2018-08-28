@@ -9,12 +9,12 @@ public class OptionalTest {
     
     @Test
     public void testToLinkedListEmpty() {
-        assertTrue(Maybe.empty().toLinkedList().isEmpty());
+        assertTrue(Maybe.empty().toStream().isEmpty());
     }
     
     @Test
     public void testToLinkedListPresent() {
-        assertEquals(1, (int) Maybe.of(1).toLinkedList().first().get());
+        assertEquals(1, (int) Maybe.of(1).toStream().first().get());
     }
 
 }

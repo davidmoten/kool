@@ -2,7 +2,9 @@ package org.davidmoten.kool.internal.operators;
 
 import java.util.Iterator;
 
-public final class PrependOne<T> implements Iterable<T> {
+import org.davidmoten.kool.Stream;
+
+public final class PrependOne<T> implements Stream<T> {
 
     private final T value;
     private final Iterable<T> source;

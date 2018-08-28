@@ -5,8 +5,9 @@ import java.util.NoSuchElementException;
 import java.util.function.BiFunction;
 
 import org.davidmoten.kool.Maybe;
+import org.davidmoten.kool.Stream;
 
-public final class Reduce1<T> implements Iterable<Maybe<T>> {
+public final class Reduce1<T> implements Stream<Maybe<T>> {
 
     private final BiFunction<? super T, ? super T, ? extends T> reducer;
     private final Iterable<T> source;

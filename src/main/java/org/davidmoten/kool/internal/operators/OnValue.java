@@ -3,7 +3,9 @@ package org.davidmoten.kool.internal.operators;
 import java.util.Iterator;
 import java.util.function.Consumer;
 
-public final class OnValue<T> implements Iterable<T> {
+import org.davidmoten.kool.Stream;
+
+public final class OnValue<T> implements Stream<T> {
 
     private final Consumer<? super T> consumer;
     private final Iterable<T> source;
