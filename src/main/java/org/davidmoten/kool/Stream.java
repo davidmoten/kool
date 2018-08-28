@@ -27,7 +27,7 @@ import org.davidmoten.kool.internal.util.Iterables;
 import org.davidmoten.kool.internal.util.StreamUtils;
 
 public interface Stream<T> extends Iterable<T> {
-    
+
     public static final int DEFAULT_BUFFER_SIZE = 16;
 
     static <T> Stream<T> create(Iterable<T> source) {
@@ -65,7 +65,7 @@ public interface Stream<T> extends Iterable<T> {
     public default ArrayList<T> toJavaArrayList() {
         return toJavaArrayList(DEFAULT_BUFFER_SIZE);
     }
-    
+
     public default ArrayList<T> toJavaArrayList(int sizeHint) {
         ArrayList<T> a = new ArrayList<>(sizeHint);
         Iterator<T> it = this.iterator();
@@ -132,7 +132,7 @@ public interface Stream<T> extends Iterable<T> {
     public default Maybe<T> get(int index) {
         return take(index + 1).last();
     }
-    
+
     public default Stream<T> take(long n) {
         return new Take<T>(n, this);
     }
@@ -142,7 +142,7 @@ public interface Stream<T> extends Iterable<T> {
     }
 
     public static <T> Stream<T> of(T t1, T t2) {
-        return create(Iterables.ofNoCopy(t1,t2));
+        return create(Iterables.ofNoCopy(t1, t2));
     }
 
     public static <T> Stream<T> of(T t1, T t2, T t3) {
@@ -150,23 +150,23 @@ public interface Stream<T> extends Iterable<T> {
     }
 
     public static <T> Stream<T> of(T t1, T t2, T t3, T t4) {
-        return create(Iterables.ofNoCopy(t1, t2, t3));
+        return create(Iterables.ofNoCopy(t1, t2, t3, t4));
     }
 
     public static <T> Stream<T> of(T t1, T t2, T t3, T t4, T t5) {
-        return create(Iterables.ofNoCopy(t1, t2, t3));
+        return create(Iterables.ofNoCopy(t1, t2, t3, t4, t5));
     }
 
     public static <T> Stream<T> of(T t1, T t2, T t3, T t4, T t5, T t6) {
-        return create(Iterables.ofNoCopy(t1, t2, t3));
+        return create(Iterables.ofNoCopy(t1, t2, t3, t4, t5, t6));
     }
 
     public static <T> Stream<T> of(T t1, T t2, T t3, T t4, T t5, T t6, T t7) {
-        return create(Iterables.ofNoCopy(t1, t2, t3));
+        return create(Iterables.ofNoCopy(t1, t2, t3, t4, t5, t6, t7));
     }
 
     public static <T> Stream<T> of(T t1, T t2, T t3, T t4, T t5, T t6, T t7, T t8) {
-        return create(Iterables.ofNoCopy(t1, t2, t3));
+        return create(Iterables.ofNoCopy(t1, t2, t3, t4, t5, t6, t7, t8));
     }
 
     public static <T> Stream<T> from(Iterable<T> iterable) {
@@ -189,6 +189,5 @@ public interface Stream<T> extends Iterable<T> {
     public static <T> Stream<T> empty() {
         return (Stream<T>) StreamUtils.EmptyHolder.EMPTY;
     }
-
 
 }
