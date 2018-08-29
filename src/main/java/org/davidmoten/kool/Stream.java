@@ -37,6 +37,7 @@ import org.davidmoten.kool.internal.operators.Map;
 import org.davidmoten.kool.internal.operators.PrependOne;
 import org.davidmoten.kool.internal.operators.Range;
 import org.davidmoten.kool.internal.operators.Reduce1;
+import org.davidmoten.kool.internal.operators.Split;
 import org.davidmoten.kool.internal.operators.SwitchOnError;
 import org.davidmoten.kool.internal.operators.Take;
 import org.davidmoten.kool.internal.operators.Transform;
@@ -344,6 +345,14 @@ public interface Stream<T> extends StreamIterable<T> {
             }
             b.append(x);
         }).toString();
+    }
+    
+    public default String split(String delimiter) {
+        return new Split(delimiter, this).iterator().next();
+    }
+    
+    public default Tester<T> test() {
+        return new Tester<T>(this);
     }
 
     // TODO

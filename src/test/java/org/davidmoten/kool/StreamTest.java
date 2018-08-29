@@ -218,5 +218,5 @@ public class StreamTest {
     public void testJoin() {
         assertEquals("helloAthere", Stream.of("hello", "there").join("A"));
     }
-
+    
 }
