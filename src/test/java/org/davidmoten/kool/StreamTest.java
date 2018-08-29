@@ -250,7 +250,7 @@ public class StreamTest {
     public void testSplitWithTwoConsecutiveDelimiters() {
         Stream.of("a", "zz", "b").split("z").test().assertValuesOnly("a", "", "b");
     }
-    
+
     @Test
     public void testSplitManyInOneItem() {
         Stream.of("azbzc").split("z").test().assertValuesOnly("a", "b", "c");
@@ -265,6 +265,25 @@ public class StreamTest {
                 .map(Integer::parseInt) //
                 .test() //
                 .assertValuesOnly(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void testBufferWithLeftover() {
+        Stream.of(1, 2, 3, 4, 5) //
+                .buffer(2) //
+                .test() //
+                .assertValuesOnly(Lists.newArrayList(1, 2), Lists.newArrayList(3, 4),
+                        Lists.newArrayList(5));
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void testBufferExact() {
+        Stream.of(1, 2, 3, 4) //
+                .buffer(2) //
+                .test() //
+                .assertValuesOnly(Lists.newArrayList(1, 2), Lists.newArrayList(3, 4));
     }
 
 }
