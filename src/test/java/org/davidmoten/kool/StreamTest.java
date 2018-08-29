@@ -4,8 +4,13 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -192,6 +197,13 @@ public class StreamTest {
     @Test
     public void testZip() {
         assertEquals(Lists.newArrayList(3, 8), Stream.of(1, 2).zipWith(Stream.of(3, 4), (x, y) -> x * y).toList());
+    }
+
+    @Test
+
+    public void testUsing() {
+        assertEquals(Lists.newArrayList("hello", "there"),
+                Stream.using(() -> new BufferedReader(new StringReader("hello\nthere")), r -> Stream.from(r)).toList());
     }
 
 }

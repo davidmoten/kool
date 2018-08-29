@@ -1,9 +1,11 @@
 package org.davidmoten.kool;
 
+import java.io.BufferedReader;
+import java.io.Closeable;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.function.BiConsumer;
@@ -21,6 +23,7 @@ import org.davidmoten.kool.internal.operators.DoOnNext;
 import org.davidmoten.kool.internal.operators.Filter;
 import org.davidmoten.kool.internal.operators.First;
 import org.davidmoten.kool.internal.operators.FlatMap;
+import org.davidmoten.kool.internal.operators.FromBufferedReader;
 import org.davidmoten.kool.internal.operators.Last;
 import org.davidmoten.kool.internal.operators.Map;
 import org.davidmoten.kool.internal.operators.PrependOne;
@@ -29,6 +32,7 @@ import org.davidmoten.kool.internal.operators.Reduce1;
 import org.davidmoten.kool.internal.operators.SwitchOnError;
 import org.davidmoten.kool.internal.operators.Take;
 import org.davidmoten.kool.internal.operators.Transform;
+import org.davidmoten.kool.internal.operators.Using;
 import org.davidmoten.kool.internal.operators.Zip;
 import org.davidmoten.kool.internal.util.Iterables;
 import org.davidmoten.kool.internal.util.StreamImpl;
@@ -96,6 +100,10 @@ public interface Stream<T> extends StreamIterable<T> {
     public static <T> Stream<T> from(Iterable<T> iterable) {
         return create(iterable);
     }
+    
+    public static Stream<String> from(BufferedReader reader) {
+        return new FromBufferedReader(reader);
+    }
 
     public static Stream<Long> range(long start, long length) {
         return create(new Range(start, length));
@@ -115,38 +123,27 @@ public interface Stream<T> extends StreamIterable<T> {
     }
 
     public static <R, T> Stream<T> using(Supplier<R> resourceFactory,
-            Function<? super R, ? extends Stream<? extends T>> streamFactory,
-            Consumer<? super R> closer) {
-        return create(new StreamIterable<T>() {
-
-            @Override
-            public StreamIterator<T> iterator() {
-                return new StreamIterator<T>() {
-
-                    R resource = resourceFactory.get();
-                    @SuppressWarnings("unchecked")
-                    StreamIterator<T> it = (StreamIterator<T>) streamFactory.apply(resource)
-                            .iterator();
-
-                    @Override
-                    public boolean hasNext() {
-                        return it.hasNext();
-                    }
-
-                    @Override
-                    public T next() {
-                        return it.next();
-                    }
-
-                    @Override
-                    public void cancel() {
-                        it.cancel();
-                        closer.accept(resource);
-                    }
-                };
-            }
-        });
+            Function<? super R, ? extends Stream<? extends T>> streamFactory, Consumer<? super R> closer) {
+        return new Using<R, T>(resourceFactory, streamFactory, closer);
     }
+
+    public static <R extends Closeable, T> Stream<T> using(Supplier<R> resourceFactory,
+            Function<? super R, ? extends Stream<? extends T>> streamFactory) {
+        return new Using<R, T>(resourceFactory, streamFactory, CLOSEABLE_CLOSER);
+    }
+    
+    static final Consumer<Closeable> CLOSEABLE_CLOSER = new Consumer<Closeable>() {
+
+        @Override
+        public void accept(Closeable c) {
+            try {
+                c.close();
+            } catch (IOException e) {
+                Plugins.onError(e);
+            }
+        }
+
+    };
 
     public default boolean isEmpty() {
         StreamIterator<T> it = iterator();
@@ -163,8 +160,7 @@ public interface Stream<T> extends StreamIterable<T> {
         return new Reduce1<T>(reducer, this).iterator().next();
     }
 
-    public default <R> R reduce(R initialValue,
-            BiFunction<? super R, ? super T, ? extends R> reducer) {
+    public default <R> R reduce(R initialValue, BiFunction<? super R, ? super T, ? extends R> reducer) {
         // TODO Auto-generated method stub
         return null;
     }
@@ -175,8 +171,7 @@ public interface Stream<T> extends StreamIterable<T> {
         return null;
     }
 
-    public default <R> R collect(Supplier<? extends R> factory,
-            BiConsumer<? super R, ? super T> collector) {
+    public default <R> R collect(Supplier<? extends R> factory, BiConsumer<? super R, ? super T> collector) {
         StreamIterator<T> it = iterator();
         R c = factory.get();
         while (it.hasNext()) {
@@ -217,6 +212,10 @@ public interface Stream<T> extends StreamIterable<T> {
     public default void ignoreElements() {
         count();
     }
+    
+    public default void println() {
+        forEach(System.out::println);
+    }
 
     public default long count() {
         StreamIterator<T> it = this.iterator();
@@ -245,8 +244,7 @@ public interface Stream<T> extends StreamIterable<T> {
         return new Concat<T>(this, values);
     }
 
-    public default <R> Stream<R> flatMap(
-            Function<? super T, ? extends Stream<? extends R>> function) {
+    public default <R> Stream<R> flatMap(Function<? super T, ? extends Stream<? extends R>> function) {
         return new FlatMap<T, R>(function, this);
     }
 
@@ -286,18 +284,15 @@ public interface Stream<T> extends StreamIterable<T> {
         return new Take<T>(n, this);
     }
 
-    public default <R> Stream<R> transform(
-            Function<? super Stream<T>, ? extends Stream<? extends R>> transformer) {
+    public default <R> Stream<R> transform(Function<? super Stream<T>, ? extends Stream<? extends R>> transformer) {
         return new Transform<T, R>(transformer, this);
     }
 
-    public default Stream<T> switchOnError(
-            Function<? super Throwable, ? extends Stream<? extends T>> function) {
+    public default Stream<T> switchOnError(Function<? super Throwable, ? extends Stream<? extends T>> function) {
         return new SwitchOnError<T>(function, this);
     }
 
-    public default <R, S> Stream<S> zipWith(Stream<? extends R> stream,
-            BiFunction<T, R, S> combiner) {
+    public default <R, S> Stream<S> zipWith(Stream<? extends R> stream, BiFunction<T, R, S> combiner) {
         return new Zip<R, S, T>(this, stream, combiner);
     }
 
