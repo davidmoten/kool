@@ -291,4 +291,14 @@ public class StreamTest {
         Stream.empty().buffer(2).test().assertNoValuesOnly();
     }
 
+    @Test
+    public void testSkip() {
+        Stream.of(1, 2, 3, 4).skip(2).test().assertValuesOnly(3, 4);
+    }
+    
+    @Test
+    public void testSkipMoreThanAvailable() {
+        Stream.of(1, 2, 3, 4).skip(5).test().assertNoValuesOnly();
+    }
+
 }

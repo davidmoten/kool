@@ -38,6 +38,7 @@ import org.davidmoten.kool.internal.operators.Map;
 import org.davidmoten.kool.internal.operators.PrependOne;
 import org.davidmoten.kool.internal.operators.Range;
 import org.davidmoten.kool.internal.operators.Reduce1;
+import org.davidmoten.kool.internal.operators.Skip;
 import org.davidmoten.kool.internal.operators.Split;
 import org.davidmoten.kool.internal.operators.SwitchOnError;
 import org.davidmoten.kool.internal.operators.Take;
@@ -370,6 +371,10 @@ public interface Stream<T> extends StreamIterable<T> {
     
     public default Stream<List<T>> buffer(int size) {
         return new Buffer<T>(size, this);
+    }
+    
+    public default Stream<T> skip(int size) {
+        return new Skip<T>(size, this);
     }
 
     // TODO
