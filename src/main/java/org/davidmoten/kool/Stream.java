@@ -5,6 +5,7 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -100,7 +101,7 @@ public interface Stream<T> extends StreamIterable<T> {
     public static <T> Stream<T> from(Iterable<T> iterable) {
         return create(iterable);
     }
-    
+
     public static Stream<String> from(BufferedReader reader) {
         return new FromBufferedReader(reader);
     }
@@ -131,7 +132,7 @@ public interface Stream<T> extends StreamIterable<T> {
             Function<? super R, ? extends Stream<? extends T>> streamFactory) {
         return new Using<R, T>(resourceFactory, streamFactory, CLOSEABLE_CLOSER);
     }
-    
+
     static final Consumer<Closeable> CLOSEABLE_CLOSER = new Consumer<Closeable>() {
 
         @Override
@@ -212,7 +213,7 @@ public interface Stream<T> extends StreamIterable<T> {
     public default void ignoreElements() {
         count();
     }
-    
+
     public default void println() {
         forEach(System.out::println);
     }
@@ -296,9 +297,18 @@ public interface Stream<T> extends StreamIterable<T> {
         return new Zip<R, S, T>(this, stream, combiner);
     }
 
+    public default java.util.stream.Stream<T> toStreamJava() {
+        // TODO don't use toList
+        return toList().stream();
+    }
+
+    public default <K, V> java.util.Map<K,V> toMap(Function<? super T, ? extends K> keyFunction, Function<? super T, ? extends V> valueFunction) {
+        return collect(() -> new HashMap<K,V>(), (m, item) -> m.put(keyFunction.apply(item), valueFunction.apply(item)));
+    }
+
     // TODO
-    // takeUntil, takeWhile, buffer, bufferWhile, bufferUntil, toMap, toStreamJava ,
+    // takeUntil, takeWhile, buffer, bufferWhile, bufferUntil, toStreamJava ,
     // mapWithIndex, skip, skipUntil, skipWhile, sorted, repeat, retry, cache,
-    // groupBy, doOnEmpty, switchIfEmpty, interleave, using
+    // groupBy, doOnEmpty, switchIfEmpty, interleave
 
 }
