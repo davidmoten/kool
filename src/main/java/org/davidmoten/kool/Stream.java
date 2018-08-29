@@ -347,8 +347,8 @@ public interface Stream<T> extends StreamIterable<T> {
         }).toString();
     }
     
-    public default String split(String delimiter) {
-        return new Split(delimiter, this).iterator().next();
+    public default Stream<String> split(String delimiter) {
+        return new Split(delimiter, this);
     }
     
     public default Tester<T> test() {

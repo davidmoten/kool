@@ -227,6 +227,27 @@ public class StreamTest {
 
     @Test
     public void testSplit() {
+        Stream.of("az", "zb", "c").split("zz").test().assertValuesOnly("a", "bc");
+    }
+
+    @Test
+    public void testSplitDelimiterNotFound() {
+        Stream.of("a", "b", "c").split("z").test().assertValuesOnly("abc");
+    }
+
+    @Test
+    public void testSplitEmpty() {
+        Stream.empty().split("z").test().assertNoValuesOnly();
+    }
+
+    @Test
+    public void testSplit2() {
+        Stream.of("a", "zz", "b").split("zz").test().assertValuesOnly("a", "b");
+    }
+
+    @Test
+    public void testSplitWithTwoConsecutiveDelimiters() {
+        Stream.of("a", "zz", "b").split("z").test().assertValuesOnly("a", "", "b");
     }
 
 }

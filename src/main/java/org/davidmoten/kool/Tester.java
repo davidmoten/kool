@@ -21,8 +21,21 @@ public final class Tester<T> {
 
     public Tester<T> assertValues(@SuppressWarnings("unchecked") T... expected) {
         if (!Arrays.asList(expected).equals(list)) {
-            throw new AssertionError("values not equal: expected=" + expected + ", found=" + list);
+            throw new AssertionError("values not equal: expected=" + Arrays.toString(expected) + ", found=" + list);
         }
+        return this;
+    }
+    
+    public Tester<T> assertNoValues() {
+        if (!list.isEmpty()) {
+            throw new AssertionError("values not empty: "+ list);
+        }
+        return this;
+    }
+    
+    public Tester<T> assertNoValuesOnly() {
+        assertNoValues();
+        assertNoError();
         return this;
     }
     

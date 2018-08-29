@@ -49,15 +49,16 @@ public final class Split implements Stream<String> {
             }
 
             private void loadNext() {
-                if (b != null && next != null) {
+                if (b != null && next == null) {
                     while (it.hasNext()) {
                         String s = it.next().toString();
                         b.append(s);
-                        int startFrom = b.length() - s.length() - delimiter.length();
+                        int startFrom = Math.max(0, b.length() - s.length() - delimiter.length());
                         int i = b.indexOf(delimiter, startFrom);
                         if (i != -1) {
                             next = b.substring(0, i);
                             b.delete(0, i + delimiter.length());
+                            return;
                         }
                     }
                     if (b.length() > 0) {
