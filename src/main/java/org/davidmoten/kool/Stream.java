@@ -186,7 +186,7 @@ public interface Stream<T> extends StreamIterable<T> {
     public default <R> Stream<R> map(Function<? super T, ? extends R> function) {
         return new Map<T, R>(function, this);
     }
-
+    
     public default Maybe<T> reduce(BiFunction<? super T, ? super T, ? extends T> reducer) {
         return new Reduce1<T>(reducer, this).iterator().next();
     }
@@ -244,8 +244,8 @@ public interface Stream<T> extends StreamIterable<T> {
         count();
     }
 
-    public default void println() {
-        forEach(System.out::println);
+    public default Stream<T> println() {
+        return doOnNext(System.out::println);
     }
 
     public default long count() {

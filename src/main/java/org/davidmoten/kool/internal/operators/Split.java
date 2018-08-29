@@ -24,17 +24,18 @@ public final class Split implements Stream<String> {
             StreamIterator<?> it = Preconditions.checkNotNull(source.iterator());
             StringBuilder b = new StringBuilder();
             String next;
+            int startFrom;
 
             @Override
             public boolean hasNext() {
                 loadNext();
-                return next != null; 
+                return next != null;
             }
 
             @Override
             public String next() {
                 loadNext();
-                if (next==null) {
+                if (next == null) {
                     throw new NoSuchElementException();
                 } else {
                     String t = next;
@@ -50,23 +51,30 @@ public final class Split implements Stream<String> {
 
             private void loadNext() {
                 if (b != null && next == null) {
-                    while (it.hasNext()) {
-                        String s = it.next().toString();
-                        b.append(s);
-                        int startFrom = Math.max(0, b.length() - s.length() - delimiter.length());
+                    if (startFrom <= b.length() - delimiter.length()) {
                         int i = b.indexOf(delimiter, startFrom);
                         if (i != -1) {
                             next = b.substring(0, i);
                             b.delete(0, i + delimiter.length());
+                            startFrom -= i + delimiter.length();
+                            return;
+                        }
+                    }
+                    while (it.hasNext()) {
+                        String s = it.next().toString();
+                        b.append(s);
+                        int i = b.indexOf(delimiter, startFrom);
+                        if (i != -1) {
+                            next = b.substring(0, i);
+                            b.delete(0, i + delimiter.length());
+                            startFrom -= i + delimiter.length();
                             return;
                         }
                     }
                     if (b.length() > 0) {
                         next = b.toString();
-                        b = null;
-                    } else {
-                        b = null;
-                    }
+                    } 
+                    b = null;
                 }
             }
         };

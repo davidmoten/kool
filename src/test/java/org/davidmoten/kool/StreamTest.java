@@ -5,6 +5,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
@@ -248,6 +249,22 @@ public class StreamTest {
     @Test
     public void testSplitWithTwoConsecutiveDelimiters() {
         Stream.of("a", "zz", "b").split("z").test().assertValuesOnly("a", "", "b");
+    }
+    
+    @Test
+    public void testSplitManyInOneItem() {
+        Stream.of("azbzc").split("z").test().assertValuesOnly("a", "b", "c");
+    }
+
+    @Test
+    public void testReadCsv() {
+        Stream.lines(new File("src/test/resources/test.txt")) //
+                .flatMap(line -> Stream.of(line, ",")) //
+                .split(",") //
+                .map(String::trim) //
+                .map(Integer::parseInt) //
+                .test() //
+                .assertValuesOnly(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12);
     }
 
 }
