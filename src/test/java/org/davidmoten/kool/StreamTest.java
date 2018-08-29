@@ -5,10 +5,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -183,6 +181,16 @@ public class StreamTest {
     public void testConcat() {
         assertEquals(Lists.newArrayList(1, 2, 3, 4), Stream.of(1, 2).concatWith(Stream.of(3, 4)).toList());
     }
+    
+    @Test
+    public void testConcatEmpties() {
+        assertTrue(Stream.empty().concatWith(Stream.empty()).isEmpty());
+    }
+    
+    @Test(expected=NoSuchElementException.class)
+    public void testConcatIteratorNextWhenNoneAvailable() {
+        Stream.empty().concatWith(Stream.empty()).iterator().next();
+    }
 
     @Test
     public void testDoOnComplete() {
@@ -200,10 +208,15 @@ public class StreamTest {
     }
 
     @Test
-
     public void testUsing() {
         assertEquals(Lists.newArrayList("hello", "there"),
-                Stream.using(() -> new BufferedReader(new StringReader("hello\nthere")), r -> Stream.from(r)).toList());
+                Stream.using(() -> new BufferedReader(new StringReader("hello\nthere")), //
+                        r -> Stream.lines(r)).toList());
+    }
+    
+    @Test
+    public void testJoin() {
+        assertEquals("helloAthere", Stream.of("hello", "there").join("A"));
     }
 
 }

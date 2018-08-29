@@ -2,7 +2,14 @@ package org.davidmoten.kool;
 
 import java.io.BufferedReader;
 import java.io.Closeable;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -102,8 +109,30 @@ public interface Stream<T> extends StreamIterable<T> {
         return create(iterable);
     }
 
-    public static Stream<String> from(BufferedReader reader) {
-        return new FromBufferedReader(reader);
+    public static Stream<String> lines(BufferedReader reader) {
+        return lines(() -> reader);
+    }
+
+    public static Stream<String> lines(Supplier<BufferedReader> readerFactory) {
+        return new FromBufferedReader(readerFactory);
+    }
+
+    public static Stream<String> lines(Supplier<InputStream> inFactory, Charset charset) {
+        return lines(() -> new BufferedReader(new InputStreamReader(inFactory.get(), charset)));
+    }
+
+    public static Stream<String> lines(File file, Charset charset) {
+        return Stream.using(() -> {
+            try {
+                return new FileInputStream(file);
+            } catch (FileNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+        }, in -> lines(() -> in, charset));
+    }
+
+    public static Stream<String> lines(File file) {
+        return lines(file, StandardCharsets.UTF_8);
     }
 
     public static Stream<Long> range(long start, long length) {
@@ -302,13 +331,24 @@ public interface Stream<T> extends StreamIterable<T> {
         return toList().stream();
     }
 
-    public default <K, V> java.util.Map<K,V> toMap(Function<? super T, ? extends K> keyFunction, Function<? super T, ? extends V> valueFunction) {
-        return collect(() -> new HashMap<K,V>(), (m, item) -> m.put(keyFunction.apply(item), valueFunction.apply(item)));
+    public default <K, V> java.util.Map<K, V> toMap(Function<? super T, ? extends K> keyFunction,
+            Function<? super T, ? extends V> valueFunction) {
+        return collect(() -> new HashMap<K, V>(),
+                (m, item) -> m.put(keyFunction.apply(item), valueFunction.apply(item)));
+    }
+
+    public default String join(String delimiter) {
+        return collect(() -> new StringBuilder(), (b, x) -> {
+            if (b.length() > 0) {
+                b.append(delimiter);
+            }
+            b.append(x);
+        }).toString();
     }
 
     // TODO
     // takeUntil, takeWhile, buffer, bufferWhile, bufferUntil, toStreamJava ,
     // mapWithIndex, skip, skipUntil, skipWhile, sorted, repeat, retry, cache,
-    // groupBy, doOnEmpty, switchIfEmpty, interleave
+    // groupBy?, doOnEmpty, switchIfEmpty, interleave, join, split
 
 }

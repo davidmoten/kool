@@ -3,16 +3,17 @@ package org.davidmoten.kool.internal.operators;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.NoSuchElementException;
+import java.util.function.Supplier;
 
 import org.davidmoten.kool.Stream;
 import org.davidmoten.kool.StreamIterator;
 
 public final class FromBufferedReader implements Stream<String> {
 
-    private final BufferedReader reader;
+    private final Supplier<BufferedReader> readerFactory;
 
-    public FromBufferedReader(BufferedReader reader) {
-        this.reader = reader;
+    public FromBufferedReader(Supplier<BufferedReader> readerFactory) {
+        this.readerFactory = readerFactory;
     }
 
     @Override
@@ -20,6 +21,7 @@ public final class FromBufferedReader implements Stream<String> {
         return new StreamIterator<String>() {
             
             String line;
+            BufferedReader reader = readerFactory.get();
 
             @Override
             public boolean hasNext() {
