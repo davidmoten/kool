@@ -28,15 +28,15 @@ public class StreamTest {
 
     @Test
     public void testPrepend() {
-        assertEquals(Lists.newArrayList(0, 1, 2, 3), Stream.of(1, 2, 3).prepend(0).toList());
+        Stream.of(1, 2, 3).prepend(0).test().assertValuesOnly(0, 1, 2, 3);
     }
 
     @Test
     public void testPrependMany() {
-        assertEquals(Lists.newArrayList(0, 1, 2, 3), //
-                Stream.of(2, 3) //
-                        .prepend(new Integer[] { 0, 1 }) //
-                        .toList());
+        Stream.of(2, 3) //
+                .prepend(new Integer[] { 0, 1 }) //
+                .test() //
+                .assertValuesOnly(0, 1, 2, 3);
     }
 
     @Test
@@ -51,21 +51,23 @@ public class StreamTest {
 
     @Test
     public void testFlatMapEmptyThenSomething() {
-        assertEquals(Lists.newArrayList(4, 5), Stream.of(1, 2, 3) //
+        Stream.of(1, 2, 3) //
                 .flatMap(x -> {
                     if (x < 3)
                         return Stream.<Integer>empty();
                     else
                         return Stream.of(4, 5);
                 }) //
-                .toList());
+                .test() //
+                .assertValuesOnly(4, 5);
     }
 
     @Test
     public void testFlatMapToSomething() {
-        assertEquals(Lists.newArrayList(10, 11, 20, 21, 30, 31), Stream.of(1, 2, 3) //
+        Stream.of(1, 2, 3) //
                 .flatMap(x -> Stream.of(x * 10, x * 10 + 1)) //
-                .toList());
+                .test() //
+                .assertValuesOnly(10, 11, 20, 21, 30, 31);
     }
 
     @Test
@@ -102,12 +104,12 @@ public class StreamTest {
 
     @Test
     public void testTakeElements() {
-        assertEquals(Lists.newArrayList(1, 2), Stream.of(1, 2, 3).take(2).toList());
+        Stream.of(1, 2, 3).take(2).test().assertValuesOnly(1, 2);
     }
 
     @Test
     public void testTakeMoreThanAvailable() {
-        assertEquals(Lists.newArrayList(1, 2, 3), Stream.of(1, 2, 3).take(100).toList());
+        Stream.of(1, 2, 3).take(100).test().assertValuesOnly(1, 2, 3);
     }
 
     @Test
@@ -127,22 +129,22 @@ public class StreamTest {
 
     @Test
     public void testRange() {
-        assertEquals(Lists.newArrayList(1L, 2L, 3L), Stream.range(1, 3).toList());
+        Stream.range(1, 3).test().assertValuesOnly(1L, 2L, 3L);
     }
 
     @Test
     public void testOrdinals() {
-        assertEquals(Lists.newArrayList(1L, 2L, 3L), Stream.ordinals().take(3).toList());
+        Stream.ordinals().take(3).test().assertValuesOnly(1L, 2L, 3L);
     }
 
     @Test
     public void testDefer() {
-        assertEquals(Lists.newArrayList(1, 2, 3), Stream.defer(() -> Stream.of(1, 2, 3)).toList());
+        Stream.defer(() -> Stream.of(1, 2, 3)).test().assertValuesOnly(1, 2, 3);
     }
 
     @Test
     public void testTransform() {
-        assertEquals(Lists.newArrayList(4, 5), Stream.of(1, 2).transform(s -> s.map(x -> x + 3)).toList());
+        Stream.of(1, 2).transform(s -> s.map(x -> x + 3)).test().assertValuesOnly(4, 5);
     }
 
     @Test
@@ -167,27 +169,27 @@ public class StreamTest {
 
     @Test
     public void testSwitchOnErrorNoError() {
-        assertEquals(Lists.newArrayList(1, 2, 3), Stream.of(1, 2, 3) //
-                .switchOnError(e -> Stream.of(4)).toList());
+        Stream.of(1, 2, 3) //
+                .switchOnError(e -> Stream.of(4)).test().assertValuesOnly(1, 2, 3);
     }
 
     @Test
     public void testSwitchOnErrorWhenError() {
-        assertEquals(Lists.newArrayList(4), Stream.error(new RuntimeException()) //
-                .switchOnError(e -> Stream.of(4)).toList());
+        Stream.error(new RuntimeException()) //
+                .switchOnError(e -> Stream.of(4)).test().assertValuesOnly(4);
     }
 
     @Test
     public void testConcat() {
-        assertEquals(Lists.newArrayList(1, 2, 3, 4), Stream.of(1, 2).concatWith(Stream.of(3, 4)).toList());
+        Stream.of(1, 2).concatWith(Stream.of(3, 4)).test().assertValuesOnly(1, 2, 3, 4);
     }
-    
+
     @Test
     public void testConcatEmpties() {
         assertTrue(Stream.empty().concatWith(Stream.empty()).isEmpty());
     }
-    
-    @Test(expected=NoSuchElementException.class)
+
+    @Test(expected = NoSuchElementException.class)
     public void testConcatIteratorNextWhenNoneAvailable() {
         Stream.empty().concatWith(Stream.empty()).iterator().next();
     }
@@ -204,19 +206,27 @@ public class StreamTest {
 
     @Test
     public void testZip() {
-        assertEquals(Lists.newArrayList(3, 8), Stream.of(1, 2).zipWith(Stream.of(3, 4), (x, y) -> x * y).toList());
+        Stream.of(1, 2) //
+                .zipWith(Stream.of(3, 4), (x, y) -> x * y) //
+                .test() //
+                .assertValuesOnly(3, 8);
     }
 
     @Test
     public void testUsing() {
-        assertEquals(Lists.newArrayList("hello", "there"),
-                Stream.using(() -> new BufferedReader(new StringReader("hello\nthere")), //
-                        r -> Stream.lines(r)).toList());
+        Stream.using(() -> new BufferedReader(new StringReader("hello\nthere")), //
+                r -> Stream.lines(r)) //
+                .test() //
+                .assertValues("hello", "there");
     }
-    
+
     @Test
     public void testJoin() {
         assertEquals("helloAthere", Stream.of("hello", "there").join("A"));
     }
-    
+
+    @Test
+    public void testSplit() {
+    }
+
 }
