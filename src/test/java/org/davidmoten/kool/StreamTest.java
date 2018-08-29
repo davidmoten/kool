@@ -286,4 +286,9 @@ public class StreamTest {
                 .assertValuesOnly(Lists.newArrayList(1, 2), Lists.newArrayList(3, 4));
     }
 
+    @Test
+    public void testBufferEmpty() {
+        Stream.empty().buffer(2).test().assertNoValuesOnly();
+    }
+
 }
