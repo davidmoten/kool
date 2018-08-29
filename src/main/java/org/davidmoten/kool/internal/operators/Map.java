@@ -6,6 +6,8 @@ import org.davidmoten.kool.Stream;
 import org.davidmoten.kool.StreamIterable;
 import org.davidmoten.kool.StreamIterator;
 
+import com.github.davidmoten.guavamini.Preconditions;
+
 public final class Map<T, R> implements Stream<R> {
 
     private final Function<? super T, ? extends R> function;
@@ -21,7 +23,7 @@ public final class Map<T, R> implements Stream<R> {
     public StreamIterator<R> iterator() {
         return new StreamIterator<R>() {
 
-            final StreamIterator<T> it = source.iterator();
+            final StreamIterator<T> it = Preconditions.checkNotNull(source.iterator());
 
             @Override
             public boolean hasNext() {

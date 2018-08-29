@@ -7,6 +7,8 @@ import org.davidmoten.kool.Stream;
 import org.davidmoten.kool.StreamIterable;
 import org.davidmoten.kool.StreamIterator;
 
+import com.github.davidmoten.guavamini.Preconditions;
+
 public final class Filter<T> implements Stream<T> {
 
     private final Predicate<? super T> predicate;
@@ -21,7 +23,7 @@ public final class Filter<T> implements Stream<T> {
     public StreamIterator<T> iterator() {
         return new StreamIterator<T>() {
 
-            StreamIterator<? extends T> it = source.iterator();
+            StreamIterator<? extends T> it = Preconditions.checkNotNull(source.iterator());
             T nextValue = null;
 
             @Override

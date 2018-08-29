@@ -5,6 +5,8 @@ import java.util.function.Consumer;
 import org.davidmoten.kool.Stream;
 import org.davidmoten.kool.StreamIterator;
 
+import com.github.davidmoten.guavamini.Preconditions;
+
 public final class DoOnError<T> implements Stream<T> {
 
     private Consumer<? super Throwable> consumer;
@@ -43,7 +45,7 @@ public final class DoOnError<T> implements Stream<T> {
 
             private StreamIterator<T> getIterator() {
                 try {
-                    return source.iterator();
+                    return Preconditions.checkNotNull(source.iterator());
                 } catch (RuntimeException | Error t) {
                     consumer.accept(t);
                     throw t;

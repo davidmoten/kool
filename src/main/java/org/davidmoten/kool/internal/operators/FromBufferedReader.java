@@ -8,6 +8,8 @@ import java.util.function.Supplier;
 import org.davidmoten.kool.Stream;
 import org.davidmoten.kool.StreamIterator;
 
+import com.github.davidmoten.guavamini.Preconditions;
+
 public final class FromBufferedReader implements Stream<String> {
 
     private final Supplier<BufferedReader> readerFactory;
@@ -21,7 +23,7 @@ public final class FromBufferedReader implements Stream<String> {
         return new StreamIterator<String>() {
             
             String line;
-            BufferedReader reader = readerFactory.get();
+            BufferedReader reader = Preconditions.checkNotNull(readerFactory.get());
 
             @Override
             public boolean hasNext() {

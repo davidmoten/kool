@@ -3,6 +3,8 @@ package org.davidmoten.kool.internal.operators;
 import org.davidmoten.kool.Stream;
 import org.davidmoten.kool.StreamIterator;
 
+import com.github.davidmoten.guavamini.Preconditions;
+
 public class DoOnComplete<T> implements Stream<T> {
 
     private final Runnable action;
@@ -17,7 +19,7 @@ public class DoOnComplete<T> implements Stream<T> {
     public StreamIterator<T> iterator() {
         return new StreamIterator<T>() {
 
-            final StreamIterator<T> it = source.iterator();
+            final StreamIterator<T> it = Preconditions.checkNotNull(source.iterator());
             boolean completed = false;
 
             @Override

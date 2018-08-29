@@ -8,6 +8,8 @@ import org.davidmoten.kool.Stream;
 import org.davidmoten.kool.StreamIterable;
 import org.davidmoten.kool.StreamIterator;
 
+import com.github.davidmoten.guavamini.Preconditions;
+
 public final class Reduce1<T> implements Stream<Maybe<T>> {
 
     private final BiFunction<? super T, ? super T, ? extends T> reducer;
@@ -22,7 +24,7 @@ public final class Reduce1<T> implements Stream<Maybe<T>> {
     public StreamIterator<Maybe<T>> iterator() {
         return new StreamIterator<Maybe<T>>() {
 
-            final StreamIterator<T> it = source.iterator();
+            final StreamIterator<T> it = Preconditions.checkNotNull(source.iterator());
             T value = null;
             boolean finished;
 

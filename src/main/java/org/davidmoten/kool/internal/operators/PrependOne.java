@@ -4,6 +4,8 @@ import org.davidmoten.kool.Stream;
 import org.davidmoten.kool.StreamIterable;
 import org.davidmoten.kool.StreamIterator;
 
+import com.github.davidmoten.guavamini.Preconditions;
+
 public final class PrependOne<T> implements Stream<T> {
 
     private final T value;
@@ -17,7 +19,7 @@ public final class PrependOne<T> implements Stream<T> {
     @Override
     public StreamIterator<T> iterator() {
         return new StreamIterator<T>() {
-            final StreamIterator<T> it = source.iterator();
+            final StreamIterator<T> it = Preconditions.checkNotNull(source.iterator());
             T value = PrependOne.this.value;
 
             @Override

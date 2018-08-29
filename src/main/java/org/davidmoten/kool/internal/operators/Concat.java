@@ -56,7 +56,7 @@ public final class Concat<T> implements Stream<T> {
 
             private Iterator<? extends T> b() {
                 if (b == null) {
-                    b = source2.iterator();
+                    b = Preconditions.checkNotNull(source2.iterator());
                 }
                 return b;
             }

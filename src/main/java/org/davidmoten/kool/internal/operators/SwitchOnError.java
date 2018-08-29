@@ -6,13 +6,14 @@ import org.davidmoten.kool.Stream;
 import org.davidmoten.kool.StreamIterable;
 import org.davidmoten.kool.StreamIterator;
 
+import com.github.davidmoten.guavamini.Preconditions;
+
 public final class SwitchOnError<T> implements Stream<T> {
 
     private final Function<? super Throwable, ? extends StreamIterable<? extends T>> function;
     private final Stream<T> source;
 
-    public SwitchOnError(
-            Function<? super Throwable, ? extends StreamIterable<? extends T>> function,
+    public SwitchOnError(Function<? super Throwable, ? extends StreamIterable<? extends T>> function,
             Stream<T> source) {
         this.function = function;
         this.source = source;
@@ -28,10 +29,10 @@ public final class SwitchOnError<T> implements Stream<T> {
             @SuppressWarnings("unchecked")
             private StreamIterator<T> getIterator() {
                 try {
-                    return source.iterator();
+                    return Preconditions.checkNotNull(source.iterator());
                 } catch (RuntimeException | Error e) {
                     switched = true;
-                    return ((Stream<T>) function.apply(e)).iterator();
+                    return Preconditions.checkNotNull(((Stream<T>) function.apply(e)).iterator());
                 }
             }
 
@@ -46,7 +47,7 @@ public final class SwitchOnError<T> implements Stream<T> {
                     } catch (RuntimeException | Error e) {
                         switched = true;
                         it.cancel();
-                        it = (StreamIterator<T>) function.apply(e);
+                        it = Preconditions.checkNotNull((StreamIterator<T>) function.apply(e));
                         return it.hasNext();
                     }
                 }
