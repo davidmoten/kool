@@ -31,33 +31,22 @@ public final class Util {
 
     private Util() { }
 
-    static Path findPath(String resourceName) {
-        try {
-            String uri = new File(Util.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getAbsolutePath();
-            int i = uri.indexOf("akarnokd-misc");
-            return Paths.get(uri.substring(0, i + 13), "files", resourceName);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return Paths.get("files", resourceName);
-        }
-    }
-    
     public static Set<String> readScrabbleWords() {
         Set<String> scrabbleWords = new HashSet<>() ;
-        try (java.util.stream.Stream<String> scrabbleWordsStream = Files.lines(findPath("ospd.txt"))) {
+        try (java.util.stream.Stream<String> scrabbleWordsStream = Files.lines(new File("src/test/resources/ospd.txt").toPath())) {
             scrabbleWords.addAll(scrabbleWordsStream.map(String::toLowerCase).collect(Collectors.toSet()));
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
         return scrabbleWords;
     }
 
     public static Set<String> readShakespeareWords() {
         Set<String> shakespeareWords = new HashSet<>() ;
-        try (java.util.stream.Stream<String> shakespeareWordsStream = Files.lines(findPath("words.shakespeare.txt"))) {
+        try (java.util.stream.Stream<String> shakespeareWordsStream = Files.lines(new File("src/test/resources/words.shakespeare.txt").toPath())) {
             shakespeareWords.addAll(shakespeareWordsStream.map(String::toLowerCase).collect(Collectors.toSet()));
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
 
         return shakespeareWords ;

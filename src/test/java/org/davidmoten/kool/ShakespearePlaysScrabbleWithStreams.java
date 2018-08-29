@@ -134,7 +134,7 @@ public abstract class ShakespearePlaysScrabbleWithStreams extends ShakespearePla
                + (word.length() == 7 ? 50 : 0);
 
         Function<Function<String, Integer>, Map<Integer, List<String>>> buildHistoOnScore =
-                score -> buildShakerspeareWordsStream()
+                score -> buildShakespeareWordsStream()
                                 .filter(scrabbleWords::contains)
                                 // .filter(canWrite)    // filter out the words that needs blanks
                                 .filter(checkBlanks) // filter out the words that needs more than 2 blanks
@@ -159,5 +159,5 @@ public abstract class ShakespearePlaysScrabbleWithStreams extends ShakespearePla
         return finalList ;
     }
 
-    abstract Stream<String> buildShakerspeareWordsStream() ;
+    abstract Stream<String> buildShakespeareWordsStream() ;
 }

@@ -381,5 +381,6 @@ public interface Stream<T> extends StreamIterable<T> {
     // takeUntil, takeWhile, bufferWhile, bufferUntil, toStreamJava ,
     // mapWithIndex, skip, skipUntil, skipWhile, sorted, repeat, retry, cache,
     // groupBy?, doOnEmpty, switchIfEmpty, interleaveWith, join, split
+    // Maybe should implement Stream?
 
 }
