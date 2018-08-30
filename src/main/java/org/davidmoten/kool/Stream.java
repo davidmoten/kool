@@ -27,6 +27,7 @@ import org.davidmoten.kool.internal.operators.Buffer;
 import org.davidmoten.kool.internal.operators.Concat;
 import org.davidmoten.kool.internal.operators.Defer;
 import org.davidmoten.kool.internal.operators.DoOnComplete;
+import org.davidmoten.kool.internal.operators.DoOnDispose;
 import org.davidmoten.kool.internal.operators.DoOnError;
 import org.davidmoten.kool.internal.operators.DoOnNext;
 import org.davidmoten.kool.internal.operators.Filter;
@@ -308,6 +309,18 @@ public interface Stream<T> extends StreamIterable<T> {
     public default Stream<T> doOnComplete(Runnable action) {
         return new DoOnComplete<T>(action, this);
     }
+    
+    public default Stream<T> doOnDispose(Runnable action) {
+        return doBeforeDispose(action);
+    }
+
+    public default Stream<T> doBeforeDispose(Runnable action) {
+        return new DoOnDispose<T>(action, this, true);
+    }
+
+    public default Stream<T> doAfterDispose(Runnable action) {
+        return new DoOnDispose<T>(action, this, false);
+    }
 
     public default Maybe<T> last() {
         return Iterables.first(new Last<T>(this).iterator());
@@ -368,11 +381,11 @@ public interface Stream<T> extends StreamIterable<T> {
     public default Tester<T> test() {
         return new Tester<T>(this);
     }
-    
+
     public default Stream<List<T>> buffer(int size) {
         return new Buffer<T>(size, this);
     }
-    
+
     public default Stream<T> skip(int size) {
         return new Skip<T>(size, this);
     }

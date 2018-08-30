@@ -160,7 +160,6 @@ public class ShakespearePlaysScrabbleWithKool extends ShakespearePlaysScrabble {
                 .flatMap(map -> Stream.from(map.entrySet())).take(3)
                 .toList();
 
-        System.out.println(finalList2);
         return finalList2;
     }
 

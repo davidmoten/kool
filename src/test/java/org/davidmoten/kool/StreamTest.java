@@ -10,6 +10,7 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -295,10 +296,17 @@ public class StreamTest {
     public void testSkip() {
         Stream.of(1, 2, 3, 4).skip(2).test().assertValuesOnly(3, 4);
     }
-    
+
     @Test
     public void testSkipMoreThanAvailable() {
         Stream.of(1, 2, 3, 4).skip(5).test().assertNoValuesOnly();
+    }
+
+    @Test
+    public void testTakeDisposes() {
+        AtomicBoolean disposed = new AtomicBoolean();
+        Stream.of(1, 2, 3).take(2).doOnDispose(() -> disposed.set(true)).forEach();
+        assertTrue(disposed.get());
     }
 
 }
