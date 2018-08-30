@@ -14,7 +14,8 @@ public final class FlatMap<T, R> implements Stream<R> {
     private final Function<? super T, ? extends Stream<? extends R>> function;
     private final StreamIterable<T> source;
 
-    public FlatMap(Function<? super T, ? extends Stream<? extends R>> function, StreamIterable<T> source) {
+    public FlatMap(Function<? super T, ? extends Stream<? extends R>> function,
+            StreamIterable<T> source) {
         this.function = function;
         this.source = source;
     }
@@ -53,24 +54,16 @@ public final class FlatMap<T, R> implements Stream<R> {
                     if (b == null) {
                         if (a.hasNext()) {
                             b = Preconditions.checkNotNull(function.apply(a.next()).iterator());
-                            if (b.hasNext()) {
-                                r = b.next();
-                                return;
-                            } else {
-                                b.dispose();
-                                b = null;
-                            }
                         } else {
                             return;
                         }
+                    }
+                    if (b.hasNext()) {
+                        r = b.next();
+                        return;
                     } else {
-                        if (b.hasNext()) {
-                            r = b.next();
-                            return;
-                        } else {
-                            b.dispose();
-                            b = null;
-                        }
+                        b.dispose();
+                        b = null;
                     }
                 }
             }
