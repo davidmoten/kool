@@ -61,8 +61,8 @@ public final class Filter<T> implements Stream<T> {
             }
 
             @Override
-            public void cancel() {
-                it.cancel();
+            public void dispose() {
+                it.dispose();
             }
 
         };

@@ -45,8 +45,8 @@ public final class Split implements Stream<String> {
             }
 
             @Override
-            public void cancel() {
-                it.cancel();
+            public void dispose() {
+                it.dispose();
             }
 
             private void loadNext() {

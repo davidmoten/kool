@@ -39,8 +39,8 @@ public class Using<R, T> implements Stream<T> {
             }
 
             @Override
-            public void cancel() {
-                it.cancel();
+            public void dispose() {
+                it.dispose();
                 closer.accept(resource);
             }
         };

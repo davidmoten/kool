@@ -45,8 +45,8 @@ public final class Buffer<T> implements Stream<List<T>> {
             }
 
             @Override
-            public void cancel() {
-                it.cancel();
+            public void dispose() {
+                it.dispose();
             }
 
             private void loadNext() {

@@ -35,8 +35,8 @@ public final class Skip<T> implements Stream<T> {
             }
 
             @Override
-            public void cancel() {
-                it.cancel();
+            public void dispose() {
+                it.dispose();
             }
 
             private void skip() {

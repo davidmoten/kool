@@ -74,8 +74,8 @@ public final class Reduce1<T> implements Stream<Maybe<T>> {
             }
 
             @Override
-            public void cancel() {
-                it.cancel();
+            public void dispose() {
+                it.dispose();
             }
 
         };

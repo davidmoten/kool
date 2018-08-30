@@ -36,7 +36,7 @@ public class Range implements Stream<Long> {
             }
 
             @Override
-            public void cancel() {
+            public void dispose() {
                 // do nothing
             }
 

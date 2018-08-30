@@ -87,7 +87,7 @@ public final class Iterables {
         while (it.hasNext()) {
             collection.add(it.next());
         }
-        it.cancel();
+        it.dispose();
         return collection;
     }
 

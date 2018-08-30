@@ -182,7 +182,7 @@ public interface Stream<T> extends StreamIterable<T> {
     public default boolean isEmpty() {
         StreamIterator<T> it = iterator();
         boolean r = !it.hasNext();
-        it.cancel();
+        it.dispose();
         return r;
     }
 
@@ -213,7 +213,7 @@ public interface Stream<T> extends StreamIterable<T> {
         while (it.hasNext()) {
             collector.accept(c, it.next());
         }
-        it.cancel();
+        it.dispose();
         return c;
     }
 
@@ -260,7 +260,7 @@ public interface Stream<T> extends StreamIterable<T> {
             it.next();
             i++;
         }
-        it.cancel();
+        it.dispose();
         return i;
     }
 

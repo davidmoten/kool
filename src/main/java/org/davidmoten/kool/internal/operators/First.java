@@ -33,10 +33,10 @@ public final class First<T> implements Stream<T> {
             public T next() {
                 loadNext();
                 if (value == null || it == null) {
-                    cancel();
+                    dispose();
                     throw new NoSuchElementException();
                 } else {
-                    cancel();
+                    dispose();
                     it = null;
                     return value;
                 }
@@ -49,9 +49,9 @@ public final class First<T> implements Stream<T> {
             }
 
             @Override
-            public void cancel() {
+            public void dispose() {
                 if (it != null) {
-                    it.cancel();
+                    it.dispose();
                 }
             }
 

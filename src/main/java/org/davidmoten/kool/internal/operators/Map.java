@@ -36,8 +36,8 @@ public final class Map<T, R> implements Stream<R> {
             }
 
             @Override
-            public void cancel() {
-                it.cancel();
+            public void dispose() {
+                it.dispose();
             }
 
         };

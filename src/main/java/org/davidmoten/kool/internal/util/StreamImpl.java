@@ -30,7 +30,7 @@ public final class StreamImpl<T> implements Stream<T> {
             }
 
             @Override
-            public void cancel() {
+            public void dispose() {
                 // do nothing
             }
 

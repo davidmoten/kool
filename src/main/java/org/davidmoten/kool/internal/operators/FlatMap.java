@@ -57,7 +57,7 @@ public final class FlatMap<T, R> implements Stream<R> {
                                 r = b.next();
                                 return;
                             } else {
-                                b.cancel();
+                                b.dispose();
                                 b = null;
                             }
                         } else {
@@ -68,7 +68,7 @@ public final class FlatMap<T, R> implements Stream<R> {
                             r = b.next();
                             return;
                         } else {
-                            b.cancel();
+                            b.dispose();
                             b = null;
                         }
                     }
@@ -76,12 +76,12 @@ public final class FlatMap<T, R> implements Stream<R> {
             }
 
             @Override
-            public void cancel() {
+            public void dispose() {
                 if (a != null) {
-                    a.cancel();
+                    a.dispose();
                 }
                 if (b != null) {
-                    b.cancel();
+                    b.dispose();
                 }
             }
 

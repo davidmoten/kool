@@ -46,7 +46,7 @@ public final class SwitchOnError<T> implements Stream<T> {
                         return it.hasNext();
                     } catch (RuntimeException | Error e) {
                         switched = true;
-                        it.cancel();
+                        it.dispose();
                         it = Preconditions.checkNotNull((StreamIterator<T>) function.apply(e));
                         return it.hasNext();
                     }
@@ -63,7 +63,7 @@ public final class SwitchOnError<T> implements Stream<T> {
                         return it.next();
                     } catch (RuntimeException | Error e) {
                         switched = true;
-                        it.cancel();
+                        it.dispose();
                         it = (StreamIterator<T>) function.apply(e);
                         return it.next();
                     }
@@ -71,8 +71,8 @@ public final class SwitchOnError<T> implements Stream<T> {
             }
 
             @Override
-            public void cancel() {
-                it.cancel();
+            public void dispose() {
+                it.dispose();
             }
 
         };

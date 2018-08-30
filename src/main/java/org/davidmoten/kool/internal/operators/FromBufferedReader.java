@@ -50,7 +50,7 @@ public final class FromBufferedReader implements Stream<String> {
             }
 
             @Override
-            public void cancel() {
+            public void dispose() {
                 // do nothing because did not create BufferedReader
                 // That is what Using operator is for
             }

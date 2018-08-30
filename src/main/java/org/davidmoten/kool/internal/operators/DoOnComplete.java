@@ -28,7 +28,7 @@ public class DoOnComplete<T> implements Stream<T> {
                 if (!r && !completed) {
                     completed = true;
                     action.run();
-                    it.cancel();
+                    it.dispose();
                 }
                 return r;
             }
@@ -39,8 +39,8 @@ public class DoOnComplete<T> implements Stream<T> {
             }
 
             @Override
-            public void cancel() {
-                it.cancel();
+            public void dispose() {
+                it.dispose();
             }
 
         };

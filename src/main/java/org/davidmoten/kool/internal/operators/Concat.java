@@ -33,7 +33,7 @@ public final class Concat<T> implements Stream<T> {
                         return true;
                     } else {
                         // release a for gc
-                        a.cancel();
+                        a.dispose();
                         a = null;
                         return b().hasNext();
                     }
@@ -49,7 +49,7 @@ public final class Concat<T> implements Stream<T> {
                 } else if (b().hasNext()) {
                     return b().next();
                 } else {
-                    cancel();
+                    dispose();
                     throw new NoSuchElementException();
                 }
             }
@@ -62,12 +62,12 @@ public final class Concat<T> implements Stream<T> {
             }
 
             @Override
-            public void cancel() {
+            public void dispose() {
                 if (a != null) {
-                    a.cancel();
+                    a.dispose();
                 }
                 if (b != null) {
-                    b.cancel();
+                    b.dispose();
                 }
             }
 

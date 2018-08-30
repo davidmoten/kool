@@ -33,7 +33,7 @@ public final class Take<T> implements Stream<T> {
             @Override
             public T next() {
                 if (count == n || !it.hasNext()) {
-                    it.cancel();
+                    it.dispose();
                     throw new NoSuchElementException();
                 } else {
                     count++;
@@ -42,8 +42,8 @@ public final class Take<T> implements Stream<T> {
             }
 
             @Override
-            public void cancel() {
-                it.cancel();
+            public void dispose() {
+                it.dispose();
             }
 
         };

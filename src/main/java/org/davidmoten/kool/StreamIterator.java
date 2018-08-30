@@ -7,5 +7,5 @@ public interface StreamIterator<T> extends Iterator<T> {
     /**
      * Idempotent method for cancellation.
      */
-    void cancel();
+    void dispose();
 }

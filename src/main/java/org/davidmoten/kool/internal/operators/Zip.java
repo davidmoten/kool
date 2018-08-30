@@ -31,8 +31,8 @@ public class Zip<R, S, T> implements Stream<S> {
                 if (hasA && hasB || !hasA && !hasB) {
                     return hasA;
                 } else {
-                    a.cancel();
-                    b.cancel();
+                    a.dispose();
+                    b.dispose();
                     throw new RuntimeException("streams must have same length to be zipped");
                 }
             }
@@ -43,9 +43,9 @@ public class Zip<R, S, T> implements Stream<S> {
             }
 
             @Override
-            public void cancel() {
-                a.cancel();
-                b.cancel();
+            public void dispose() {
+                a.dispose();
+                b.dispose();
             }
 
         };

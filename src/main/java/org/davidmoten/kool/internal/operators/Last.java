@@ -33,10 +33,10 @@ public class Last<T> implements Stream<T> {
             public T next() {
                 moveToLast();
                 if (t == null) {
-                    it.cancel();
+                    it.dispose();
                     throw new NoSuchElementException();
                 } else {
-                    it.cancel();
+                    it.dispose();
                     it = null;
                     return t;
                 }
@@ -51,9 +51,9 @@ public class Last<T> implements Stream<T> {
             }
 
             @Override
-            public void cancel() {
+            public void dispose() {
                 if (it != null) {
-                    it.cancel();
+                    it.dispose();
                 }
             }
         };
