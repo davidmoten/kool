@@ -154,7 +154,7 @@ public abstract class ShakespearePlaysScrabbleWithStreams extends ShakespearePla
                     .limit(3)
                     .collect(Collectors.toList()) ;
 
-//        System.out.println(finalList) ;
+        System.out.println(finalList) ;
 
         return finalList ;
     }
