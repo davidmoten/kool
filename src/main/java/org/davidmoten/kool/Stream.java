@@ -41,6 +41,8 @@ import org.davidmoten.kool.internal.operators.PrependOne;
 import org.davidmoten.kool.internal.operators.Range;
 import org.davidmoten.kool.internal.operators.ReduceNoInitialValue;
 import org.davidmoten.kool.internal.operators.ReduceWithInitialValueSupplier;
+import org.davidmoten.kool.internal.operators.Repeat;
+import org.davidmoten.kool.internal.operators.RepeatElement;
 import org.davidmoten.kool.internal.operators.Skip;
 import org.davidmoten.kool.internal.operators.Sorted;
 import org.davidmoten.kool.internal.operators.Split;
@@ -182,6 +184,14 @@ public interface Stream<T> extends StreamIterable<T> {
         }
 
     };
+
+    public static <T> Stream<T> repeatElement(T t) {
+        return repeatElement(t, Long.MAX_VALUE);
+    }
+
+    public static <T> Stream<T> repeatElement(T t, long count) {
+        return new RepeatElement<T>(t, count);
+    }
 
     public default boolean isEmpty() {
         StreamIterator<T> it = iterator();
@@ -400,10 +410,18 @@ public interface Stream<T> extends StreamIterable<T> {
     public default Stream<T> skip(int size) {
         return new Skip<T>(size, this);
     }
+    
+    public default Stream<T> repeat(long count) {
+        return new Repeat<T>(count, this);
+    }
+    
+    public default Stream<T> repeat() {
+        return repeat(Long.MAX_VALUE);
+    }
 
     // TODO
     // takeUntil, takeWhile, bufferWhile, bufferUntil, toStreamJava ,
-    // mapWithIndex, skip, skipUntil, skipWhile, sorted, repeat, retry, cache,
+    // mapWithIndex, skip, skipUntil, skipWhile, repeat, retry, cache,
     // groupBy?, doOnEmpty, switchIfEmpty, interleaveWith, join, split
     // Maybe should implement Stream?
 

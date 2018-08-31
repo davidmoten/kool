@@ -374,4 +374,9 @@ public class StreamTest {
                 .forEach();
     }
 
+    @Test
+    public void testRepeat() {
+        Stream.of(1, 2).repeat(2).test().assertValuesOnly(1, 2, 1, 2);
+    }
+
 }
