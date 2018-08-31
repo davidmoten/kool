@@ -189,9 +189,14 @@ public interface Stream<T> extends StreamIterable<T> {
         it.dispose();
         return r;
     }
-    
+
     public default Stream<T> sorted(Comparator<? super T> comparator) {
         return new Sorted<T>(comparator, this);
+    }
+
+    @SuppressWarnings("unchecked")
+    public default Stream<T> sorted() {
+        return (Stream<T>) ((Stream<Comparable<Object>>) this).sorted(Comparator.naturalOrder());
     }
 
     public default <R> Stream<R> map(Function<? super T, ? extends R> function) {
@@ -209,7 +214,8 @@ public interface Stream<T> extends StreamIterable<T> {
 
     public default <R> R reduce(Supplier<R> initialValueFactory,
             BiFunction<? super R, ? super T, ? extends R> reducer) {
-        return new ReduceWithInitialValueSupplier<R, T>(initialValueFactory, reducer, this).iterator().next();
+        return new ReduceWithInitialValueSupplier<R, T>(initialValueFactory, reducer, this)
+                .iterator().next();
     }
 
     public default <R> R collect(Supplier<? extends R> factory,
@@ -314,7 +320,7 @@ public interface Stream<T> extends StreamIterable<T> {
     public default Stream<T> doOnComplete(Runnable action) {
         return new DoOnComplete<T>(action, this);
     }
-    
+
     public default Stream<T> doOnDispose(Runnable action) {
         return doBeforeDispose(action);
     }

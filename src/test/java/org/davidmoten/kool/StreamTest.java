@@ -8,6 +8,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -29,28 +30,28 @@ public class StreamTest {
                 .filter(x -> x > 2) //
                 .count());
     }
-    
+
     @Test
     public void testForEachDispose() {
-        checkTrue(b -> Stream.of(1,2).doOnDispose(() -> b.set(true)).forEach());
+        checkTrue(b -> Stream.of(1, 2).doOnDispose(() -> b.set(true)).forEach());
     }
-    
+
     @Test
     public void testCountDispose() {
-        checkTrue(b -> Stream.of(1,2).doOnDispose(() -> b.set(true)).count());
+        checkTrue(b -> Stream.of(1, 2).doOnDispose(() -> b.set(true)).count());
     }
-    
+
     @Test
     public void testFirstDispose() {
-        checkTrue(b -> Stream.of(1,2).doOnDispose(() -> b.set(true)).first());
+        checkTrue(b -> Stream.of(1, 2).doOnDispose(() -> b.set(true)).first());
     }
-    
+
     private static void checkTrue(Consumer<AtomicBoolean> consumer) {
         AtomicBoolean b = new AtomicBoolean();
         consumer.accept(b);
         assertTrue(b.get());
     }
-    
+
     @Test
     public void testPrepend() {
         Stream.of(1, 2, 3).prepend(0).test().assertValuesOnly(0, 1, 2, 3);
@@ -68,7 +69,7 @@ public class StreamTest {
     public void testReduceWithNoInitialValue() {
         assertEquals(10, (int) Stream.of(1, 2, 3, 4).reduce((a, b) -> a + b).get());
     }
-    
+
     @Test
     public void testReduceWithInitialValue() {
         assertEquals(20, (int) Stream.of(1, 2, 3, 4).reduceWithInitialValue(10, (a, b) -> a + b));
@@ -99,12 +100,13 @@ public class StreamTest {
                 .test() //
                 .assertValuesOnly(10, 11, 20, 21, 30, 31);
     }
-    
+
     @Test
     public void testFlatMapDispose() {
         AtomicBoolean sourceDisposed = new AtomicBoolean();
         AtomicInteger others = new AtomicInteger();
-        Stream.of(1, 2).doOnDispose(() -> sourceDisposed.set(true)).flatMap(x -> Stream.of(x).doOnDispose(() -> others.incrementAndGet())).count();
+        Stream.of(1, 2).doOnDispose(() -> sourceDisposed.set(true))
+                .flatMap(x -> Stream.of(x).doOnDispose(() -> others.incrementAndGet())).count();
         assertTrue(sourceDisposed.get());
         assertEquals(2, others.get());
     }
@@ -328,10 +330,10 @@ public class StreamTest {
     public void testBufferEmpty() {
         Stream.empty().buffer(2).test().assertNoValuesOnly();
     }
-    
+
     @Test
     public void testBufferDispose() {
-        checkTrue(b -> Stream.of(1,2).doOnDispose(() -> b.set(true)).buffer(1).first());
+        checkTrue(b -> Stream.of(1, 2).doOnDispose(() -> b.set(true)).buffer(1).first());
     }
 
     @Test
@@ -349,6 +351,27 @@ public class StreamTest {
         AtomicBoolean disposed = new AtomicBoolean();
         Stream.of(1, 2, 3).take(2).doOnDispose(() -> disposed.set(true)).forEach();
         assertTrue(disposed.get());
+    }
+
+    @Test
+    public void testSorted() {
+        Stream.of(1, 3, 2).sorted(Comparator.naturalOrder()).test().assertValuesOnly(1, 2, 3);
+    }
+
+    @Test
+    public void testSortedDisposes() {
+        AtomicBoolean disposed = new AtomicBoolean();
+        Stream.of(1, 2, 3).doOnDispose(() -> disposed.set(true)) //
+                .sorted() //
+                .forEach();
+        assertTrue(disposed.get());
+    }
+
+    @Test(expected = ClassCastException.class)
+    public void testSortedNotComparable() {
+        Stream.of(new Object(), new Object()) //
+                .sorted() //
+                .forEach();
     }
 
 }
