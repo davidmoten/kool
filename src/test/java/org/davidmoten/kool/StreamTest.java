@@ -31,17 +31,17 @@ public class StreamTest {
     }
     
     @Test
-    public void testForEachCancel() {
+    public void testForEachDispose() {
         checkTrue(b -> Stream.of(1,2).doOnDispose(() -> b.set(true)).forEach());
     }
     
     @Test
-    public void testCountCancel() {
+    public void testCountDispose() {
         checkTrue(b -> Stream.of(1,2).doOnDispose(() -> b.set(true)).count());
     }
     
     @Test
-    public void testFirstCancel() {
+    public void testFirstDispose() {
         checkTrue(b -> Stream.of(1,2).doOnDispose(() -> b.set(true)).first());
     }
     
@@ -65,8 +65,13 @@ public class StreamTest {
     }
 
     @Test
-    public void testReduce1() {
+    public void testReduceWithNoInitialValue() {
         assertEquals(10, (int) Stream.of(1, 2, 3, 4).reduce((a, b) -> a + b).get());
+    }
+    
+    @Test
+    public void testReduceWithInitialValue() {
+        assertEquals(20, (int) Stream.of(1, 2, 3, 4).reduce(10, (a, b) -> a + b));
     }
 
     @Test
@@ -325,7 +330,7 @@ public class StreamTest {
     }
     
     @Test
-    public void testBufferCancel() {
+    public void testBufferDispose() {
         checkTrue(b -> Stream.of(1,2).doOnDispose(() -> b.set(true)).buffer(1).first());
     }
 

@@ -38,7 +38,8 @@ import org.davidmoten.kool.internal.operators.Last;
 import org.davidmoten.kool.internal.operators.Map;
 import org.davidmoten.kool.internal.operators.PrependOne;
 import org.davidmoten.kool.internal.operators.Range;
-import org.davidmoten.kool.internal.operators.Reduce1;
+import org.davidmoten.kool.internal.operators.ReduceNoInitialValue;
+import org.davidmoten.kool.internal.operators.ReduceWithInitialValueSupplier;
 import org.davidmoten.kool.internal.operators.Skip;
 import org.davidmoten.kool.internal.operators.Split;
 import org.davidmoten.kool.internal.operators.SwitchOnError;
@@ -192,19 +193,17 @@ public interface Stream<T> extends StreamIterable<T> {
     }
 
     public default Maybe<T> reduce(BiFunction<? super T, ? super T, ? extends T> reducer) {
-        return new Reduce1<T>(reducer, this).iterator().next();
+        return new ReduceNoInitialValue<T>(reducer, this).iterator().next();
     }
 
     public default <R> R reduce(R initialValue,
             BiFunction<? super R, ? super T, ? extends R> reducer) {
-        // TODO Auto-generated method stub
-        return null;
+        return reduce(() -> initialValue, reducer);
     }
 
-    public default <R> R reduce(Supplier<R> initialValueFactory,
+    public default <R> R reduce(Supplier<? extends R> initialValueFactory,
             BiFunction<? super R, ? super T, ? extends R> reducer) {
-        // TODO Auto-generated method stub
-        return null;
+        return new ReduceWithInitialValueSupplier<R, T>(initialValueFactory, reducer, this).iterator().next();
     }
 
     public default <R> R collect(Supplier<? extends R> factory,

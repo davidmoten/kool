@@ -10,12 +10,12 @@ import org.davidmoten.kool.StreamIterator;
 
 import com.github.davidmoten.guavamini.Preconditions;
 
-public final class Reduce1<T> implements Stream<Maybe<T>> {
+public final class ReduceNoInitialValue<T> implements Stream<Maybe<T>> {
 
     private final BiFunction<? super T, ? super T, ? extends T> reducer;
     private final StreamIterable<T> source;
 
-    public Reduce1(BiFunction<? super T, ? super T, ? extends T> reducer, StreamIterable<T> source) {
+    public ReduceNoInitialValue(BiFunction<? super T, ? super T, ? extends T> reducer, StreamIterable<T> source) {
         this.reducer = reducer;
         this.source = source;
     }
