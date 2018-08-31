@@ -355,7 +355,7 @@ public class StreamTest {
 
     @Test
     public void testSorted() {
-        Stream.of(1, 3, 2).sorted(Comparator.naturalOrder()).test().assertValuesOnly(1, 2, 3);
+        Stream.of(1, 3, 2).sorted().test().assertValuesOnly(1, 2, 3);
     }
 
     @Test
