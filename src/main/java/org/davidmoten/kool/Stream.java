@@ -12,6 +12,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -41,6 +42,7 @@ import org.davidmoten.kool.internal.operators.Range;
 import org.davidmoten.kool.internal.operators.ReduceNoInitialValue;
 import org.davidmoten.kool.internal.operators.ReduceWithInitialValueSupplier;
 import org.davidmoten.kool.internal.operators.Skip;
+import org.davidmoten.kool.internal.operators.Sorted;
 import org.davidmoten.kool.internal.operators.Split;
 import org.davidmoten.kool.internal.operators.SwitchOnError;
 import org.davidmoten.kool.internal.operators.Take;
@@ -186,6 +188,10 @@ public interface Stream<T> extends StreamIterable<T> {
         boolean r = !it.hasNext();
         it.dispose();
         return r;
+    }
+    
+    public default Stream<T> sorted(Comparator<? super T> comparator) {
+        return new Sorted<T>(comparator, this);
     }
 
     public default <R> Stream<R> map(Function<? super T, ? extends R> function) {
