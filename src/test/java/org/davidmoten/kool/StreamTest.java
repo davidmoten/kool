@@ -71,7 +71,7 @@ public class StreamTest {
     
     @Test
     public void testReduceWithInitialValue() {
-        assertEquals(20, (int) Stream.of(1, 2, 3, 4).reduce(10, (a, b) -> a + b));
+        assertEquals(20, (int) Stream.of(1, 2, 3, 4).reduceWithInitialValue(10, (a, b) -> a + b));
     }
 
     @Test

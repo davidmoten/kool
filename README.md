@@ -6,7 +6,7 @@
 
 Alternative to `java.uti.stream.Stream` that:
 
-* is sometimes faster (about 2x) for single threaded use
+* is sometimes faster (about 2x) for synchonronous use
 * has many more operators and is less verbose
 * streams are reusable
 * disposes resources
