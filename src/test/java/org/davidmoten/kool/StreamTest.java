@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -27,7 +29,28 @@ public class StreamTest {
                 .filter(x -> x > 2) //
                 .count());
     }
-
+    
+    @Test
+    public void testForEachCancel() {
+        checkTrue(b -> Stream.of(1,2).doOnDispose(() -> b.set(true)).forEach());
+    }
+    
+    @Test
+    public void testCountCancel() {
+        checkTrue(b -> Stream.of(1,2).doOnDispose(() -> b.set(true)).count());
+    }
+    
+    @Test
+    public void testFirstCancel() {
+        checkTrue(b -> Stream.of(1,2).doOnDispose(() -> b.set(true)).first());
+    }
+    
+    private static void checkTrue(Consumer<AtomicBoolean> consumer) {
+        AtomicBoolean b = new AtomicBoolean();
+        consumer.accept(b);
+        assertTrue(b.get());
+    }
+    
     @Test
     public void testPrepend() {
         Stream.of(1, 2, 3).prepend(0).test().assertValuesOnly(0, 1, 2, 3);
@@ -70,6 +93,15 @@ public class StreamTest {
                 .flatMap(x -> Stream.of(x * 10, x * 10 + 1)) //
                 .test() //
                 .assertValuesOnly(10, 11, 20, 21, 30, 31);
+    }
+    
+    @Test
+    public void testFlatMapDispose() {
+        AtomicBoolean sourceDisposed = new AtomicBoolean();
+        AtomicInteger others = new AtomicInteger();
+        Stream.of(1, 2).doOnDispose(() -> sourceDisposed.set(true)).flatMap(x -> Stream.of(x).doOnDispose(() -> others.incrementAndGet())).count();
+        assertTrue(sourceDisposed.get());
+        assertEquals(2, others.get());
     }
 
     @Test
@@ -290,6 +322,11 @@ public class StreamTest {
     @Test
     public void testBufferEmpty() {
         Stream.empty().buffer(2).test().assertNoValuesOnly();
+    }
+    
+    @Test
+    public void testBufferCancel() {
+        checkTrue(b -> Stream.of(1,2).doOnDispose(() -> b.set(true)).buffer(1).first());
     }
 
     @Test
