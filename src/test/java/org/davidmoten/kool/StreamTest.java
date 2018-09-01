@@ -8,7 +8,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.StringReader;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -349,7 +348,7 @@ public class StreamTest {
     @Test
     public void testTakeDisposes() {
         AtomicBoolean disposed = new AtomicBoolean();
-        Stream.of(1, 2, 3).take(2).doOnDispose(() -> disposed.set(true)).forEach();
+        Stream.of(1, 2, 3).doOnDispose(() -> disposed.set(true)).take(2).forEach();
         assertTrue(disposed.get());
     }
 
@@ -377,6 +376,22 @@ public class StreamTest {
     @Test
     public void testRepeat() {
         Stream.of(1, 2).repeat(2).test().assertValuesOnly(1, 2, 1, 2);
+    }
+
+    @Test
+    public void testTakeUntil() {
+        Stream.of(1, 2, 3, 4, 5).takeUntil(x -> x > 3).test().assertValuesOnly(1, 2, 3);
+    }
+
+    @Test
+    public void testTakeUntilDisposes() {
+        AtomicBoolean disposed = new AtomicBoolean();
+        Stream.of(1, 2, 3, 4, 5) //
+                .doOnDispose(() -> disposed.set(true)) //
+                .takeUntil(x -> x > 3) //
+                .test() //
+                .assertValuesOnly(1, 2, 3);
+        assertTrue(disposed.get());
     }
 
 }

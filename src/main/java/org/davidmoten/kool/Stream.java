@@ -48,6 +48,7 @@ import org.davidmoten.kool.internal.operators.Sorted;
 import org.davidmoten.kool.internal.operators.Split;
 import org.davidmoten.kool.internal.operators.SwitchOnError;
 import org.davidmoten.kool.internal.operators.Take;
+import org.davidmoten.kool.internal.operators.TakeUntil;
 import org.davidmoten.kool.internal.operators.Transform;
 import org.davidmoten.kool.internal.operators.Using;
 import org.davidmoten.kool.internal.operators.Zip;
@@ -410,19 +411,23 @@ public interface Stream<T> extends StreamIterable<T> {
     public default Stream<T> skip(int size) {
         return new Skip<T>(size, this);
     }
-    
+
     public default Stream<T> repeat(long count) {
         return new Repeat<T>(count, this);
     }
-    
+
     public default Stream<T> repeat() {
         return repeat(Long.MAX_VALUE);
     }
 
+    public default Stream<T> takeUntil(Predicate<? super T> predicate) {
+        return new TakeUntil<T>(predicate, this);
+    }
+
     // TODO
     // takeUntil, takeWhile, bufferWhile, bufferUntil, toStreamJava ,
-    // mapWithIndex, skip, skipUntil, skipWhile, repeat, retry, cache,
-    // groupBy?, doOnEmpty, switchIfEmpty, interleaveWith, join, split
+    // mapWithIndex, skipUntil, skipWhile, retryWhen, cache,
+    // doOnEmpty, switchIfEmpty, interleaveWith,
     // Maybe should implement Stream?
 
 }
