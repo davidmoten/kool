@@ -9,13 +9,13 @@ import org.davidmoten.kool.StreamIterator;
 
 import com.github.davidmoten.guavamini.Preconditions;
 
-public final class TakeUntil<T> implements Stream<T> {
+public final class TakeWithPredicate<T> implements Stream<T> {
 
     private final Predicate<? super T> predicate;
     private final Stream<T> source;
     private final boolean until;
 
-    public TakeUntil(Predicate<? super T> predicate, Stream<T> source, boolean until) {
+    public TakeWithPredicate(Predicate<? super T> predicate, Stream<T> source, boolean until) {
         this.predicate = predicate;
         this.source = source;
         this.until = until;

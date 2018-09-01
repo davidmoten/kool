@@ -48,7 +48,7 @@ import org.davidmoten.kool.internal.operators.Sorted;
 import org.davidmoten.kool.internal.operators.Split;
 import org.davidmoten.kool.internal.operators.SwitchOnError;
 import org.davidmoten.kool.internal.operators.Take;
-import org.davidmoten.kool.internal.operators.TakeUntil;
+import org.davidmoten.kool.internal.operators.TakeWithPredicate;
 import org.davidmoten.kool.internal.operators.Transform;
 import org.davidmoten.kool.internal.operators.Using;
 import org.davidmoten.kool.internal.operators.Zip;
@@ -421,11 +421,11 @@ public interface Stream<T> extends StreamIterable<T> {
     }
 
     public default Stream<T> takeUntil(Predicate<? super T> predicate) {
-        return new TakeUntil<T>(predicate, this, true);
+        return new TakeWithPredicate<T>(predicate, this, true);
     }
 
     public default Stream<T> takeWhile(Predicate<? super T> predicate) {
-        return new TakeUntil<T>(predicate, this, false);
+        return new TakeWithPredicate<T>(predicate, this, false);
     }
 
     // TODO
