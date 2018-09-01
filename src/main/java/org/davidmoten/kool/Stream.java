@@ -421,11 +421,15 @@ public interface Stream<T> extends StreamIterable<T> {
     }
 
     public default Stream<T> takeUntil(Predicate<? super T> predicate) {
-        return new TakeUntil<T>(predicate, this);
+        return new TakeUntil<T>(predicate, this, true);
+    }
+
+    public default Stream<T> takeWhile(Predicate<? super T> predicate) {
+        return new TakeUntil<T>(predicate, this, false);
     }
 
     // TODO
-    // takeUntil, takeWhile, bufferWhile, bufferUntil, toStreamJava ,
+    // bufferWhile, bufferUntil, toStreamJava ,
     // mapWithIndex, skipUntil, skipWhile, retryWhen, cache,
     // doOnEmpty, switchIfEmpty, interleaveWith,
     // Maybe should implement Stream?

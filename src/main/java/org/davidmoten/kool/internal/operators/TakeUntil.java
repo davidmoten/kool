@@ -13,10 +13,12 @@ public final class TakeUntil<T> implements Stream<T> {
 
     private final Predicate<? super T> predicate;
     private final Stream<T> source;
+    private final boolean until;
 
-    public TakeUntil(Predicate<? super T> predicate, Stream<T> source) {
+    public TakeUntil(Predicate<? super T> predicate, Stream<T> source, boolean until) {
         this.predicate = predicate;
         this.source = source;
+        this.until = until;
     }
 
     @Override
@@ -49,7 +51,14 @@ public final class TakeUntil<T> implements Stream<T> {
                 if (value == null && it != null) {
                     if (it.hasNext()) {
                         T v = it.next();
-                        if (!predicate.test(v)) {
+                        boolean test = predicate.test(v);
+                        final boolean ok;
+                        if (until) {
+                            ok = !test;
+                        } else {
+                            ok = test;
+                        }
+                        if (ok) {
                             value = v;
                         } else {
                             it.dispose();

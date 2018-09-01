@@ -394,4 +394,20 @@ public class StreamTest {
         assertTrue(disposed.get());
     }
 
+    @Test
+    public void testTakeWhile() {
+        Stream.of(1, 2, 3, 4, 5).takeWhile(x -> x <= 3).test().assertValuesOnly(1, 2, 3);
+    }
+
+    @Test
+    public void testTakewhileDisposes() {
+        AtomicBoolean disposed = new AtomicBoolean();
+        Stream.of(1, 2, 3, 4, 5) //
+                .doOnDispose(() -> disposed.set(true)) //
+                .takeWhile(x -> x <= 3) //
+                .test() //
+                .assertValuesOnly(1, 2, 3);
+        assertTrue(disposed.get());
+    }
+
 }
