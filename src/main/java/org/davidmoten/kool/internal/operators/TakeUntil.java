@@ -1,0 +1,76 @@
+package org.davidmoten.kool.internal.operators;
+
+import java.util.NoSuchElementException;
+import java.util.function.Predicate;
+
+import org.davidmoten.kool.Stream;
+import org.davidmoten.kool.StreamIterable;
+import org.davidmoten.kool.StreamIterator;
+
+import com.github.davidmoten.guavamini.Preconditions;
+
+public final class TakeUntil<T> implements Stream<T> {
+
+    private final Predicate<? super T> predicate;
+    private final Stream<T> source;
+
+    public TakeUntil(Predicate<? super T> predicate, Stream<T> source) {
+        this.predicate = predicate;
+        this.source = source;
+    }
+
+    @Override
+    public StreamIterator<T> iterator() {
+        return new StreamIterator<T>() {
+
+            StreamIterator<T> it = Preconditions.checkNotNull(source.iterator());
+
+            T value;
+
+            @Override
+            public boolean hasNext() {
+                loadNext();
+                return value != null;
+            }
+
+            @Override
+            public T next() {
+                loadNext();
+                if (value != null) {
+                    T t = value;
+                    value = null;
+                    return t;
+                } else {
+                    throw new NoSuchElementException();
+                }
+            }
+
+            private void loadNext() {
+                if (value == null && it != null) {
+                    if (it.hasNext()) {
+                        T v = it.next();
+                        if (!predicate.test(v)) {
+                            value = v;
+                        } else {
+                            it.dispose();
+                            it = null;
+                        }
+                    } else {
+                        it.dispose();
+                        it = null;
+                    }
+                }
+            }
+
+            @Override
+            public void dispose() {
+                if (it != null) {
+                    it.dispose();
+                    it = null;
+                }
+            }
+
+        };
+    }
+
+}
