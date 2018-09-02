@@ -1,9 +1,10 @@
 package org.davidmoten.kool;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.io.InputStreamReader;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -35,14 +36,24 @@ public class Benchmarks {
 
     @Benchmark
     public List<String> readFileJava() throws IOException {
-        return Files.lines(Paths.get("src/test/resources/test.txt")) //
-                .filter(x -> x.length() % 2 == 0).collect(Collectors.toList());
+        try (java.util.stream.Stream<String> stream = //
+                new BufferedReader(new InputStreamReader(
+                        new FileInputStream(new File("src/test/resources/test2.txt")))).lines()) { //
+            return stream.filter(x -> x.length() % 2 == 0).collect(Collectors.toList());
+        }
     }
-    
+
     @Benchmark
     public List<String> readFileKool() throws IOException {
-        return Stream.lines(new File("src/test/resources/test.txt")) //
+        return Stream.lines(new File("src/test/resources/test2.txt")) //
                 .filter(x -> x.length() % 2 == 0) //
                 .toList();
+    }
+
+    public static void main(String[] args) throws IOException {
+        Benchmarks b = new Benchmarks();
+        while (true) {
+            b.readFileJava();
+        }
     }
 }

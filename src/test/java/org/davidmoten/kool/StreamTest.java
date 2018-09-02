@@ -411,6 +411,7 @@ public class StreamTest {
         assertTrue(disposed.get());
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     @Ignore
     public void testBufferWhile() {

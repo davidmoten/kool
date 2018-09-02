@@ -82,12 +82,16 @@ public final class Iterables {
         }
     }
 
-    public static <R extends Collection<S>, S, T extends S> R addAll(R collection, StreamIterable<T> iterable) {
+    public static <R extends Collection<S>, S, T extends S> R addAll(R collection,
+            StreamIterable<T> iterable) {
         StreamIterator<T> it = iterable.iterator();
-        while (it.hasNext()) {
-            collection.add(it.next());
+        try {
+            while (it.hasNext()) {
+                collection.add(it.next());
+            }
+        } finally {
+            it.dispose();
         }
-        it.dispose();
         return collection;
     }
 

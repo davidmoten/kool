@@ -385,7 +385,7 @@ public interface Stream<T> extends StreamIterable<T> {
 
     public default <K, V> java.util.Map<K, V> toMap(Function<? super T, ? extends K> keyFunction,
             Function<? super T, ? extends V> valueFunction) {
-        return collect(() -> new HashMap<K, V>(),
+        return collect(HashMap::new,
                 (m, item) -> m.put(keyFunction.apply(item), valueFunction.apply(item)));
     }
 
