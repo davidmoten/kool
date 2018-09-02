@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.Callable;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
@@ -103,7 +104,7 @@ public interface Stream<T> extends StreamIterable<T> {
     }
 
     public static <T> Stream<T> error(Throwable e) {
-        return Stream.from(new StreamIterable<T>() {
+        return Stream.fromIterable(new StreamIterable<T>() {
             @Override
             public StreamIterator<T> iterator() {
                 if (e instanceof RuntimeException) {
@@ -117,8 +118,18 @@ public interface Stream<T> extends StreamIterable<T> {
         });
     }
 
-    public static <T> Stream<T> from(Iterable<T> iterable) {
+    public static <T> Stream<T> fromIterable(Iterable<T> iterable) {
         return create(iterable);
+    }
+
+    public static <T> Stream<T> fromCallable(Callable<? extends T> callable) {
+        return defer(() -> {
+            try {
+                return Stream.of(callable.call());
+            } catch (Exception e) {
+                return Stream.error(e);
+            }
+        });
     }
 
     public static Stream<String> lines(BufferedReader reader) {
@@ -145,6 +156,18 @@ public interface Stream<T> extends StreamIterable<T> {
 
     public static Stream<String> lines(File file) {
         return lines(file, StandardCharsets.UTF_8);
+    }
+
+    public static Stream<String> linesFromResource(String resource, Charset charset) {
+        return linesFromResource(Stream.class, resource, charset);
+    }
+
+    public static Stream<String> linesFromResource(Class<?> cls, String resource, Charset charset) {
+        return lines(() -> cls.getResourceAsStream(resource), charset);
+    }
+
+    public static Stream<String> linesFromResource(String resource) {
+        return linesFromResource(Stream.class, resource, StandardCharsets.UTF_8);
     }
 
     public static Stream<Long> range(long start, long length) {
@@ -439,14 +462,14 @@ public interface Stream<T> extends StreamIterable<T> {
             boolean emitRemainder) {
         return new BufferWithPredicate<T>(condition, emitRemainder, true, this);
     }
-    
-    public default Stream<Indexed<T>> mapWithIndex(){
-        return defer( () ->  {
-            int index  = 0;
+
+    public default Stream<Indexed<T>> mapWithIndex() {
+        return defer(() -> {
+            int index = 0;
             return map(x -> Indexed.create(x, index));
         });
     }
-    
+
     // TODO
     // toStreamJava ,
     // skipUntil, skipWhile, retryWhen, cache,

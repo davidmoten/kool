@@ -420,7 +420,7 @@ public class StreamTest {
                         Lists.newArrayList(1, 2), //
                         Lists.newArrayList(3));
     }
-    
+
     @SuppressWarnings("unchecked")
     @Test
     public void testBufferUntil() {
@@ -431,6 +431,10 @@ public class StreamTest {
                         Lists.newArrayList(1, 2), //
                         Lists.newArrayList(3));
     }
-    
+
+    @Test
+    public void testLinesFromResource() {
+        Stream.linesFromResource("/test3.txt").test().assertValuesOnly("hello", "there", "world");
+    }
 
 }
