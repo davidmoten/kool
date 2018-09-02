@@ -421,5 +421,16 @@ public class StreamTest {
                         Lists.newArrayList(1, 2), //
                         Lists.newArrayList(3));
     }
+    
+    @SuppressWarnings("unchecked")
+    @Test
+    public void testBufferUntil() {
+        Stream.of(1, 2, 3) //
+                .bufferUntil((list, t) -> list.size() == 2, true) //
+                .test() //
+                .assertValuesOnly( //
+                        Lists.newArrayList(1, 2), //
+                        Lists.newArrayList(3));
+    }
 
 }

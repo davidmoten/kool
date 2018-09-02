@@ -435,6 +435,12 @@ public interface Stream<T> extends StreamIterable<T> {
         return new BufferWithPredicate<T>(condition, emitRemainder, false, this);
     }
 
+    public default Stream<List<T>> bufferUntil(BiPredicate<? super List<T>, ? super T> condition,
+            boolean emitRemainder) {
+        return new BufferWithPredicate<T>(condition, emitRemainder, true, this);
+    }
+
+
     // TODO
     // bufferWhile, bufferUntil, toStreamJava ,
     // mapWithIndex, skipUntil, skipWhile, retryWhen, cache,
