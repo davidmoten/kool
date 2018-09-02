@@ -44,7 +44,7 @@ public final class First<T> implements Stream<T> {
 
             private void loadNext() {
                 if (value == null && it != null && it.hasNext()) {
-                    value = it.next();
+                    value = Preconditions.checkNotNull(it.next());
                 }
             }
 

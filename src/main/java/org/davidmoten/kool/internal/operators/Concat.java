@@ -45,9 +45,9 @@ public final class Concat<T> implements Stream<T> {
             @Override
             public T next() {
                 if (a != null && a.hasNext()) {
-                    return a.next();
+                    return Preconditions.checkNotNull(a.next());
                 } else if (b().hasNext()) {
-                    return b().next();
+                    return Preconditions.checkNotNull(b().next());
                 } else {
                     dispose();
                     throw new NoSuchElementException();

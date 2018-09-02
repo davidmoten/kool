@@ -30,7 +30,7 @@ public final class DoOnDispose<T> implements Stream<T> {
 
             @Override
             public T next() {
-                return it.next();
+                return Preconditions.checkNotNull(it.next());
             }
 
             @Override

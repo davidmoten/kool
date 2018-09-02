@@ -53,13 +53,14 @@ public final class FlatMap<T, R> implements Stream<R> {
                 while (true) {
                     if (b == null) {
                         if (a.hasNext()) {
-                            b = Preconditions.checkNotNull(function.apply(a.next()).iterator());
+                            b = Preconditions.checkNotNull(function
+                                    .apply(Preconditions.checkNotNull(a.next())).iterator());
                         } else {
                             return;
                         }
                     }
                     if (b.hasNext()) {
-                        r = b.next();
+                        r = Preconditions.checkNotNull(b.next());
                         return;
                     } else {
                         b.dispose();

@@ -45,7 +45,7 @@ public class Last<T> implements Stream<T> {
             private void moveToLast() {
                 if (it != null) {
                     while (it.hasNext()) {
-                        t = it.next();
+                        t =Preconditions.checkNotNull( it.next());
                     }
                 }
             }

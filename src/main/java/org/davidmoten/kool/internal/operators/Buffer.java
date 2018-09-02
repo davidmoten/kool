@@ -51,7 +51,7 @@ public final class Buffer<T> implements Stream<List<T>> {
 
             private void loadNext() {
                 while (buffer.size() < size && it.hasNext()) {
-                    T t = it.next();
+                    T t = Preconditions.checkNotNull(it.next());
                     buffer.add(t);
                 }
             }

@@ -51,7 +51,7 @@ public final class Filter<T> implements Stream<T> {
                     } else if (!it.hasNext()) {
                         break;
                     } else {
-                        T t = it.next();
+                        T t = Preconditions.checkNotNull(it.next());
                         if (predicate.test(t)) {
                             nextValue = t;
                             break;

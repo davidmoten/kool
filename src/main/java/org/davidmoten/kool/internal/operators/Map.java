@@ -32,7 +32,7 @@ public final class Map<T, R> implements Stream<R> {
 
             @Override
             public R next() {
-                return function.apply(it.next());
+                return function.apply(Preconditions.checkNotNull(it.next()));
             }
 
             @Override

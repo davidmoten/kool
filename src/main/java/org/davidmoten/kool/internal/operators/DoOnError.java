@@ -36,7 +36,7 @@ public final class DoOnError<T> implements Stream<T> {
             @Override
             public T next() {
                 try {
-                    return it.next();
+                    return Preconditions.checkNotNull(it.next());
                 } catch (RuntimeException | Error t) {
                     consumer.accept(t);
                     throw t;

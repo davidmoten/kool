@@ -19,12 +19,14 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
+import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import org.davidmoten.kool.internal.operators.Buffer;
+import org.davidmoten.kool.internal.operators.BufferWithPredicate;
 import org.davidmoten.kool.internal.operators.Concat;
 import org.davidmoten.kool.internal.operators.Defer;
 import org.davidmoten.kool.internal.operators.DoOnComplete;
@@ -426,6 +428,11 @@ public interface Stream<T> extends StreamIterable<T> {
 
     public default Stream<T> takeWhile(Predicate<? super T> predicate) {
         return new TakeWithPredicate<T>(predicate, this, false);
+    }
+
+    public default Stream<List<T>> bufferWhile(BiPredicate<? super List<T>, ? super T> condition,
+            boolean emitRemainder) {
+        return new BufferWithPredicate<T>(condition, emitRemainder, false, this);
     }
 
     // TODO

@@ -15,7 +15,8 @@ public final class ReduceNoInitialValue<T> implements Stream<Maybe<T>> {
     private final BiFunction<? super T, ? super T, ? extends T> reducer;
     private final StreamIterable<T> source;
 
-    public ReduceNoInitialValue(BiFunction<? super T, ? super T, ? extends T> reducer, StreamIterable<T> source) {
+    public ReduceNoInitialValue(BiFunction<? super T, ? super T, ? extends T> reducer,
+            StreamIterable<T> source) {
         this.reducer = reducer;
         this.source = source;
     }
@@ -56,18 +57,18 @@ public final class ReduceNoInitialValue<T> implements Stream<Maybe<T>> {
                 } else {
                     T a, b;
                     if (it.hasNext()) {
-                        a = it.next();
+                        a = Preconditions.checkNotNull(it.next());
                     } else {
                         return;
                     }
                     if (it.hasNext()) {
-                        b = it.next();
+                        b = Preconditions.checkNotNull(it.next());
                     } else {
                         return;
                     }
                     T v = reducer.apply(a, b);
                     while (it.hasNext()) {
-                        v = reducer.apply(v, it.next());
+                        v = reducer.apply(v, Preconditions.checkNotNull(it.next()));
                     }
                     value = v;
                 }

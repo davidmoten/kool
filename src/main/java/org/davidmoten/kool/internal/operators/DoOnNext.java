@@ -31,7 +31,7 @@ public final class DoOnNext<T> implements Stream<T> {
 
             @Override
             public T next() {
-                T t = it.next();
+                T t = Preconditions.checkNotNull(it.next());
                 consumer.accept(t);
                 return t;
             }
