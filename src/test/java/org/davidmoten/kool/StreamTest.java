@@ -413,10 +413,9 @@ public class StreamTest {
 
     @SuppressWarnings("unchecked")
     @Test
-    @Ignore
     public void testBufferWhile() {
         Stream.of(1, 2, 3) //
-                .bufferWhile((list, t) -> list.size() == 2, true) //
+                .bufferWhile((list, t) -> list.size() <= 1, true) //
                 .test() //
                 .assertValuesOnly( //
                         Lists.newArrayList(1, 2), //

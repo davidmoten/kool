@@ -36,7 +36,7 @@ public final class BufferWithPredicate<T> implements Stream<List<T>> {
             @Override
             public boolean hasNext() {
                 loadNext();
-                return !buffer.isEmpty() && ready;
+                return ready;
             }
 
             @Override
