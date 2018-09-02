@@ -439,12 +439,18 @@ public interface Stream<T> extends StreamIterable<T> {
             boolean emitRemainder) {
         return new BufferWithPredicate<T>(condition, emitRemainder, true, this);
     }
-
-
+    
+    public default Stream<Indexed<T>> mapWithIndex(){
+        return defer( () ->  {
+            int index  = 0;
+            return map(x -> Indexed.create(x, index));
+        });
+    }
+    
     // TODO
-    // bufferWhile, bufferUntil, toStreamJava ,
-    // mapWithIndex, skipUntil, skipWhile, retryWhen, cache,
-    // doOnEmpty, switchIfEmpty, interleaveWith,
+    // toStreamJava ,
+    // skipUntil, skipWhile, retryWhen, cache,
+    // doOnEmpty, switchIfEmpty, interleaveWith, materialize
     // Maybe should implement Stream?
 
 }

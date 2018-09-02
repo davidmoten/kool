@@ -15,7 +15,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.github.davidmoten.guavamini.Lists;
@@ -432,5 +431,6 @@ public class StreamTest {
                         Lists.newArrayList(1, 2), //
                         Lists.newArrayList(3));
     }
+    
 
 }
