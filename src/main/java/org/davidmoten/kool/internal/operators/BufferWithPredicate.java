@@ -70,9 +70,23 @@ public final class BufferWithPredicate<T> implements Stream<List<T>> {
                             ready = true;
                             nextBuffer.add(t);
                         }
+                    } else {
+                        // until
+                        if (b) {
+                            ready = true;
+                            nextBuffer.add(t);
+                        } else {
+                            buffer.add(t);
+                        }
                     }
                 }
-                ready = true;
+                if (!ready) {
+                    if (emitRemainder && !buffer.isEmpty()) {
+                        ready = true;
+                    }
+                } else {
+                    ready = true;
+                }
             }
         };
     }

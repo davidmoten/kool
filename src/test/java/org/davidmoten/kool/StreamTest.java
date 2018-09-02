@@ -410,4 +410,14 @@ public class StreamTest {
         assertTrue(disposed.get());
     }
 
+    @Test
+    public void testBufferWhile() {
+        Stream.of(1, 2, 3) //
+                .bufferWhile((list, t) -> list.size() == 2, true) //
+                .test() //
+                .assertValuesOnly( //
+                        Lists.newArrayList(1, 2), //
+                        Lists.newArrayList(3));
+    }
+
 }
