@@ -187,10 +187,11 @@ public class StreamTest {
         Stream.of(1, 2).transform(s -> s.map(x -> x + 3)).test().assertValuesOnly(4, 5);
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     public void testCollect() {
-        assertEquals(Lists.newArrayList(1, 2, 3),
-                Stream.of(1, 2, 3).collect(() -> new ArrayList<>(), (c, x) -> c.add(x)));
+        Stream.of(1, 2, 3).collect(ArrayList::new, (c, x) -> c.add(x)).test()
+                .assertValuesOnly(Lists.newArrayList(1, 2, 3));
     }
 
     @Test

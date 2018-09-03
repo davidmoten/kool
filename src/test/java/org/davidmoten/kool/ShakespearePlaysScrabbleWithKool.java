@@ -89,17 +89,15 @@ public class ShakespearePlaysScrabbleWithKool extends ShakespearePlaysScrabble {
                 .fromIterable(IterableSpliterator.of(string.chars().boxed().spliterator()));
 
         // Histogram of the letters in a given word
-        Function<String, Stream<HashMap<Integer, LongWrapper>>> histoOfLetters = word -> Stream
-                .of(toIntegerStream.apply(word).collect(() -> new HashMap<>(),
+        Function<String, Stream<HashMap<Integer, LongWrapper>>> histoOfLetters = word -> toIntegerStream
+                .apply(word).collect(() -> new HashMap<>(),
                         (HashMap<Integer, LongWrapper> map, Integer value) -> {
                             LongWrapper newValue = map.get(value);
                             if (newValue == null) {
                                 newValue = () -> 0L;
                             }
                             map.put(value, newValue.incAndSet());
-                        }
-
-                ));
+                        });
 
         // number of blanks for a given letter
         Function<Entry<Integer, LongWrapper>, Stream<Long>> blank = entry -> Stream.of(Long.max(0L,
@@ -107,8 +105,8 @@ public class ShakespearePlaysScrabbleWithKool extends ShakespearePlaysScrabble {
 
         // number of blanks for a given word
         Function<String, Stream<Long>> nBlanks = word -> histoOfLetters.apply(word)
-                .flatMap(map -> Stream.fromIterable(map.entrySet())).flatMap(blank).reduce(Long::sum)
-                .toStream();
+                .flatMap(map -> Stream.fromIterable(map.entrySet())).flatMap(blank)
+                .reduce(Long::sum).toStream();
 
         // can a word be written with 2 blanks?
         Function<String, Stream<Boolean>> checkBlanks = word -> nBlanks.apply(word)
@@ -141,24 +139,23 @@ public class ShakespearePlaysScrabbleWithKool extends ShakespearePlaysScrabble {
                 .flatMap(stream -> stream).reduce(Integer::sum).toStream();
 
         Function<Function<String, Stream<Integer>>, Stream<TreeMap<Integer, List<String>>>> buildHistoOnScore = score -> Stream
-                .of(Stream.fromIterable(shakespeareWords) //
-                        .filter(scrabbleWords::contains)
-                        .filter(word -> checkBlanks.apply(word).first().get()).collect(
-                                () -> new TreeMap<Integer, List<String>>(Comparator.reverseOrder()),
-                                (TreeMap<Integer, List<String>> map, String word) -> {
-                                    Integer key = score.apply(word).first().get();
-                                    List<String> list = map.get(key);
-                                    if (list == null) {
-                                        list = new ArrayList<>();
-                                        map.put(key, list);
-                                    }
-                                    list.add(word);
-                                }));
+                .fromIterable(shakespeareWords) //
+                .filter(scrabbleWords::contains)
+                .filter(word -> checkBlanks.apply(word).first().get())
+                .collect(() -> new TreeMap<Integer, List<String>>(Comparator.reverseOrder()),
+                        (TreeMap<Integer, List<String>> map, String word) -> {
+                            Integer key = score.apply(word).first().get();
+                            List<String> list = map.get(key);
+                            if (list == null) {
+                                list = new ArrayList<>();
+                                map.put(key, list);
+                            }
+                            list.add(word);
+                        });
 
         // best key / value pairs
         List<Entry<Integer, List<String>>> finalList2 = buildHistoOnScore.apply(score3)
-                .flatMap(map -> Stream.fromIterable(map.entrySet())).take(3)
-                .toList();
+                .flatMap(map -> Stream.fromIterable(map.entrySet())).take(3).toList();
 
         return finalList2;
     }

@@ -28,6 +28,7 @@ import java.util.function.Supplier;
 
 import org.davidmoten.kool.internal.operators.Buffer;
 import org.davidmoten.kool.internal.operators.BufferWithPredicate;
+import org.davidmoten.kool.internal.operators.Collect;
 import org.davidmoten.kool.internal.operators.Concat;
 import org.davidmoten.kool.internal.operators.Defer;
 import org.davidmoten.kool.internal.operators.DoOnComplete;
@@ -219,7 +220,7 @@ public interface Stream<T> extends StreamIterable<T> {
         return new RepeatElement<T>(t, count);
     }
 
-    public default boolean isEmpty() {
+    public default Stream<Boolean> isEmpty() {
         StreamIterator<T> it = iterator();
         boolean r = !it.hasNext();
         it.dispose();
@@ -254,15 +255,9 @@ public interface Stream<T> extends StreamIterable<T> {
                 .iterator().next();
     }
 
-    public default <R> R collect(Supplier<? extends R> factory,
+    public default <R> Stream<R> collect(Supplier<? extends R> factory,
             BiConsumer<? super R, ? super T> collector) {
-        StreamIterator<T> it = iterator();
-        R c = factory.get();
-        while (it.hasNext()) {
-            collector.accept(c, it.next());
-        }
-        it.dispose();
-        return c;
+        return new Collect<T, R>(factory, collector, this);
     }
 
     public default List<T> toList() {
@@ -406,7 +401,8 @@ public interface Stream<T> extends StreamIterable<T> {
         return toList().stream();
     }
 
-    public default <K, V> java.util.Map<K, V> toMap(Function<? super T, ? extends K> keyFunction,
+    public default <K, V> Stream<java.util.Map<K, V>> toMap(
+            Function<? super T, ? extends K> keyFunction,
             Function<? super T, ? extends V> valueFunction) {
         return collect(HashMap::new,
                 (m, item) -> m.put(keyFunction.apply(item), valueFunction.apply(item)));
