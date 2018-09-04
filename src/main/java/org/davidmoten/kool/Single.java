@@ -5,7 +5,7 @@ import java.util.function.Function;
 import org.davidmoten.kool.internal.operators.single.Map;
 import org.davidmoten.kool.internal.operators.single.SingleOf;
 
-public interface Single<T> extends StreamIterable<T> {
+public interface Single<T> {
 
     public static <T> Single<T> of(T t) {
         return new SingleOf<T>(t);
@@ -15,6 +15,6 @@ public interface Single<T> extends StreamIterable<T> {
         return new Map<T, R>(mapper, this);
     }
     
-    T value();
+    T get();
 
 }
