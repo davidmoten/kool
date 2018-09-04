@@ -9,7 +9,7 @@ public class OptionalTest {
     
     @Test
     public void testToLinkedListEmpty() {
-        assertTrue(Maybe.empty().toStream().isEmpty());
+        assertTrue(Maybe.empty().toStream().isEmpty().first().get());
     }
     
     @Test

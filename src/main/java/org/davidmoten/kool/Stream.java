@@ -26,36 +26,36 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-import org.davidmoten.kool.internal.operators.Buffer;
-import org.davidmoten.kool.internal.operators.BufferWithPredicate;
-import org.davidmoten.kool.internal.operators.Collect;
-import org.davidmoten.kool.internal.operators.Concat;
-import org.davidmoten.kool.internal.operators.Defer;
-import org.davidmoten.kool.internal.operators.DoOnComplete;
-import org.davidmoten.kool.internal.operators.DoOnDispose;
-import org.davidmoten.kool.internal.operators.DoOnError;
-import org.davidmoten.kool.internal.operators.DoOnNext;
-import org.davidmoten.kool.internal.operators.Filter;
-import org.davidmoten.kool.internal.operators.First;
-import org.davidmoten.kool.internal.operators.FlatMap;
-import org.davidmoten.kool.internal.operators.FromBufferedReader;
-import org.davidmoten.kool.internal.operators.Last;
-import org.davidmoten.kool.internal.operators.Map;
-import org.davidmoten.kool.internal.operators.PrependOne;
-import org.davidmoten.kool.internal.operators.Range;
-import org.davidmoten.kool.internal.operators.ReduceNoInitialValue;
-import org.davidmoten.kool.internal.operators.ReduceWithInitialValueSupplier;
-import org.davidmoten.kool.internal.operators.Repeat;
-import org.davidmoten.kool.internal.operators.RepeatElement;
-import org.davidmoten.kool.internal.operators.Skip;
-import org.davidmoten.kool.internal.operators.Sorted;
-import org.davidmoten.kool.internal.operators.Split;
-import org.davidmoten.kool.internal.operators.SwitchOnError;
-import org.davidmoten.kool.internal.operators.Take;
-import org.davidmoten.kool.internal.operators.TakeWithPredicate;
-import org.davidmoten.kool.internal.operators.Transform;
-import org.davidmoten.kool.internal.operators.Using;
-import org.davidmoten.kool.internal.operators.Zip;
+import org.davidmoten.kool.internal.operators.stream.Buffer;
+import org.davidmoten.kool.internal.operators.stream.BufferWithPredicate;
+import org.davidmoten.kool.internal.operators.stream.Collect;
+import org.davidmoten.kool.internal.operators.stream.Concat;
+import org.davidmoten.kool.internal.operators.stream.Defer;
+import org.davidmoten.kool.internal.operators.stream.DoOnComplete;
+import org.davidmoten.kool.internal.operators.stream.DoOnDispose;
+import org.davidmoten.kool.internal.operators.stream.DoOnError;
+import org.davidmoten.kool.internal.operators.stream.DoOnNext;
+import org.davidmoten.kool.internal.operators.stream.Filter;
+import org.davidmoten.kool.internal.operators.stream.First;
+import org.davidmoten.kool.internal.operators.stream.FlatMap;
+import org.davidmoten.kool.internal.operators.stream.FromBufferedReader;
+import org.davidmoten.kool.internal.operators.stream.Last;
+import org.davidmoten.kool.internal.operators.stream.Map;
+import org.davidmoten.kool.internal.operators.stream.PrependOne;
+import org.davidmoten.kool.internal.operators.stream.Range;
+import org.davidmoten.kool.internal.operators.stream.ReduceNoInitialValue;
+import org.davidmoten.kool.internal.operators.stream.ReduceWithInitialValueSupplier;
+import org.davidmoten.kool.internal.operators.stream.Repeat;
+import org.davidmoten.kool.internal.operators.stream.RepeatElement;
+import org.davidmoten.kool.internal.operators.stream.Skip;
+import org.davidmoten.kool.internal.operators.stream.Sorted;
+import org.davidmoten.kool.internal.operators.stream.Split;
+import org.davidmoten.kool.internal.operators.stream.SwitchOnError;
+import org.davidmoten.kool.internal.operators.stream.Take;
+import org.davidmoten.kool.internal.operators.stream.TakeWithPredicate;
+import org.davidmoten.kool.internal.operators.stream.Transform;
+import org.davidmoten.kool.internal.operators.stream.Using;
+import org.davidmoten.kool.internal.operators.stream.Zip;
 import org.davidmoten.kool.internal.util.Iterables;
 import org.davidmoten.kool.internal.util.StreamImpl;
 import org.davidmoten.kool.internal.util.StreamUtils;
@@ -220,11 +220,13 @@ public interface Stream<T> extends StreamIterable<T> {
         return new RepeatElement<T>(t, count);
     }
 
-    public default Stream<Boolean> isEmpty() {
-        StreamIterator<T> it = iterator();
-        boolean r = !it.hasNext();
-        it.dispose();
-        return r;
+    public default Single<Boolean> isEmpty() {
+        return Single.defer(() -> {
+            StreamIterator<T> it = iterator();
+            boolean r = !it.hasNext();
+            it.dispose();
+            return Single.of(r);
+        });
     }
 
     public default Stream<T> sorted(Comparator<? super T> comparator) {

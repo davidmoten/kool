@@ -76,7 +76,7 @@ public class StreamTest {
 
     @Test
     public void testFlatMapEmpty() {
-        assertTrue(Stream.of(1, 2, 3).flatMap(x -> Stream.<Integer>empty()).isEmpty());
+        assertTrue(Stream.of(1, 2, 3).flatMap(x -> Stream.<Integer>empty()).isEmpty().first().get());
     }
 
     @Test
@@ -164,7 +164,7 @@ public class StreamTest {
 
     @Test
     public void testRangeOnEmpty() {
-        assertTrue(Stream.range(0, 0).isEmpty());
+        assertTrue(Stream.range(0, 0).isEmpty().first().get());
     }
 
     @Test
@@ -227,7 +227,7 @@ public class StreamTest {
 
     @Test
     public void testConcatEmpties() {
-        assertTrue(Stream.empty().concatWith(Stream.empty()).isEmpty());
+        assertTrue(Stream.empty().concatWith(Stream.empty()).isEmpty().first().get());
     }
 
     @Test(expected = NoSuchElementException.class)
