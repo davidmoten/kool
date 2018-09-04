@@ -39,6 +39,7 @@ import org.davidmoten.kool.internal.operators.stream.Filter;
 import org.davidmoten.kool.internal.operators.stream.First;
 import org.davidmoten.kool.internal.operators.stream.FlatMap;
 import org.davidmoten.kool.internal.operators.stream.FromBufferedReader;
+import org.davidmoten.kool.internal.operators.stream.IsEmpty;
 import org.davidmoten.kool.internal.operators.stream.Last;
 import org.davidmoten.kool.internal.operators.stream.Map;
 import org.davidmoten.kool.internal.operators.stream.PrependOne;
@@ -220,13 +221,8 @@ public interface Stream<T> extends StreamIterable<T> {
         return new RepeatElement<T>(t, count);
     }
 
-    public default Single<Boolean> isEmpty() {
-        return Single.defer(() -> {
-            StreamIterator<T> it = iterator();
-            boolean r = !it.hasNext();
-            it.dispose();
-            return Single.of(r);
-        });
+    public default Stream<Boolean> isEmpty() {
+        return new IsEmpty(this);
     }
 
     public default Stream<T> sorted(Comparator<? super T> comparator) {
