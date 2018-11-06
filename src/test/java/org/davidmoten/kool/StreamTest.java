@@ -187,11 +187,12 @@ public class StreamTest {
         Stream.of(1, 2).transform(s -> s.map(x -> x + 3)).test().assertValuesOnly(4, 5);
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     public void testCollect() {
-        Stream.of(1, 2, 3).collect(ArrayList::new, (c, x) -> c.add(x)).test()
-                .assertValuesOnly(Lists.newArrayList(1, 2, 3));
+        Stream.of(1, 2, 3) //
+                .collect(ArrayList::new, (c, x) -> c.add(x)) //
+                .test() //
+                .assertValue(Lists.newArrayList(1, 2, 3));
     }
 
     @Test
@@ -263,7 +264,7 @@ public class StreamTest {
 
     @Test
     public void testJoin() {
-        assertEquals("helloAthere", Stream.of("hello", "there").join("A"));
+        assertEquals("helloAthere", Stream.of("hello", "there").join("A").get());
     }
 
     @Test
@@ -313,8 +314,7 @@ public class StreamTest {
         Stream.of(1, 2, 3, 4, 5) //
                 .buffer(2) //
                 .test() //
-                .assertValuesOnly(Lists.newArrayList(1, 2), Lists.newArrayList(3, 4),
-                        Lists.newArrayList(5));
+                .assertValuesOnly(Lists.newArrayList(1, 2), Lists.newArrayList(3, 4), Lists.newArrayList(5));
     }
 
     @SuppressWarnings("unchecked")

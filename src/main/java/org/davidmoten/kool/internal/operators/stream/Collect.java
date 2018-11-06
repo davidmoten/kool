@@ -4,6 +4,7 @@ import java.util.NoSuchElementException;
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
+import org.davidmoten.kool.Single;
 import org.davidmoten.kool.Stream;
 import org.davidmoten.kool.StreamIterator;
 
