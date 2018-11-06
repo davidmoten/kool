@@ -1,5 +1,7 @@
 package org.davidmoten.kool.internal.operators.stream;
 
+import java.util.NoSuchElementException;
+
 import org.davidmoten.kool.Stream;
 import org.davidmoten.kool.StreamIterator;
 
@@ -18,23 +20,31 @@ public final class IsEmpty implements Stream<Boolean> {
         return new StreamIterator<Boolean>() {
 
             StreamIterator<?> it = Preconditions.checkNotNull(source.iterator());
-            
+            Boolean empty;
+
             @Override
             public boolean hasNext() {
-                // TODO Auto-generated method stub
-                return false;
+                return it != null;
             }
 
             @Override
             public Boolean next() {
-                // TODO Auto-generated method stub
-                return null;
+                if (empty == null) {
+                    empty = !it.hasNext();
+                    it.dispose();
+                    it = null;
+                    return empty;
+                } else {
+                    throw new NoSuchElementException();
+                }
             }
 
             @Override
             public void dispose() {
-                // TODO Auto-generated method stub
-
+                if (it != null) {
+                    it.dispose();
+                    it = null;
+                }
             }
 
         };
