@@ -74,7 +74,7 @@ public final class Maybe<T> {
      * Returns an empty {@code Maybe} instance.  No value is present for this
      * Maybe.
      *
-     * @apiNote Though it may be tempting to do so, avoid testing if an object
+     * `@apiNote` Though it may be tempting to do so, avoid testing if an object
      * is empty by comparing with {@code ==} against instances returned by
      * {@code Option.empty()}. There is no guarantee that it is a singleton.
      * Instead, use {@link #isPresent()}.
@@ -185,7 +185,7 @@ public final class Maybe<T> {
      * and if the result is non-null, return an {@code Maybe} describing the
      * result.  Otherwise return an empty {@code Maybe}.
      *
-     * @apiNote This method supports post-processing on optional values, without
+     * `@apiNote` This method supports post-processing on optional values, without
      * the need to explicitly check for a return status.  For example, the
      * following code traverses a stream of file names, selects one that has
      * not yet been processed, and then opens that file, returning an
@@ -273,7 +273,7 @@ public final class Maybe<T> {
      * Return the contained value, if present, otherwise throw an exception
      * to be created by the provided supplier.
      *
-     * @apiNote A method reference to the exception constructor with an empty
+     * `@apiNote` A method reference to the exception constructor with an empty
      * argument list can be used as the supplier. For example,
      * {@code IllegalStateException::new}
      *
@@ -336,7 +336,7 @@ public final class Maybe<T> {
      * debugging. The exact presentation format is unspecified and may vary
      * between implementations and versions.
      *
-     * @implSpec If a value is present the result must include its string
+     * `@implSpec` If a value is present the result must include its string
      * representation in the result. Empty and present Maybes must be
      * unambiguously differentiable.
      *
