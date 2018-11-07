@@ -26,11 +26,11 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-import org.davidmoten.kool.internal.operators.single.SingleCount;
 import org.davidmoten.kool.internal.operators.stream.Buffer;
 import org.davidmoten.kool.internal.operators.stream.BufferWithPredicate;
 import org.davidmoten.kool.internal.operators.stream.Collect;
 import org.davidmoten.kool.internal.operators.stream.Concat;
+import org.davidmoten.kool.internal.operators.stream.Count;
 import org.davidmoten.kool.internal.operators.stream.Defer;
 import org.davidmoten.kool.internal.operators.stream.DoOnComplete;
 import org.davidmoten.kool.internal.operators.stream.DoOnDispose;
@@ -307,17 +307,13 @@ public interface Stream<T> extends StreamIterable<T> {
     public default void forEach() {
         count().get();
     }
-
-    public default void ignoreElements() {
-        count().get();
-    }
-
+    
     public default Stream<T> println() {
         return doOnNext(System.out::println);
     }
 
     public default Single<Long> count() {
-        return new SingleCount(this);
+        return new Count(this);
     }
 
     public default Stream<T> prepend(T value) {

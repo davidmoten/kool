@@ -16,7 +16,7 @@ import org.davidmoten.kool.internal.util.MaybeImpl;
 
 import com.github.davidmoten.guavamini.Preconditions;
 
-public interface Maybe<T> extends StreamIterable<T>{
+public interface Maybe<T> extends StreamIterable<T> {
 
     Optional<T> get();
 

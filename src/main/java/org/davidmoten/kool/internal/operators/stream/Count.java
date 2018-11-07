@@ -1,14 +1,14 @@
-package org.davidmoten.kool.internal.operators.single;
+package org.davidmoten.kool.internal.operators.stream;
 
 import org.davidmoten.kool.Single;
 import org.davidmoten.kool.Stream;
 import org.davidmoten.kool.StreamIterator;
 
-public class SingleCount implements Single<Long> {
+public final class Count implements Single<Long> {
 
     private final Stream<?> stream;
 
-    public SingleCount(Stream<?> stream) {
+    public Count(Stream<?> stream) {
         this.stream = stream;
     }
 
