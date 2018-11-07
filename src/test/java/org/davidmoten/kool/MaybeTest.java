@@ -5,7 +5,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-public class OptionalTest {
+public class MaybeTest {
     
     @Test
     public void testToLinkedListEmpty() {
