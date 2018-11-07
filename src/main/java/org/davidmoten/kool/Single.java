@@ -3,9 +3,9 @@ package org.davidmoten.kool;
 import java.util.function.Function;
 
 import org.davidmoten.kool.internal.operators.single.Map;
+import org.davidmoten.kool.internal.operators.single.SingleFlatMap;
 import org.davidmoten.kool.internal.operators.single.SingleOf;
-import org.davidmoten.kool.internal.operators.stream.SingleFlatMap;
-import org.davidmoten.kool.internal.operators.stream.SingleToStream;
+import org.davidmoten.kool.internal.operators.single.SingleToStream;
 
 public interface Single<T> {
 

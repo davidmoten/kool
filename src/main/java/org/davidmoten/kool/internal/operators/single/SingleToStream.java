@@ -1,4 +1,4 @@
-package org.davidmoten.kool.internal.operators.stream;
+package org.davidmoten.kool.internal.operators.single;
 
 import java.util.NoSuchElementException;
 
