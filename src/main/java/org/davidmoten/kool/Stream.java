@@ -254,8 +254,8 @@ public interface Stream<T> extends StreamIterable<T> {
     public default <R> Single<R> collect(Supplier<? extends R> factory, BiConsumer<? super R, ? super T> collector) {
         return new Collect<T, R>(factory, collector, this).single();
     }
-    
-    public default  Single<T> single() {
+
+    public default Single<T> single() {
         return new ToSingle<T>(this);
     }
 
@@ -463,6 +463,6 @@ public interface Stream<T> extends StreamIterable<T> {
     // skipUntil, skipWhile, retryWhen, cache,
     // doOnEmpty, switchIfEmpty, interleaveWith, materialize
     // Maybe should be a stream
-    // add Single.flatMapMaybe
+    // add Single.flatMapMaybe, Maybe.flatMapSingle, Maybe.flatMapMaybe
 
 }
