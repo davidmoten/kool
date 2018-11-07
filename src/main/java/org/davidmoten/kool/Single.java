@@ -25,8 +25,6 @@ public interface Single<T> {
     public default <R> Stream<R> flatMap(Function<? super T, ? extends Stream<? extends R>> mapper) {
         return new SingleFlatMap<T, R>(this, mapper);
     }
-
-    //TODO add flatMapMaybe
     
     public default Single<T> doOnValue(Consumer<? super T> consumer) {
         return new SingleDoOnValue<T>(consumer, this);

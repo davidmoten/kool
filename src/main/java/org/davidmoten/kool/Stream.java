@@ -462,6 +462,7 @@ public interface Stream<T> extends StreamIterable<T> {
     // toStreamJava ,
     // skipUntil, skipWhile, retryWhen, cache,
     // doOnEmpty, switchIfEmpty, interleaveWith, materialize
-    // Maybe should implement Stream?
+    // Maybe should be a stream
+    // add Single.flatMapMaybe
 
 }
