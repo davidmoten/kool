@@ -15,12 +15,11 @@ public final class MaybeMap<T, R> implements Maybe<R> {
         this.mapper = mapper;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public Optional<R> get() {
         Optional<T> v = maybe.get();
         if (v.isPresent()) {
-            return (Optional<R>) mapper.apply(v.get());
+            return Optional.of(mapper.apply(v.get()));
         } else {
             return Optional.empty();
         }

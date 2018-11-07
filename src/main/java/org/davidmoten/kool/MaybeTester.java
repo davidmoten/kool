@@ -18,4 +18,10 @@ public final class MaybeTester<T> {
         }
     }
 
+    public void assertNoValue() {
+        if (value.isPresent()) {
+            throw new AssertionError("Did not expect a value but found " + value.get());
+        }
+    }
+
 }
