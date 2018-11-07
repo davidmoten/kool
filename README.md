@@ -15,6 +15,8 @@ Alternative to `java.uti.stream.Stream` that:
 
 Status: *pre-alpha* (in development)
 
+Maven site reports are [here](https://davidmoten.github.io/kool) including [javadoc](https://davidmoten.github.io/kool/apidocs/index.html).
+
 If you need non-blocking and/or asynchronous streaming use [RxJava](https://github.com/ReactiveX/RxJava).
 
 Note also that [ixjava](https://github.com/akarnokd/ixjava) predates this library and is also a pull-based and iterator-based library for reusable streams but does not model `Maybe` and `Single`.
