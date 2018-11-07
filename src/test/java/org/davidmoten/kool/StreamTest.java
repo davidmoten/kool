@@ -66,7 +66,7 @@ public class StreamTest {
 
     @Test
     public void testReduceWithNoInitialValue() {
-        assertEquals(10, (int) Stream.of(1, 2, 3, 4).reduce((a, b) -> a + b).get());
+        assertEquals(10, (int) Stream.of(1, 2, 3, 4).reduce((a, b) -> a + b).get().get());
     }
 
     @Test
@@ -76,7 +76,7 @@ public class StreamTest {
 
     @Test
     public void testFlatMapEmpty() {
-        assertTrue(Stream.of(1, 2, 3).flatMap(x -> Stream.<Integer>empty()).isEmpty().first().get());
+        assertTrue(Stream.of(1, 2, 3).flatMap(x -> Stream.<Integer>empty()).isEmpty().first().get().get());
     }
 
     @Test
@@ -112,22 +112,22 @@ public class StreamTest {
 
     @Test
     public void testFirstOfEmpty() {
-        assertFalse(Stream.empty().first().isPresent());
+        assertFalse(Stream.empty().first().get().isPresent());
     }
 
     @Test
     public void testFirst() {
-        assertEquals(1, (int) Stream.of(1, 2, 3).first().get());
+        assertEquals(1, (int) Stream.of(1, 2, 3).first().get().get());
     }
 
     @Test
     public void testLastOfEmpty() {
-        assertFalse(Stream.empty().last().isPresent());
+        assertFalse(Stream.empty().last().get().isPresent());
     }
 
     @Test
     public void testLast() {
-        assertEquals(3, (int) Stream.of(1, 2, 3).last().get());
+        assertEquals(3, (int) Stream.of(1, 2, 3).last().get().get());
     }
 
     @Test
@@ -154,17 +154,17 @@ public class StreamTest {
 
     @Test
     public void testGetEmpty() {
-        assertFalse(Stream.empty().get(0).isPresent());
+        assertFalse(Stream.empty().get(0).get().isPresent());
     }
 
     @Test
     public void testGetWithin() {
-        assertEquals(2, (int) Stream.of(1, 2, 3).get(1).get());
+        assertEquals(2, (int) Stream.of(1, 2, 3).get(1).get().get());
     }
 
     @Test
     public void testRangeOnEmpty() {
-        assertTrue(Stream.range(0, 0).isEmpty().first().get());
+        assertTrue(Stream.range(0, 0).isEmpty().first().get().get());
     }
 
     @Test
@@ -228,7 +228,7 @@ public class StreamTest {
 
     @Test
     public void testConcatEmpties() {
-        assertTrue(Stream.empty().concatWith(Stream.empty()).isEmpty().first().get());
+        assertTrue(Stream.empty().concatWith(Stream.empty()).isEmpty().first().get().get());
     }
 
     @Test(expected = NoSuchElementException.class)

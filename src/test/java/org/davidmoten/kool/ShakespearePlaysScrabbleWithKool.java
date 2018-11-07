@@ -137,10 +137,10 @@ public class ShakespearePlaysScrabbleWithKool extends ShakespearePlaysScrabble {
         Function<Function<String, Stream<Integer>>, Single<TreeMap<Integer, List<String>>>> buildHistoOnScore = score -> Stream
                 .fromIterable(shakespeareWords) //
                 .filter(scrabbleWords::contains) //
-                .filter(word -> checkBlanks.apply(word).first().get())
+                .filter(word -> checkBlanks.apply(word).first().get().get())
                 .collect(() -> new TreeMap<Integer, List<String>>(Comparator.reverseOrder()),
                         (TreeMap<Integer, List<String>> map, String word) -> {
-                            Integer key = score.apply(word).first().get();
+                            Integer key = score.apply(word).first().get().get();
                             List<String> list = map.get(key);
                             if (list == null) {
                                 list = new ArrayList<>();
