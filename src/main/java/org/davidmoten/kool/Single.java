@@ -5,6 +5,7 @@ import java.util.function.Function;
 import org.davidmoten.kool.internal.operators.single.Map;
 import org.davidmoten.kool.internal.operators.single.SingleOf;
 import org.davidmoten.kool.internal.operators.stream.SingleFlatMap;
+import org.davidmoten.kool.internal.operators.stream.SingleToStream;
 
 public interface Single<T> {
 
@@ -24,6 +25,10 @@ public interface Single<T> {
 
     default SingleTester<T> test() {
         return new SingleTester<T>(this);
+    }
+    
+    default Stream<T> toStream() {
+        return new SingleToStream<T>(this);
     }
 
 }

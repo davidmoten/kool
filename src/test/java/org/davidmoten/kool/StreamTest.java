@@ -438,4 +438,19 @@ public class StreamTest {
         Stream.linesFromResource("/test3.txt").test().assertValuesOnly("hello", "there", "world");
     }
 
+    @Test
+    public void testSingleToStream() {
+        Single.of(1).toStream().test().assertValues(1);
+    }
+
+    @Test
+    public void testSingleToStreamIterator() {
+        StreamIterator<Integer> it = Single.of(1).toStream().iterator();
+        assertTrue(it.hasNext());
+        assertTrue(it.hasNext());
+        assertEquals(1, (int) it.next());
+        assertFalse(it.hasNext());
+        assertFalse(it.hasNext());
+    }
+
 }
