@@ -379,6 +379,11 @@ public class StreamTest {
     }
 
     @Test
+    public void testRepeatInfinite() {
+        Stream.of(1, 2).repeat().take(3).test().assertValuesOnly(1, 2, 1);
+    }
+
+    @Test
     public void testTakeUntil() {
         Stream.of(1, 2, 3, 4, 5).takeUntil(x -> x > 3).test().assertValuesOnly(1, 2, 3);
     }
@@ -450,6 +455,19 @@ public class StreamTest {
         assertEquals(1, (int) it.next());
         assertFalse(it.hasNext());
         assertFalse(it.hasNext());
+    }
+
+    @Test
+    public void testFindFirst() {
+        Stream.of(1, 2, 3, 4).findFirst(x -> x > 2).test().assertValue(3);
+    }
+
+    @Test
+    public void testMapWithIndex() {
+        Stream.of("a", "b", "c") //
+                .mapWithIndex() //
+                .test() //
+                .assertValues(Indexed.create("a", 0), Indexed.create("b", 1), Indexed.create("c", 2));
     }
 
 }

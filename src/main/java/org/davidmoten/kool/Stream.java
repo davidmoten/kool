@@ -121,6 +121,22 @@ public interface Stream<T> extends StreamIterable<T> {
         });
     }
 
+    public static <T> Stream<T> error(Supplier<Throwable> supplier) {
+        return Stream.fromIterable(new StreamIterable<T>() {
+            @Override
+            public StreamIterator<T> iterator() {
+                Throwable e = supplier.get();
+                if (e instanceof RuntimeException) {
+                    throw (RuntimeException) e;
+                } else if (e instanceof Error) {
+                    throw (Error) e;
+                } else {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+    }
+
     public static <T> Stream<T> fromIterable(Iterable<T> iterable) {
         return create(iterable);
     }
@@ -224,7 +240,7 @@ public interface Stream<T> extends StreamIterable<T> {
     public default Single<Boolean> isEmpty() {
         return new IsEmpty(this);
     }
-    
+
     public default Single<Boolean> hasElements() {
         return isEmpty().map(x -> !x);
     }
@@ -457,8 +473,12 @@ public interface Stream<T> extends StreamIterable<T> {
 
     public default Stream<Indexed<T>> mapWithIndex() {
         return defer(() -> {
-            int index = 0;
-            return map(x -> Indexed.create(x, index));
+            int[] index = new int[1];
+            return map(x -> {
+                int n = index[0];
+                index[0]=n+1;
+                return Indexed.create(x, n);
+            });
         });
     }
 
@@ -466,7 +486,6 @@ public interface Stream<T> extends StreamIterable<T> {
     // toStreamJava ,
     // skipUntil, skipWhile, retryWhen, cache,
     // doOnEmpty, switchIfEmpty, interleaveWith, materialize
-    // Maybe should be a stream
     // add Single.flatMapMaybe, Maybe.flatMapSingle, Maybe.flatMapMaybe
 
 }
