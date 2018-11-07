@@ -23,11 +23,12 @@ public class StreamTest {
 
     @Test
     public void testMapFilter() {
-        assertEquals(1, (int) //
+        assertEquals(1, (long) //
         Stream.of(1, 2) //
                 .map(x -> x + 1) //
                 .filter(x -> x > 2) //
-                .count());
+                .count() //
+                .get());
     }
 
     @Test
@@ -37,7 +38,7 @@ public class StreamTest {
 
     @Test
     public void testCountDispose() {
-        checkTrue(b -> Stream.of(1, 2).doOnDispose(() -> b.set(true)).count());
+        checkTrue(b -> Stream.of(1, 2).doOnDispose(() -> b.set(true)).count().get());
     }
 
     @Test
@@ -105,7 +106,7 @@ public class StreamTest {
         AtomicBoolean sourceDisposed = new AtomicBoolean();
         AtomicInteger others = new AtomicInteger();
         Stream.of(1, 2).doOnDispose(() -> sourceDisposed.set(true))
-                .flatMap(x -> Stream.of(x).doOnDispose(() -> others.incrementAndGet())).count();
+                .flatMap(x -> Stream.of(x).doOnDispose(() -> others.incrementAndGet())).count().get();
         assertTrue(sourceDisposed.get());
         assertEquals(2, others.get());
     }
@@ -133,7 +134,7 @@ public class StreamTest {
     @Test
     public void testOnValue() {
         List<Integer> list = new ArrayList<>();
-        Stream.of(1, 2, 3).doOnNext(x -> list.add(x)).count();
+        Stream.of(1, 2, 3).doOnNext(x -> list.add(x)).count().get();
         assertEquals(Lists.newArrayList(1, 2, 3), list);
     }
 

@@ -26,6 +26,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
+import org.davidmoten.kool.internal.operators.single.SingleCount;
 import org.davidmoten.kool.internal.operators.stream.Buffer;
 import org.davidmoten.kool.internal.operators.stream.BufferWithPredicate;
 import org.davidmoten.kool.internal.operators.stream.Collect;
@@ -304,26 +305,19 @@ public interface Stream<T> extends StreamIterable<T> {
     }
 
     public default void forEach() {
-        count();
+        count().get();
     }
 
     public default void ignoreElements() {
-        count();
+        count().get();
     }
 
     public default Stream<T> println() {
         return doOnNext(System.out::println);
     }
 
-    public default long count() {
-        StreamIterator<T> it = this.iterator();
-        int i = 0;
-        while (it.hasNext()) {
-            it.next();
-            i++;
-        }
-        it.dispose();
-        return i;
+    public default Single<Long> count() {
+        return new SingleCount(this);
     }
 
     public default Stream<T> prepend(T value) {
