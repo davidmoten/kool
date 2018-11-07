@@ -10,12 +10,14 @@ Alternative to `java.uti.stream.Stream` that:
 * has many more operators and is less verbose
 * streams are reusable
 * disposes resources
+* is designed for synchronous use only
+* models 0..1 and 1 element streams explicitly with `Maybe` and `Single`.
 
 Status: *pre-alpha* (in development)
 
 If you need non-blocking and/or asynchronous streaming use [RxJava](https://github.com/ReactiveX/RxJava).
 
-Note also that [ixjava](https://github.com/akarnokd/ixjava) predates this library and is also a pull-based and iterator-based library for reusable streams.
+Note also that [ixjava](https://github.com/akarnokd/ixjava) predates this library and is also a pull-based and iterator-based library for reusable streams but does not model `Maybe` and `Single`.
 
 
 
