@@ -221,8 +221,12 @@ public interface Stream<T> extends StreamIterable<T> {
         return new RepeatElement<T>(t, count);
     }
 
-    public default Stream<Boolean> isEmpty() {
+    public default Single<Boolean> isEmpty() {
         return new IsEmpty(this);
+    }
+    
+    public default Single<Boolean> hasElements() {
+        return isEmpty().map(x -> !x);
     }
 
     public default Stream<T> sorted(Comparator<? super T> comparator) {
