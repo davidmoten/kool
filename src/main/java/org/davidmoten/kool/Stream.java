@@ -8,6 +8,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.UncheckedIOException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -26,6 +27,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
+import org.davidmoten.kool.exceptions.UncheckedException;
 import org.davidmoten.kool.internal.operators.stream.Buffer;
 import org.davidmoten.kool.internal.operators.stream.BufferWithPredicate;
 import org.davidmoten.kool.internal.operators.stream.Collect;
@@ -116,7 +118,7 @@ public interface Stream<T> extends StreamIterable<T> {
                 } else if (e instanceof Error) {
                     throw (Error) e;
                 } else {
-                    throw new RuntimeException(e);
+                    throw new UncheckedException(e);
                 }
             }
         });
@@ -132,7 +134,7 @@ public interface Stream<T> extends StreamIterable<T> {
                 } else if (e instanceof Error) {
                     throw (Error) e;
                 } else {
-                    throw new RuntimeException(e);
+                    throw new UncheckedException(e);
                 }
             }
         });
@@ -169,7 +171,7 @@ public interface Stream<T> extends StreamIterable<T> {
             try {
                 return new FileInputStream(file);
             } catch (FileNotFoundException e) {
-                throw new RuntimeException(e);
+                throw new UncheckedIOException(e);
             }
         }, in -> lines(() -> in, charset));
     }

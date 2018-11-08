@@ -7,6 +7,7 @@ import java.util.function.Supplier;
 
 import org.davidmoten.kool.Stream;
 import org.davidmoten.kool.StreamIterator;
+import org.davidmoten.kool.exceptions.UncheckedException;
 
 import com.github.davidmoten.guavamini.Preconditions;
 
@@ -31,7 +32,7 @@ public final class FromBufferedReader implements Stream<String> {
                     try {
                         return (line = reader.readLine())!= null;
                     } catch (IOException e) {
-                       throw new RuntimeException(e);
+                       throw new UncheckedException(e);
                     }
                 } else {
                     return true;
