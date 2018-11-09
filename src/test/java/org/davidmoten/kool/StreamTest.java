@@ -2,6 +2,7 @@ package org.davidmoten.kool;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedReader;
@@ -197,7 +198,7 @@ public class StreamTest {
     }
 
     @Test
-    public void testDoOnError() {
+    public void testDoOnErrorWithErrorSource() {
         Throwable[] err = new Throwable[1];
         try {
             Stream.error(new RuntimeException("boo")) //
@@ -208,6 +209,33 @@ public class StreamTest {
             assertEquals("boo", t.getMessage());
             assertEquals("boo", err[0].getMessage());
         }
+    }
+
+    @Test
+    public void testDoOnErrorWhenThrownFromOperator() {
+        Throwable[] err = new Throwable[1];
+        try {
+            Stream.of(1).map(x -> {
+                throw new RuntimeException("boo");
+            }) //
+                    .doOnError(e -> err[0] = e) //
+                    .forEach();
+            Assert.fail();
+        } catch (RuntimeException t) {
+            assertEquals("boo", t.getMessage());
+            assertEquals("boo", err[0].getMessage());
+        }
+    }
+
+    @Test
+    public void testDoOnErrorWhenNoError() {
+        Throwable[] err = new Throwable[1];
+        Stream.of(1) //
+                .doOnError(e -> err[0] = e) //
+                .test() //
+                .assertNoError() //
+                .assertValues(1);
+        assertNull(err[0]);
     }
 
     @Test
@@ -382,6 +410,11 @@ public class StreamTest {
     @Test
     public void testRepeatInfinite() {
         Stream.of(1, 2).repeat().take(3).test().assertValuesOnly(1, 2, 1);
+    }
+
+    @Test
+    public void testRepeatElement() {
+        Stream.repeatElement(2, 3).test().assertValuesOnly(2, 2, 2);
     }
 
     @Test
