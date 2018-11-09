@@ -525,8 +525,8 @@ public class StreamTest {
     public void testEvery() {
         List<Long> list = Lists.newArrayList();
         Stream.range(0, 1000) //
-                .every(100, (n, x) -> {
-                    list.add(n);
+                .every(100, (count, x) -> {
+                    list.add(count);
                 }).forEach();
         assertEquals(Lists.newArrayList(100L, 200L, 300L, 400L, 500L, 600L, 700L, 800L, 900L, 1000L), list);
     }
