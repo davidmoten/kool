@@ -505,20 +505,29 @@ public class StreamTest {
     public void testSkipUntil() {
         Stream.of(1, 2, 3, 4, 5).skipUntil(x -> x > 2).test().assertValues(3, 4, 5);
     }
-    
+
     @Test
     public void testSkipUntilNoValuesFound() {
         Stream.of(1, 2, 3, 4, 5).skipUntil(x -> x > 5).test().assertNoValues();
     }
-    
+
     @Test
     public void testSkipUntilOnEmpty() {
         Stream.<Integer>empty().skipUntil(x -> x > 5).test().assertNoValues();
     }
-    
+
     @Test
     public void testSkipWhile() {
         Stream.of(1, 2, 3, 4, 5).skipWhile(x -> x <= 2).test().assertValues(3, 4, 5);
     }
 
+    @Test
+    public void testEvery() {
+        List<Long> list = Lists.newArrayList();
+        Stream.range(0, 1000) //
+                .every(100, (n, x) -> {
+                    list.add(n);
+                }).forEach();
+        assertEquals(Lists.newArrayList(100L, 200L, 300L, 400L, 500L, 600L, 700L, 800L, 900L, 1000L), list);
+    }
 }

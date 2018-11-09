@@ -309,7 +309,7 @@ public interface Stream<T> extends StreamIterable<T> {
     public default void forEach() {
         count().get();
     }
-    
+
     public default Stream<T> println() {
         return doOnNext(System.out::println);
     }
@@ -436,11 +436,11 @@ public interface Stream<T> extends StreamIterable<T> {
     public default Stream<T> skip(int size) {
         return new Skip<T>(size, this);
     }
-    
+
     public default Stream<T> skipUntil(Predicate<? super T> predicate) {
         return new SkipUntil<T>(this, predicate, false);
     }
-    
+
     public default Stream<T> skipWhile(Predicate<? super T> predicate) {
         return new SkipUntil<T>(this, predicate, true);
     }
@@ -476,8 +476,20 @@ public interface Stream<T> extends StreamIterable<T> {
             int[] index = new int[1];
             return map(x -> {
                 int n = index[0];
-                index[0]=n+1;
+                index[0] = n + 1;
                 return Indexed.create(x, n);
+            });
+        });
+    }
+
+    public default Stream<T> every(long n, BiConsumer<Long, T> action) {
+        return defer(() -> {
+            long[] index = new long[1];
+            return doOnNext(x -> {
+                index[0]++;
+                if (index[0] % n == 0) {
+                    action.accept(index[0], x);
+                }
             });
         });
     }
