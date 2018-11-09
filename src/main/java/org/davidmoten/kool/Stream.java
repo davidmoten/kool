@@ -26,6 +26,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.stream.StreamSupport;
 
 import org.davidmoten.kool.exceptions.UncheckedException;
 import org.davidmoten.kool.internal.operators.stream.Buffer;
@@ -436,6 +437,14 @@ public interface Stream<T> extends StreamIterable<T> {
     public default Stream<T> skip(int size) {
         return new Skip<T>(size, this);
     }
+    
+    public default Stream<T> skipUntil(Predicate<? super T> predicate) {
+        return new SkipUntil<T>(this, predicate, false);
+    }
+    
+    public default Stream<T> skipWhile(Predicate<? super T> predicate) {
+        return new SkipUntil<T>(this, predicate, true);
+    }
 
     public default Stream<T> repeat(long count) {
         return new Repeat<T>(count, this);
@@ -475,8 +484,8 @@ public interface Stream<T> extends StreamIterable<T> {
     }
 
     // TODO
-    // toStreamJava ,
-    // skipUntil, skipWhile, retryWhen, cache,
+    // don't use toList in toStreamJava ,
+    // skipWhile, retryWhen, cache,
     // doOnEmpty, switchIfEmpty, interleaveWith, materialize
     // add Single.flatMapMaybe, Maybe.flatMapSingle, Maybe.flatMapMaybe
 

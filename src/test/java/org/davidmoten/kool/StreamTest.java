@@ -504,4 +504,24 @@ public class StreamTest {
                 .assertValues(Indexed.create("a", 0), Indexed.create("b", 1), Indexed.create("c", 2));
     }
 
+    @Test
+    public void testSkipUntil() {
+        Stream.of(1, 2, 3, 4, 5).skipUntil(x -> x > 2).test().assertValues(3, 4, 5);
+    }
+    
+    @Test
+    public void testSkipUntilNoValuesFound() {
+        Stream.of(1, 2, 3, 4, 5).skipUntil(x -> x > 5).test().assertNoValues();
+    }
+    
+    @Test
+    public void testSkipUntilOnEmpty() {
+        Stream.<Integer>empty().skipUntil(x -> x > 5).test().assertNoValues();
+    }
+    
+    @Test
+    public void testSkipWhile() {
+        Stream.of(1, 2, 3, 4, 5).skipWhile(x -> x <= 2).test().assertValues(3, 4, 5);
+    }
+
 }
