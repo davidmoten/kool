@@ -1,11 +1,14 @@
 package org.davidmoten.kool;
 
+import com.github.davidmoten.guavamini.Preconditions;
+
 public final class Indexed<T> {
 
     private final T t;
     private final int index;
 
     private Indexed(T t, int index) {
+        Preconditions.checkNotNull(t);
         this.t = t;
         this.index = index;
     }
@@ -27,7 +30,7 @@ public final class Indexed<T> {
         final int prime = 31;
         int result = 1;
         result = prime * result + index;
-        result = prime * result + ((t == null) ? 0 : t.hashCode());
+        result = prime * result + t.hashCode();
         return result;
     }
 
@@ -42,17 +45,14 @@ public final class Indexed<T> {
         Indexed<?> other = (Indexed<?>) obj;
         if (index != other.index)
             return false;
-        if (t == null) {
-            if (other.t != null)
-                return false;
-        } else if (!t.equals(other.t))
+        if (!t.equals(other.t))
             return false;
         return true;
     }
 
     @Override
     public String toString() {
-        return "Indexed [value=" + t + ", index=" + index + "]";
+        return "Indexed[value=" + t + ", index=" + index + "]";
     }
 
 }
