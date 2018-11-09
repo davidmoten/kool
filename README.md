@@ -4,7 +4,7 @@
 [![codecov](https://codecov.io/gh/davidmoten/kool/branch/master/graph/badge.svg)](https://codecov.io/gh/davidmoten/kool)
 
 
-Alternative to `java.uti.stream.Stream` that:
+Alternative to `java.util.stream.Stream` that:
 
 * is sometimes faster (about 2x) for synchonronous use
 * has many more operators and is less verbose
