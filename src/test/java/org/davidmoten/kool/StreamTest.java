@@ -345,7 +345,6 @@ public class StreamTest {
                 .assertValuesOnly(Lists.newArrayList(1, 2), Lists.newArrayList(3, 4), Lists.newArrayList(5));
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     public void testBufferExact() {
         Stream.of(1, 2, 3, 4) //
@@ -449,7 +448,6 @@ public class StreamTest {
         assertTrue(disposed.get());
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     public void testBufferWhile() {
         Stream.of(1, 2, 3) //
@@ -460,7 +458,6 @@ public class StreamTest {
                         Lists.newArrayList(3));
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     public void testBufferUntil() {
         Stream.of(1, 2, 3) //

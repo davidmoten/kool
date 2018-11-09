@@ -67,7 +67,6 @@ public class ShakespearePlaysScrabbleWithKool extends ShakespearePlaysScrabble {
      * 29389,903 ± 1115,836 us/op
      * 
      */
-    @SuppressWarnings("unused")
     @Benchmark
     @BenchmarkMode(Mode.SampleTime)
     @OutputTimeUnit(TimeUnit.MILLISECONDS)
