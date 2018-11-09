@@ -481,6 +481,10 @@ public interface Stream<T> extends StreamIterable<T> {
             });
         });
     }
+    
+    public default Stream<T> replay() {
+        return new Replay<T>(this);
+    }
 
     public default Stream<T> every(long n, BiConsumer<Long, T> action) {
         return defer(() -> {
@@ -496,7 +500,7 @@ public interface Stream<T> extends StreamIterable<T> {
 
     // TODO
     // don't use toList in toStreamJava ,
-    // skipWhile, retryWhen, cache,
+    // retryWhen, cache,
     // doOnEmpty, switchIfEmpty, interleaveWith, materialize
     // add Single.flatMapMaybe, Maybe.flatMapSingle, Maybe.flatMapMaybe
 

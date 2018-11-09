@@ -530,4 +530,14 @@ public class StreamTest {
                 }).forEach();
         assertEquals(Lists.newArrayList(100L, 200L, 300L, 400L, 500L, 600L, 700L, 800L, 900L, 1000L), list);
     }
+    
+    @Test
+    public void testReplay() {
+        AtomicInteger count = new AtomicInteger();
+        Stream<Integer> stream = Stream.of(1,2,3).doOnNext(x -> count.incrementAndGet()).replay();
+        stream.test().assertValues(1,2,3);
+        assertEquals(3, count.get());
+        stream.test().assertValues(1,2,3);
+        assertEquals(3, count.get());
+    }
 }
