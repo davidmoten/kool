@@ -14,6 +14,7 @@ import java.io.StringReader;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -662,7 +663,7 @@ public class StreamTest {
         });
 
         Stream.mergeInterleaved(a, b) //
-//                .doOnError(e -> e.printStackTrace()) //
+                // .doOnError(e -> e.printStackTrace()) //
                 .test() //
                 .assertValues(1, 2) //
                 .assertError(CompositeException.class) //
@@ -673,5 +674,21 @@ public class StreamTest {
                     System.out.println(exb.getMessage());
                     return exb.getMessage().equals("2") && exa.getMessage().equals("1");
                 });
+    }
+
+    @Test
+    public void testMax() {
+        Stream.of(1, 5, 2) //
+                .max(Comparator.naturalOrder()) //
+                .test() //
+                .assertValue(5);
+    }
+    
+    @Test
+    public void testMin() {
+        Stream.of(5, 1, 2) //
+                .min(Comparator.naturalOrder()) //
+                .test() //
+                .assertValue(1);
     }
 }

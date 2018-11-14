@@ -11,7 +11,7 @@
     <artifactId>kool</artifactId>
     <version>0.1-SNAPSHOT</version>
     <name>${project.artifactId}</name>
-    <description>Text word wrapping in Java</description>
+    <description>Streaming library supporting reuse and many operators</description>
     <packaging>jar</packaging>
 
     <url>http://github.com/davidmoten/kool</url>

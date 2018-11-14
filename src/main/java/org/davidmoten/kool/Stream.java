@@ -300,12 +300,12 @@ public interface Stream<T> extends StreamIterable<T> {
     public static <T> Stream<T> repeatElement(T t, long count) {
         return new RepeatElement<T>(t, count);
     }
-    
+
     @SafeVarargs
     public static <T> Stream<T> mergeInterleaved(Stream<? extends T>... streams) {
         return new MergeInterleaved<T>(streams);
     }
-    
+
     //////////////////
     // Operators
     //////////////////
@@ -335,7 +335,8 @@ public interface Stream<T> extends StreamIterable<T> {
         return new ReduceNoInitialValue<T>(reducer, this).iterator().next();
     }
 
-    public default <R> Maybe<R> reduceWithInitialValue(R initialValue, BiFunction<? super R, ? super T, ? extends R> reducer) {
+    public default <R> Maybe<R> reduceWithInitialValue(R initialValue,
+            BiFunction<? super R, ? super T, ? extends R> reducer) {
         return reduce(() -> initialValue, reducer);
     }
 
@@ -579,9 +580,19 @@ public interface Stream<T> extends StreamIterable<T> {
     public default Stream<T> ignoreDisposalError(Consumer<Throwable> action) {
         return new IgnoreDisposalError<T>(this, action);
     }
-    
+
     public default Stream<T> ignoreDisposalError() {
         return new IgnoreDisposalError<T>(this, null);
+    }
+
+    public default Maybe<T> max(Comparator<? super T> comparator) {
+        //TODO make lambda singleton
+        return reduce((a, b) -> comparator.compare(a, b) >= 0 ? a : b);
+    }
+    
+    public default Maybe<T> min(Comparator<? super T> comparator) {
+        //TODO make lambda singleton
+        return reduce((a, b) -> comparator.compare(a, b) >= 0 ? b : a);
     }
 
     // TODO
