@@ -36,6 +36,7 @@ import org.davidmoten.kool.internal.operators.stream.Count;
 import org.davidmoten.kool.internal.operators.stream.Defer;
 import org.davidmoten.kool.internal.operators.stream.DoOnComplete;
 import org.davidmoten.kool.internal.operators.stream.DoOnDispose;
+import org.davidmoten.kool.internal.operators.stream.DoOnEmpty;
 import org.davidmoten.kool.internal.operators.stream.DoOnError;
 import org.davidmoten.kool.internal.operators.stream.DoOnNext;
 import org.davidmoten.kool.internal.operators.stream.Filter;
@@ -374,6 +375,10 @@ public interface Stream<T> extends StreamIterable<T> {
         return new DoOnDispose<T>(action, this, false);
     }
 
+    public default Stream<T> doOnEmpty(Runnable action) {
+        return new DoOnEmpty<T>(this, action);
+    }
+    
     public default Maybe<T> last() {
         return Iterables.first(new Last<T>(this).iterator());
     }
@@ -481,7 +486,7 @@ public interface Stream<T> extends StreamIterable<T> {
             });
         });
     }
-    
+
     public default Stream<T> replay() {
         return new Replay<T>(this);
     }
@@ -500,7 +505,7 @@ public interface Stream<T> extends StreamIterable<T> {
 
     // TODO
     // don't use toList in toStreamJava ,
-    // retryWhen, cache,
+    // retryWhen,
     // doOnEmpty, switchIfEmpty, interleaveWith, materialize
     // add Single.flatMapMaybe, Maybe.flatMapSingle, Maybe.flatMapMaybe
 
