@@ -540,4 +540,18 @@ public class StreamTest {
         stream.test().assertValues(1,2,3);
         assertEquals(3, count.get());
     }
+    
+    @Test
+    public void testDoOnEmptyDoesNotFireIfStreamNonEmpty() {
+        AtomicBoolean b = new AtomicBoolean();
+        Stream.of(1, 2).doOnEmpty(() -> b.set(true)).forEach();
+        assertFalse(b.get());
+    }
+    
+    @Test
+    public void testDoOnEmptyFiresIfStreamEmpty() {
+        AtomicBoolean b = new AtomicBoolean();
+        Stream.empty().doOnEmpty(() -> b.set(true)).forEach();
+        assertTrue(b.get());
+    }
 }
