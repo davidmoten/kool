@@ -581,17 +581,15 @@ public class StreamTest {
         bb.get(x);
         assertEquals("hello there", new String(x, StandardCharsets.UTF_8));
     }
-    
+
     @Test
     public void testByteBuffersManyElementsOutput() {
-        byte[] b = Stream
-                .byteBuffers(() -> new ByteArrayInputStream("hello there".getBytes(StandardCharsets.UTF_8)), 2)
+        byte[] b = Stream.byteBuffers(() -> new ByteArrayInputStream("hello there".getBytes(StandardCharsets.UTF_8)), 2)
                 .collect(() -> new ByteArrayOutputStream(), (c, bb) -> {
                     while (bb.position() < bb.limit()) {
                         c.write(bb.get());
                     }
-                })
-                .get().toByteArray();
+                }).get().toByteArray();
         assertEquals("hello there", new String(b, StandardCharsets.UTF_8));
     }
 
@@ -602,20 +600,53 @@ public class StreamTest {
                 .test() //
                 .assertValues("hello there");
     }
-    
+
     @Test
     public void testBytesManyElementsOutput() {
-        byte[] b = Stream
-                .bytes(() -> new ByteArrayInputStream("hello there".getBytes(StandardCharsets.UTF_8)), 2)
+        byte[] b = Stream.bytes(() -> new ByteArrayInputStream("hello there".getBytes(StandardCharsets.UTF_8)), 2)
                 .collect(() -> new ByteArrayOutputStream(), (c, bytes) -> {
                     try {
-                        c .write(bytes);
+                        c.write(bytes);
                     } catch (IOException e) {
                         throw new UncheckedException(e);
                     }
-                })
-                .get() //
+                }).get() //
                 .toByteArray();
         assertEquals("hello there", new String(b, StandardCharsets.UTF_8));
+    }
+
+    @Test
+    public void testMergeInterleavedEmpty() {
+        Stream.mergeInterleaved(Stream.empty()).test().assertNoValues();
+    }
+
+    @Test
+    public void testMergeInterleavedOneStreamOneValue() {
+        Stream.mergeInterleaved(Stream.of(1)).test().assertValues(1);
+    }
+
+    @Test
+    public void testMergeInterleavedOneStreamManyValues() {
+        Stream.mergeInterleaved(Stream.of(1, 2, 3)).test().assertValues(1, 2, 3);
+    }
+
+    @Test
+    public void testMergeInterleavedOneStreamOneStreamWithEmpty() {
+        Stream.mergeInterleaved(Stream.of(1, 2, 3), Stream.empty()).test().assertValues(1, 2, 3);
+    }
+
+    @Test
+    public void testMergeInterleavedOneStreamEmptyWithOneStream() {
+        Stream.mergeInterleaved(Stream.empty(), Stream.of(1, 2, 3)).test().assertValues(1, 2, 3);
+    }
+
+    @Test
+    public void testMergeInterleavedTwoStreamsSameSize() {
+        Stream.mergeInterleaved(Stream.of(1, 3, 5), Stream.of(2, 4, 6)).test().assertValues(1, 2, 3, 4, 5, 6);
+    }
+    
+    @Test
+    public void testMergeInterleavedFirstStreamBiggerThanSecond() {
+        Stream.mergeInterleaved(Stream.of(1, 3, 5, 6, 7), Stream.of(2, 4)).test().assertValues(1, 2, 3, 4, 5, 6, 7);
     }
 }

@@ -49,6 +49,7 @@ import org.davidmoten.kool.internal.operators.stream.IgnoreDisposalError;
 import org.davidmoten.kool.internal.operators.stream.IsEmpty;
 import org.davidmoten.kool.internal.operators.stream.Last;
 import org.davidmoten.kool.internal.operators.stream.Map;
+import org.davidmoten.kool.internal.operators.stream.MergeInterleaved;
 import org.davidmoten.kool.internal.operators.stream.PrependOne;
 import org.davidmoten.kool.internal.operators.stream.Range;
 import org.davidmoten.kool.internal.operators.stream.ReduceNoInitialValue;
@@ -299,7 +300,12 @@ public interface Stream<T> extends StreamIterable<T> {
     public static <T> Stream<T> repeatElement(T t, long count) {
         return new RepeatElement<T>(t, count);
     }
-
+    
+    @SafeVarargs
+    public static <T> Stream<T> mergeInterleaved(Stream<? extends T>... streams) {
+        return new MergeInterleaved<T>(streams);
+    }
+    
     //////////////////
     // Operators
     //////////////////
