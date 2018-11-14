@@ -1,6 +1,9 @@
-package org.davidmoten.kool;
+package org.davidmoten.kool.internal.operators.stream;
 
 import java.util.List;
+
+import org.davidmoten.kool.Stream;
+import org.davidmoten.kool.StreamIterator;
 
 import com.github.davidmoten.guavamini.Lists;
 import com.github.davidmoten.guavamini.Preconditions;

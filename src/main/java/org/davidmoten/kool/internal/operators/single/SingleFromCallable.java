@@ -1,7 +1,8 @@
-package org.davidmoten.kool;
+package org.davidmoten.kool.internal.operators.single;
 
 import java.util.concurrent.Callable;
 
+import org.davidmoten.kool.Single;
 import org.davidmoten.kool.exceptions.UncheckedException;
 
 import com.github.davidmoten.guavamini.Preconditions;

@@ -8,6 +8,7 @@ import org.davidmoten.kool.internal.operators.single.Map;
 import org.davidmoten.kool.internal.operators.single.SingleDoOnError;
 import org.davidmoten.kool.internal.operators.single.SingleDoOnValue;
 import org.davidmoten.kool.internal.operators.single.SingleFlatMap;
+import org.davidmoten.kool.internal.operators.single.SingleFromCallable;
 import org.davidmoten.kool.internal.operators.single.SingleIterator;
 import org.davidmoten.kool.internal.operators.single.SingleOf;
 import org.davidmoten.kool.internal.operators.single.SingleToStream;
