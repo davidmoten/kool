@@ -1,21 +1,22 @@
 package org.davidmoten.kool.internal.operators.stream;
 
+import java.util.concurrent.Callable;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 import org.davidmoten.kool.Stream;
 import org.davidmoten.kool.StreamIterator;
+import org.davidmoten.kool.exceptions.UncheckedException;
 
 import com.github.davidmoten.guavamini.Preconditions;
 
-public class Using<R, T> implements Stream<T> {
+public final class Using<R, T> implements Stream<T> {
 
-    private final Supplier<R> resourceFactory;
+    private final Callable<R> resourceFactory;
     private final Function<? super R, ? extends Stream<? extends T>> streamFactory;
     private final Consumer<? super R> closer;
 
-    public Using(Supplier<R> resourceFactory, Function<? super R, ? extends Stream<? extends T>> streamFactory,
+    public Using(Callable<R> resourceFactory, Function<? super R, ? extends Stream<? extends T>> streamFactory,
             Consumer<? super R> closer) {
         this.resourceFactory = resourceFactory;
         this.streamFactory = streamFactory;
@@ -24,28 +25,32 @@ public class Using<R, T> implements Stream<T> {
 
     @Override
     public StreamIterator<T> iterator() {
-        return new StreamIterator<T>() {
+        try {
+            return new StreamIterator<T>() {
 
-            R resource = resourceFactory.get();
-            @SuppressWarnings("unchecked")
-            StreamIterator<T> it = Preconditions.checkNotNull((StreamIterator<T>) streamFactory.apply(resource).iterator());
+                R resource = resourceFactory.call();
+                @SuppressWarnings("unchecked")
+                StreamIterator<T> it = Preconditions.checkNotNull((StreamIterator<T>) streamFactory.apply(resource).iterator());
 
-            @Override
-            public boolean hasNext() {
-                return it.hasNext();
-            }
+                @Override
+                public boolean hasNext() {
+                    return it.hasNext();
+                }
 
-            @Override
-            public T next() {
-                return Preconditions.checkNotNull(it.next());
-            }
+                @Override
+                public T next() {
+                    return Preconditions.checkNotNull(it.next());
+                }
 
-            @Override
-            public void dispose() {
-                it.dispose();
-                closer.accept(resource);
-            }
-        };
+                @Override
+                public void dispose() {
+                    it.dispose();
+                    closer.accept(resource);
+                }
+            };
+        } catch (Exception e) {
+            throw new UncheckedException(e);
+        }
     }
 
 }

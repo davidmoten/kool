@@ -28,7 +28,6 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-import org.davidmoten.kool.exceptions.CompositeException;
 import org.davidmoten.kool.exceptions.UncheckedException;
 import org.davidmoten.kool.internal.operators.stream.Buffer;
 import org.davidmoten.kool.internal.operators.stream.BufferWithPredicate;
@@ -45,7 +44,7 @@ import org.davidmoten.kool.internal.operators.stream.Filter;
 import org.davidmoten.kool.internal.operators.stream.First;
 import org.davidmoten.kool.internal.operators.stream.FlatMap;
 import org.davidmoten.kool.internal.operators.stream.FromBufferedReader;
-import org.davidmoten.kool.internal.operators.stream.FromBytes;
+import org.davidmoten.kool.internal.operators.stream.FromInputStream;
 import org.davidmoten.kool.internal.operators.stream.IsEmpty;
 import org.davidmoten.kool.internal.operators.stream.Last;
 import org.davidmoten.kool.internal.operators.stream.Map;
@@ -165,15 +164,21 @@ public interface Stream<T> extends StreamIterable<T> {
     }
 
     public static Stream<String> lines(BufferedReader reader) {
-        return lines(() -> reader);
+        return new FromBufferedReader(reader);
     }
 
-    public static Stream<String> lines(Supplier<BufferedReader> readerFactory) {
-        return new FromBufferedReader(readerFactory);
+    public static Stream<String> lines(Callable<BufferedReader> readerFactory) {
+        return Stream.using(() -> {
+            try {
+                return readerFactory.call();
+            } catch (Exception e) {
+                throw new UncheckedException(e);
+            }
+        }, br -> lines(br));
     }
 
-    public static Stream<String> lines(Supplier<InputStream> inFactory, Charset charset) {
-        return lines(() -> new BufferedReader(new InputStreamReader(inFactory.get(), charset)));
+    public static Stream<String> lines(Callable<InputStream> inFactory, Charset charset) {
+        return lines(() -> new BufferedReader(new InputStreamReader(inFactory.call(), charset)));
     }
 
     public static Stream<String> lines(File file, Charset charset) {
@@ -203,11 +208,19 @@ public interface Stream<T> extends StreamIterable<T> {
     }
 
     public static Stream<ByteBuffer> byteBuffers(Callable<? extends InputStream> provider, int bufferSize) {
-        return new FromBytes(provider, bufferSize);
+        return using(provider, is -> byteBuffers(is));
     }
-    
-    public static Stream<ByteBuffer> bytesBuffers(Callable<? extends InputStream> provider) {
-        return byteBuffers(provider, 8192);
+
+    public static Stream<ByteBuffer> byteBuffers(Callable<? extends InputStream> provider) {
+        return byteBuffers(provider, DEFAULT_BUFFER_SIZE);
+    }
+
+    public static Stream<ByteBuffer> byteBuffers(InputStream in) {
+        return byteBuffers(in, DEFAULT_BUFFER_SIZE);
+    }
+
+    public static Stream<ByteBuffer> byteBuffers(InputStream in, int bufferSize) {
+        return new FromInputStream(in, bufferSize);
     }
 
     public static Stream<byte[]> bytes(Callable<? extends InputStream> provider, int bufferSize) {
@@ -218,11 +231,11 @@ public interface Stream<T> extends StreamIterable<T> {
                     return b;
                 });
     }
-    
+
     public static Stream<byte[]> bytes(Callable<? extends InputStream> provider) {
-        return bytes(provider, 8192);
+        return bytes(provider, DEFAULT_BUFFER_SIZE);
     }
-    
+
     public static Stream<Long> range(long start, long length) {
         return create(new Range(start, length));
     }
@@ -240,12 +253,12 @@ public interface Stream<T> extends StreamIterable<T> {
         return (Stream<T>) StreamUtils.EmptyHolder.EMPTY;
     }
 
-    public static <R, T> Stream<T> using(Supplier<R> resourceFactory,
+    public static <R, T> Stream<T> using(Callable<R> resourceFactory,
             Function<? super R, ? extends Stream<? extends T>> streamFactory, Consumer<? super R> closer) {
         return new Using<R, T>(resourceFactory, streamFactory, closer);
     }
 
-    public static <R extends Closeable, T> Stream<T> using(Supplier<R> resourceFactory,
+    public static <R extends Closeable, T> Stream<T> using(Callable<R> resourceFactory,
             Function<? super R, ? extends Stream<? extends T>> streamFactory) {
         return new Using<R, T>(resourceFactory, streamFactory, CLOSEABLE_CLOSER);
     }
@@ -536,7 +549,7 @@ public interface Stream<T> extends StreamIterable<T> {
             });
         });
     }
-    
+
     // TODO
     // don't use toList in toStreamJava ,
     // retryWhen,
