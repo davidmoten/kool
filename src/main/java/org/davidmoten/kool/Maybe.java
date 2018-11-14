@@ -1,6 +1,7 @@
 package org.davidmoten.kool;
 
 import java.util.Optional;
+import java.util.concurrent.Callable;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -8,6 +9,7 @@ import org.davidmoten.kool.internal.operators.maybe.MaybeDoOnEmpty;
 import org.davidmoten.kool.internal.operators.maybe.MaybeDoOnError;
 import org.davidmoten.kool.internal.operators.maybe.MaybeDoOnValue;
 import org.davidmoten.kool.internal.operators.maybe.MaybeFlatMap;
+import org.davidmoten.kool.internal.operators.maybe.MaybeFromCallable;
 import org.davidmoten.kool.internal.operators.maybe.MaybeIsPresent;
 import org.davidmoten.kool.internal.operators.maybe.MaybeIterator;
 import org.davidmoten.kool.internal.operators.maybe.MaybeMap;
@@ -23,6 +25,22 @@ public interface Maybe<T> extends StreamIterable<T> {
     public static <T> Maybe<T> of(T value) {
         Preconditions.checkNotNull(value);
         return new MaybeImpl<T>(Optional.of(value));
+    }
+    
+    public static <T> Maybe<T> fromCallableNullable(Callable<T> callable) {
+        return new MaybeFromCallable<T>(callable, true);
+    }
+    
+    public static <T> Maybe<T> fromCallable(Callable<T> callable) {
+        return new MaybeFromCallable<T>(callable, false);
+    }
+
+    public static <T> Maybe<T> ofNullable(T value) {
+        if (value == null) {
+            return empty();
+        } else {
+            return new MaybeImpl<T>(Optional.of(value));
+        }
     }
 
     @SuppressWarnings("unchecked")

@@ -568,5 +568,6 @@ public interface Stream<T> extends StreamIterable<T> {
     // retryWhen,
     // interleaveWith, materialize
     // add Single.flatMapMaybe, Maybe.flatMapSingle, Maybe.flatMapMaybe
+    // add Maybe.defer, Single.fromCallable, Single.defer
 
 }
