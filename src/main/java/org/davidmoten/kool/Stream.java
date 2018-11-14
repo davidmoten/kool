@@ -28,6 +28,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
+import org.davidmoten.kool.exceptions.CompositeException;
 import org.davidmoten.kool.exceptions.UncheckedException;
 import org.davidmoten.kool.internal.operators.stream.Buffer;
 import org.davidmoten.kool.internal.operators.stream.BufferWithPredicate;
@@ -127,11 +128,16 @@ public interface Stream<T> extends StreamIterable<T> {
         });
     }
 
-    public static <T> Stream<T> error(Supplier<Throwable> supplier) {
+    public static <T> Stream<T> error(Callable<Throwable> callable) {
         return Stream.fromIterable(new StreamIterable<T>() {
             @Override
             public StreamIterator<T> iterator() {
-                Throwable e = supplier.get();
+                Throwable e;
+                try {
+                    e = callable.call();
+                } catch (Exception e1) {
+                    throw new UncheckedException(e1);
+                }
                 if (e instanceof RuntimeException) {
                     throw (RuntimeException) e;
                 } else if (e instanceof Error) {
