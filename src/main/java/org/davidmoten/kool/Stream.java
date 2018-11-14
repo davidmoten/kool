@@ -329,13 +329,13 @@ public interface Stream<T> extends StreamIterable<T> {
         return new ReduceNoInitialValue<T>(reducer, this).iterator().next();
     }
 
-    public default <R> R reduceWithInitialValue(R initialValue, BiFunction<? super R, ? super T, ? extends R> reducer) {
+    public default <R> Maybe<R> reduceWithInitialValue(R initialValue, BiFunction<? super R, ? super T, ? extends R> reducer) {
         return reduce(() -> initialValue, reducer);
     }
 
-    public default <R> R reduce(Supplier<R> initialValueFactory,
+    public default <R> Maybe<R> reduce(Supplier<R> initialValueFactory,
             BiFunction<? super R, ? super T, ? extends R> reducer) {
-        return new ReduceWithInitialValueSupplier<R, T>(initialValueFactory, reducer, this).iterator().next();
+        return new ReduceWithInitialValueSupplier<R, T>(initialValueFactory, reducer, this);
     }
 
     public default <R> Single<R> collect(Supplier<? extends R> factory, BiConsumer<? super R, ? super T> collector) {

@@ -1,16 +1,16 @@
 package org.davidmoten.kool.internal.operators.stream;
 
-import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
-import org.davidmoten.kool.Stream;
+import org.davidmoten.kool.Maybe;
 import org.davidmoten.kool.StreamIterable;
 import org.davidmoten.kool.StreamIterator;
 
 import com.github.davidmoten.guavamini.Preconditions;
 
-public final class ReduceWithInitialValueSupplier<R, T> implements Stream<R> {
+public final class ReduceWithInitialValueSupplier<R, T> implements Maybe<R> {
 
     private final Supplier<R> initialValue;
     private final BiFunction<? super R, ? super T, ? extends R> reducer;
@@ -24,50 +24,20 @@ public final class ReduceWithInitialValueSupplier<R, T> implements Stream<R> {
     }
 
     @Override
-    public StreamIterator<R> iterator() {
-        return new StreamIterator<R>() {
-
-            final StreamIterator<T> it = Preconditions.checkNotNull(source.iterator());
-            R value;
-            boolean finished;
-
-            @Override
-            public boolean hasNext() {
-                if (finished) {
-                    return false;
-                } else {
-                    calculate();
-                    return true;
-                }
+    public Optional<R> get() {
+        StreamIterator<T> it = null;
+        try {
+            it = Preconditions.checkNotNull(source.iterator());
+            R r = Preconditions.checkNotNull(initialValue.get());
+            while (it.hasNext()) {
+                r = Preconditions.checkNotNull(reducer.apply(r, it.next()));
             }
-
-            @Override
-            public R next() {
-                if (finished) {
-                    throw new NoSuchElementException();
-                } else {
-                    finished = true;
-                    calculate();
-                    R r = value;
-                    value = null;
-                    return r;
-                }
-            }
-
-            private void calculate() {
-                R r = Preconditions.checkNotNull(initialValue.get());
-                while (it.hasNext()) {
-                    r = Preconditions.checkNotNull(reducer.apply(r, it.next()));
-                }
-                value = r;
-            }
-
-            @Override
-            public void dispose() {
+            return Optional.of(r);
+        } finally {
+            if (it != null) {
                 it.dispose();
             }
-
-        };
+        }
     }
 
 }
