@@ -45,6 +45,7 @@ import org.davidmoten.kool.internal.operators.stream.First;
 import org.davidmoten.kool.internal.operators.stream.FlatMap;
 import org.davidmoten.kool.internal.operators.stream.FromBufferedReader;
 import org.davidmoten.kool.internal.operators.stream.FromInputStream;
+import org.davidmoten.kool.internal.operators.stream.IgnoreDisposeError;
 import org.davidmoten.kool.internal.operators.stream.IsEmpty;
 import org.davidmoten.kool.internal.operators.stream.Last;
 import org.davidmoten.kool.internal.operators.stream.Map;
@@ -74,7 +75,7 @@ import org.davidmoten.kool.internal.util.StreamUtils;
 public interface Stream<T> extends StreamIterable<T> {
 
     public static final int DEFAULT_BUFFER_SIZE = 16;
-    
+
     //////////////////
     // Factories
     //////////////////
@@ -298,7 +299,7 @@ public interface Stream<T> extends StreamIterable<T> {
     public static <T> Stream<T> repeatElement(T t, long count) {
         return new RepeatElement<T>(t, count);
     }
-    
+
     //////////////////
     // Operators
     //////////////////
@@ -567,6 +568,10 @@ public interface Stream<T> extends StreamIterable<T> {
                 }
             });
         });
+    }
+
+    public default Stream<T> ignoreDisposeError(Consumer<Throwable> action) {
+        return new IgnoreDisposeError<T>(this, action);
     }
 
     // TODO
