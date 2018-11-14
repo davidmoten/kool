@@ -5,6 +5,7 @@ import java.util.concurrent.Callable;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+import org.davidmoten.kool.internal.operators.maybe.MaybeDefer;
 import org.davidmoten.kool.internal.operators.maybe.MaybeDoOnEmpty;
 import org.davidmoten.kool.internal.operators.maybe.MaybeDoOnError;
 import org.davidmoten.kool.internal.operators.maybe.MaybeDoOnValue;
@@ -21,17 +22,21 @@ import com.github.davidmoten.guavamini.Preconditions;
 public interface Maybe<T> extends StreamIterable<T> {
 
     Optional<T> get();
+    
+    //////////////////
+    // Factories
+    //////////////////
 
     public static <T> Maybe<T> of(T value) {
         Preconditions.checkNotNull(value);
         return new MaybeImpl<T>(Optional.of(value));
     }
-    
-    public static <T> Maybe<T> fromCallableNullable(Callable<T> callable) {
+
+    public static <T> Maybe<T> fromCallableNullable(Callable<? extends T> callable) {
         return new MaybeFromCallable<T>(callable, true);
     }
-    
-    public static <T> Maybe<T> fromCallable(Callable<T> callable) {
+
+    public static <T> Maybe<T> fromCallable(Callable<? extends T> callable) {
         return new MaybeFromCallable<T>(callable, false);
     }
 
@@ -42,12 +47,21 @@ public interface Maybe<T> extends StreamIterable<T> {
             return new MaybeImpl<T>(Optional.of(value));
         }
     }
-
+    
     @SuppressWarnings("unchecked")
     public static <T> Maybe<T> empty() {
         return (Maybe<T>) MaybeImpl.EmptyHolder.INSTANCE;
     }
 
+    
+    public static <T> Maybe<T> defer(Callable<? extends Maybe<? extends T>> factory) {
+        return new MaybeDefer<T>(factory);
+    }
+
+    //////////////////
+    // Operators
+    //////////////////
+    
     public default <R> Maybe<R> map(Function<? super T, ? extends R> mapper) {
         return new MaybeMap<T, R>(this, mapper);
     }

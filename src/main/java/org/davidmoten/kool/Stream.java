@@ -72,12 +72,12 @@ import org.davidmoten.kool.internal.util.StreamUtils;
 public interface Stream<T> extends StreamIterable<T> {
 
     public static final int DEFAULT_BUFFER_SIZE = 16;
+    
+    //////////////////
+    // Factories
+    //////////////////
 
-    static <T> Stream<T> create(StreamIterable<T> source) {
-        return new StreamImpl<T>(source);
-    }
-
-    static <T> Stream<T> create(Iterable<T> source) {
+    public static <T> Stream<T> create(Iterable<T> source) {
         return new StreamImpl<T>(source);
     }
 
@@ -296,6 +296,10 @@ public interface Stream<T> extends StreamIterable<T> {
     public static <T> Stream<T> repeatElement(T t, long count) {
         return new RepeatElement<T>(t, count);
     }
+    
+    //////////////////
+    // Operators
+    //////////////////
 
     public default Single<Boolean> isEmpty() {
         return new IsEmpty(this);

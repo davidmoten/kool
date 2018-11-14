@@ -8,10 +8,10 @@ import org.davidmoten.kool.exceptions.UncheckedException;
 
 public final class MaybeFromCallable<T> implements Maybe<T> {
 
-    private final Callable<T> callable;
+    private final Callable<? extends T> callable;
     private final boolean nullable;
 
-    public MaybeFromCallable(Callable<T> callable, boolean nullable) {
+    public MaybeFromCallable(Callable<? extends T> callable, boolean nullable) {
         this.callable = callable;
         this.nullable = nullable;
     }

@@ -1,5 +1,6 @@
 package org.davidmoten.kool;
 
+import java.util.concurrent.Callable;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -11,14 +12,26 @@ import org.davidmoten.kool.internal.operators.single.SingleIterator;
 import org.davidmoten.kool.internal.operators.single.SingleOf;
 import org.davidmoten.kool.internal.operators.single.SingleToStream;
 
-public interface Single<T> extends StreamIterable<T>{
+public interface Single<T> extends StreamIterable<T> {
+    
+    T get();
+    
+    //////////////////
+    // Factories
+    //////////////////
 
     public static <T> Single<T> of(T t) {
         return new SingleOf<T>(t);
     }
 
-    T get();
+    public static <T> Single<T> fromCallable(Callable<? extends T> callable) {
+        return new SingleFromCallable<T>(callable);
+    }
 
+    //////////////////
+    // Operators
+    //////////////////
+    
     public default <R> Single<R> map(Function<? super T, ? extends R> mapper) {
         return new Map<T, R>(mapper, this);
     }
@@ -42,7 +55,7 @@ public interface Single<T> extends StreamIterable<T>{
     default Stream<T> toStream() {
         return new SingleToStream<T>(this);
     }
-    
+
     default StreamIterator<T> iterator() {
         return new SingleIterator<T>(this);
     }
