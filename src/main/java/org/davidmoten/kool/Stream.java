@@ -236,6 +236,19 @@ public interface Stream<T> extends StreamIterable<T> {
         return bytes(provider, DEFAULT_BUFFER_SIZE);
     }
 
+    public static Stream<byte[]> bytes(InputStream in, int bufferSize) {
+        return byteBuffers(in, bufferSize)//
+                .map(bb -> {
+                    byte[] b = new byte[bb.remaining()];
+                    bb.get(b);
+                    return b;
+                });
+    }
+
+    public static Stream<byte[]> bytes(InputStream in) {
+        return bytes(in, DEFAULT_BUFFER_SIZE);
+    }
+
     public static Stream<Long> range(long start, long length) {
         return create(new Range(start, length));
     }
