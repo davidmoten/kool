@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UncheckedIOException;
+import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -43,6 +44,7 @@ import org.davidmoten.kool.internal.operators.stream.Filter;
 import org.davidmoten.kool.internal.operators.stream.First;
 import org.davidmoten.kool.internal.operators.stream.FlatMap;
 import org.davidmoten.kool.internal.operators.stream.FromBufferedReader;
+import org.davidmoten.kool.internal.operators.stream.FromBytes;
 import org.davidmoten.kool.internal.operators.stream.IsEmpty;
 import org.davidmoten.kool.internal.operators.stream.Last;
 import org.davidmoten.kool.internal.operators.stream.Map;
@@ -191,6 +193,19 @@ public interface Stream<T> extends StreamIterable<T> {
 
     public static Stream<String> linesFromResource(String resource) {
         return linesFromResource(Stream.class, resource, StandardCharsets.UTF_8);
+    }
+
+    public static Stream<ByteBuffer> byteBuffers(Callable<? extends InputStream> provider, int bufferSize) {
+        return new FromBytes(provider, bufferSize);
+    }
+
+    public static Stream<byte[]> bytes(Callable<? extends InputStream> provider, int bufferSize) {
+        return byteBuffers(provider, bufferSize) //
+                .map(bb -> {
+                    byte[] b = new byte[bb.remaining()];
+                    bb.get(b);
+                    return b;
+                });
     }
 
     public static Stream<Long> range(long start, long length) {
@@ -378,7 +393,7 @@ public interface Stream<T> extends StreamIterable<T> {
     public default Stream<T> doOnEmpty(Runnable action) {
         return new DoOnEmpty<T>(this, action);
     }
-    
+
     public default Maybe<T> last() {
         return Iterables.first(new Last<T>(this).iterator());
     }
@@ -402,7 +417,7 @@ public interface Stream<T> extends StreamIterable<T> {
     public default Stream<T> switchOnError(Function<? super Throwable, ? extends Stream<? extends T>> function) {
         return new SwitchOnError<T>(function, this);
     }
-    
+
     public default Stream<T> switchOnEmpty(Supplier<? extends Stream<T>> factory) {
         return new SwitchOnEmpty<T>(this, factory);
     }
@@ -506,7 +521,7 @@ public interface Stream<T> extends StreamIterable<T> {
             });
         });
     }
-    
+
     // TODO
     // don't use toList in toStreamJava ,
     // retryWhen,

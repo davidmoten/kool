@@ -6,8 +6,13 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.io.StringReader;
+import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -15,6 +20,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
+import org.davidmoten.kool.exceptions.UncheckedException;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -559,9 +565,57 @@ public class StreamTest {
     public void testSwitchOnEmptyIfNotEmpty() {
         Stream.of(1, 2).switchOnEmpty(() -> Stream.of(3)).test().assertValues(1, 2);
     }
-    
+
     @Test
     public void testSwitchOnEmptyIfEmpty() {
         Stream.empty().switchOnEmpty(() -> Stream.of(3)).test().assertValues(3);
+    }
+
+    @Test
+    public void testByteBuffersOneElementOutput() {
+        ByteBuffer bb = Stream
+                .byteBuffers(() -> new ByteArrayInputStream("hello there".getBytes(StandardCharsets.UTF_8)), 100)
+                .single() //
+                .get();
+        byte[] x = new byte[bb.remaining()];
+        bb.get(x);
+        assertEquals("hello there", new String(x, StandardCharsets.UTF_8));
+    }
+    
+    @Test
+    public void testByteBuffersManyElementsOutput() {
+        byte[] b = Stream
+                .byteBuffers(() -> new ByteArrayInputStream("hello there".getBytes(StandardCharsets.UTF_8)), 2)
+                .collect(() -> new ByteArrayOutputStream(), (c, bb) -> {
+                    while (bb.position() < bb.limit()) {
+                        c.write(bb.get());
+                    }
+                })
+                .get().toByteArray();
+        assertEquals("hello there", new String(b, StandardCharsets.UTF_8));
+    }
+
+    @Test
+    public void testBytes() {
+        Stream.bytes(() -> new ByteArrayInputStream("hello there".getBytes(StandardCharsets.UTF_8)), 100)
+                .map(x -> new String(x, StandardCharsets.UTF_8)) //
+                .test() //
+                .assertValues("hello there");
+    }
+    
+    @Test
+    public void testBytesManyElementsOutput() {
+        byte[] b = Stream
+                .bytes(() -> new ByteArrayInputStream("hello there".getBytes(StandardCharsets.UTF_8)), 2)
+                .collect(() -> new ByteArrayOutputStream(), (c, bytes) -> {
+                    try {
+                        c .write(bytes);
+                    } catch (IOException e) {
+                        throw new UncheckedException(e);
+                    }
+                })
+                .get() //
+                .toByteArray();
+        assertEquals("hello there", new String(b, StandardCharsets.UTF_8));
     }
 }
