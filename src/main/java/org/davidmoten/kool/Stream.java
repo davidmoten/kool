@@ -510,7 +510,7 @@ public interface Stream<T> extends StreamIterable<T> {
     // TODO
     // don't use toList in toStreamJava ,
     // retryWhen,
-    // switchIfEmpty, interleaveWith, materialize
+    // interleaveWith, materialize
     // add Single.flatMapMaybe, Maybe.flatMapSingle, Maybe.flatMapMaybe
 
 }
