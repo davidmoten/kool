@@ -257,8 +257,8 @@ public interface Stream<T> extends StreamIterable<T> {
         return range(1, Long.MAX_VALUE);
     }
 
-    public static <T> Stream<T> defer(Supplier<? extends Stream<? extends T>> supplier) {
-        return new Defer<T>(supplier);
+    public static <T> Stream<T> defer(Callable<? extends Stream<? extends T>> provider) {
+        return new Defer<T>(provider);
     }
 
     @SuppressWarnings("unchecked")

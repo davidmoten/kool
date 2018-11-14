@@ -1,25 +1,29 @@
 package org.davidmoten.kool.internal.operators.stream;
 
-import java.util.function.Supplier;
+import java.util.concurrent.Callable;
 
 import org.davidmoten.kool.Stream;
-import org.davidmoten.kool.StreamIterable;
 import org.davidmoten.kool.StreamIterator;
+import org.davidmoten.kool.exceptions.UncheckedException;
 
 import com.github.davidmoten.guavamini.Preconditions;
 
 public final class Defer<T> implements Stream<T> {
 
-    private final Supplier<? extends StreamIterable<? extends T>> supplier;
+    private final Callable<? extends Stream<? extends T>> provider;
 
-    public Defer(Supplier<? extends StreamIterable<? extends T>> supplier) {
-        this.supplier = supplier;
+    public Defer(Callable<? extends Stream<? extends T>> provider) {
+        this.provider = provider;
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public StreamIterator<T> iterator() {
-        return Preconditions.checkNotNull((StreamIterator<T>) supplier.get().iterator());
+        try {
+            return Preconditions.checkNotNull((StreamIterator<T>) provider.call().iterator());
+        } catch (Exception e) {
+            throw new UncheckedException(e);
+        }
     }
 
 }
