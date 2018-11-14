@@ -21,5 +21,9 @@ If you need non-blocking and/or asynchronous streaming use [RxJava](https://gith
 
 Note also that [ixjava](https://github.com/akarnokd/ixjava) predates this library and is also a pull-based and iterator-based library for reusable streams but does not model `Maybe` and `Single`.
 
-
+## Checklist for new operators
+* wrap calls to `it.next()` with `Preconditions.checkNotNull`
+* wrap calls to function parameters passed to operator with `Preconditions.checkNotNull`
+* dispose upstream iterables as soon as no longer required
+* set upstream iterable reference to null (to help gc) when no longer required
 
