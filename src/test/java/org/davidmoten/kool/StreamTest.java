@@ -530,28 +530,38 @@ public class StreamTest {
                 }).forEach();
         assertEquals(Lists.newArrayList(100L, 200L, 300L, 400L, 500L, 600L, 700L, 800L, 900L, 1000L), list);
     }
-    
+
     @Test
     public void testReplay() {
         AtomicInteger count = new AtomicInteger();
-        Stream<Integer> stream = Stream.of(1,2,3).doOnNext(x -> count.incrementAndGet()).replay();
-        stream.test().assertValues(1,2,3);
+        Stream<Integer> stream = Stream.of(1, 2, 3).doOnNext(x -> count.incrementAndGet()).replay();
+        stream.test().assertValues(1, 2, 3);
         assertEquals(3, count.get());
-        stream.test().assertValues(1,2,3);
+        stream.test().assertValues(1, 2, 3);
         assertEquals(3, count.get());
     }
-    
+
     @Test
     public void testDoOnEmptyDoesNotFireIfStreamNonEmpty() {
         AtomicBoolean b = new AtomicBoolean();
         Stream.of(1, 2).doOnEmpty(() -> b.set(true)).forEach();
         assertFalse(b.get());
     }
-    
+
     @Test
     public void testDoOnEmptyFiresIfStreamEmpty() {
         AtomicBoolean b = new AtomicBoolean();
         Stream.empty().doOnEmpty(() -> b.set(true)).forEach();
         assertTrue(b.get());
+    }
+
+    @Test
+    public void testSwitchOnEmptyIfNotEmpty() {
+        Stream.of(1, 2).switchOnEmpty(() -> Stream.of(3)).test().assertValues(1, 2);
+    }
+    
+    @Test
+    public void testSwitchOnEmptyIfEmpty() {
+        Stream.empty().switchOnEmpty(() -> Stream.of(3)).test().assertValues(3);
     }
 }

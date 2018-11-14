@@ -402,6 +402,10 @@ public interface Stream<T> extends StreamIterable<T> {
     public default Stream<T> switchOnError(Function<? super Throwable, ? extends Stream<? extends T>> function) {
         return new SwitchOnError<T>(function, this);
     }
+    
+    public default Stream<T> switchOnEmpty(Supplier<? extends Stream<T>> factory) {
+        return new SwitchOnEmpty<T>(this, factory);
+    }
 
     public default <R, S> Stream<S> zipWith(Stream<? extends R> stream, BiFunction<T, R, S> combiner) {
         return new Zip<R, S, T>(this, stream, combiner);
@@ -502,11 +506,11 @@ public interface Stream<T> extends StreamIterable<T> {
             });
         });
     }
-
+    
     // TODO
     // don't use toList in toStreamJava ,
     // retryWhen,
-    // doOnEmpty, switchIfEmpty, interleaveWith, materialize
+    // switchIfEmpty, interleaveWith, materialize
     // add Single.flatMapMaybe, Maybe.flatMapSingle, Maybe.flatMapMaybe
 
 }
