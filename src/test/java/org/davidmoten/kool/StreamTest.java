@@ -20,6 +20,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
+import org.davidmoten.kool.exceptions.CompositeException;
 import org.davidmoten.kool.exceptions.UncheckedException;
 import org.junit.Assert;
 import org.junit.Test;
@@ -644,9 +645,33 @@ public class StreamTest {
     public void testMergeInterleavedTwoStreamsSameSize() {
         Stream.mergeInterleaved(Stream.of(1, 3, 5), Stream.of(2, 4, 6)).test().assertValues(1, 2, 3, 4, 5, 6);
     }
-    
+
     @Test
     public void testMergeInterleavedFirstStreamBiggerThanSecond() {
         Stream.mergeInterleaved(Stream.of(1, 3, 5, 6, 7), Stream.of(2, 4)).test().assertValues(1, 2, 3, 4, 5, 6, 7);
+    }
+
+    @Test
+    public void testMergeInterleavedDisposalErrors() {
+        Stream<Integer> a = Stream.using(() -> 1, x -> Stream.of(x), x -> {
+            throw new RuntimeException("" + x);
+        });
+
+        Stream<Integer> b = Stream.using(() -> 2, x -> Stream.of(x), x -> {
+            throw new RuntimeException("" + x);
+        });
+
+        Stream.mergeInterleaved(a, b) //
+//                .doOnError(e -> e.printStackTrace()) //
+                .test() //
+                .assertValues(1, 2) //
+                .assertError(CompositeException.class) //
+                .assertError(e -> {
+                    CompositeException ex = (CompositeException) e;
+                    Throwable exb = ex.getCause().getCause();
+                    Throwable exa = exb.getCause();
+                    System.out.println(exb.getMessage());
+                    return exb.getMessage().equals("2") && exa.getMessage().equals("1");
+                });
     }
 }
