@@ -44,7 +44,7 @@ public final class Repeat<T> implements Stream<T> {
                 if (it == null) {
                     throw new NoSuchElementException();
                 } else {
-                    return it.next();
+                    return Preconditions.checkNotNull(it.next());
                 }
             }
 

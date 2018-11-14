@@ -57,14 +57,14 @@ public final class SwitchOnError<T> implements Stream<T> {
             @Override
             public T next() {
                 if (switched) {
-                    return it.next();
+                    return Preconditions.checkNotNull(it.next());
                 } else {
                     try {
-                        return it.next();
+                        return Preconditions.checkNotNull(it.next());
                     } catch (RuntimeException | Error e) {
                         switched = true;
                         it.dispose();
-                        it = (StreamIterator<T>) function.apply(e);
+                        it = Preconditions.checkNotNull((StreamIterator<T>) function.apply(e));
                         return it.next();
                     }
                 }

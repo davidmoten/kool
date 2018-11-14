@@ -7,6 +7,8 @@ import java.util.function.Supplier;
 import org.davidmoten.kool.Stream;
 import org.davidmoten.kool.StreamIterator;
 
+import com.github.davidmoten.guavamini.Preconditions;
+
 public class Using<R, T> implements Stream<T> {
 
     private final Supplier<R> resourceFactory;
@@ -26,7 +28,7 @@ public class Using<R, T> implements Stream<T> {
 
             R resource = resourceFactory.get();
             @SuppressWarnings("unchecked")
-            StreamIterator<T> it = (StreamIterator<T>) streamFactory.apply(resource).iterator();
+            StreamIterator<T> it = Preconditions.checkNotNull((StreamIterator<T>) streamFactory.apply(resource).iterator());
 
             @Override
             public boolean hasNext() {
@@ -35,7 +37,7 @@ public class Using<R, T> implements Stream<T> {
 
             @Override
             public T next() {
-                return it.next();
+                return Preconditions.checkNotNull(it.next());
             }
 
             @Override

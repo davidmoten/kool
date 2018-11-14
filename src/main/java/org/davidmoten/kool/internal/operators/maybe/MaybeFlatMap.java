@@ -9,6 +9,8 @@ import org.davidmoten.kool.Stream;
 import org.davidmoten.kool.StreamIterator;
 import org.davidmoten.kool.internal.util.EmptyStream;
 
+import com.github.davidmoten.guavamini.Preconditions;
+
 public final class MaybeFlatMap<T, R> implements Stream<R> {
 
     private final Maybe<T> maybe;
@@ -29,7 +31,7 @@ public final class MaybeFlatMap<T, R> implements Stream<R> {
             @Override
             public boolean hasNext() {
                 load();
-                return !finished && it.hasNext();
+                return !finished && Preconditions.checkNotNull(it.hasNext());
             }
 
             @Override

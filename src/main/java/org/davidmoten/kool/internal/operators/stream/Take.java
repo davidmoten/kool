@@ -27,7 +27,7 @@ public final class Take<T> implements Stream<T> {
 
             @Override
             public boolean hasNext() {
-                return count < n && it.hasNext();
+                return count < n && Preconditions.checkNotNull(it.hasNext());
             }
 
             @Override

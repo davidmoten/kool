@@ -60,7 +60,7 @@ public final class BufferWithPredicate<T> implements Stream<List<T>> {
 
             private void loadNext() {
                 while (!ready && it.hasNext()) {
-                    T t = it.next();
+                    T t = Preconditions.checkNotNull(it.next());
                     boolean b = condition.test(buffer, t);
                     if (!until) {
                         // while

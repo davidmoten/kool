@@ -49,7 +49,7 @@ public final class TakeWithPredicate<T> implements Stream<T> {
             private void loadNext() {
                 if (value == null && it != null) {
                     if (it.hasNext()) {
-                        T v = it.next();
+                        T v = Preconditions.checkNotNull(it.next());
                         boolean test = predicate.test(v);
                         final boolean ok;
                         if (until) {

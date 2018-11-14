@@ -6,6 +6,8 @@ import org.davidmoten.kool.Single;
 import org.davidmoten.kool.Stream;
 import org.davidmoten.kool.StreamIterator;
 
+import com.github.davidmoten.guavamini.Preconditions;
+
 public class SingleFlatMap<T, R> implements Stream<R> {
 
     private final Function<? super T, ? extends Stream<? extends R>> mapper;
@@ -32,7 +34,7 @@ public class SingleFlatMap<T, R> implements Stream<R> {
             @Override
             public R next() {
                 load();
-                return it.next();
+                return Preconditions.checkNotNull(it.next());
             }
 
             @Override
@@ -46,7 +48,7 @@ public class SingleFlatMap<T, R> implements Stream<R> {
                 if (finished) {
                     throw new IllegalStateException("stream finished");
                 } else if (it == null) {
-                    it = mapper.apply(single.get()).iterator();
+                    it = Preconditions.checkNotNull(mapper.apply(single.get()).iterator());
                 }
             }
 

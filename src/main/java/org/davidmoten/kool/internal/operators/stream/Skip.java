@@ -31,7 +31,7 @@ public final class Skip<T> implements Stream<T> {
             @Override
             public T next() {
                 skip();
-                return it.next();
+                return Preconditions.checkNotNull(it.next());
             }
 
             @Override
@@ -41,7 +41,7 @@ public final class Skip<T> implements Stream<T> {
 
             private void skip() {
                 while (n > 0 && it.hasNext()) {
-                    it.next();
+                    Preconditions.checkNotNull(it.next());
                     n--;
                 }
             }
