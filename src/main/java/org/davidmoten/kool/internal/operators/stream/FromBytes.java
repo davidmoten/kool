@@ -8,6 +8,7 @@ import java.util.concurrent.Callable;
 
 import org.davidmoten.kool.Stream;
 import org.davidmoten.kool.StreamIterator;
+import org.davidmoten.kool.exceptions.CompositeException;
 import org.davidmoten.kool.exceptions.UncheckedException;
 
 import com.github.davidmoten.guavamini.Preconditions;
@@ -64,18 +65,33 @@ public final class FromBytes implements Stream<ByteBuffer> {
                 private void load() {
                     if (is != null && next == null) {
                         byte[] b = new byte[bufferSize];
-                        try {
-                            int n = is.read(b);
+                            int n;
+                            try {
+                                n = is.read(b);
+                            } catch (IOException e) {
+                                Throwable closeError = null;
+                                try {
+                                    is.close();
+                                } catch (Throwable e2) {
+                                    closeError = e2;
+                                }
+                                if (closeError == null) {
+                                    throw new UncheckedException(e);
+                                } else {
+                                    throw new CompositeException(e, closeError);
+                                }
+                            }
                             if (n == -1) {
-                                is.close();
+                                try {
+                                    is.close();
+                                } catch (IOException e) {
+                                    throw new UncheckedException(e);
+                                }
                                 is = null;
                                 next = null;
                             } else {
                                 next = ByteBuffer.wrap(b, 0, n);
                             }
-                        } catch (IOException e) {
-                            throw new UncheckedException(e);
-                        }
                     }
                 }
 
