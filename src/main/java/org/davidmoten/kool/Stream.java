@@ -573,6 +573,10 @@ public interface Stream<T> extends StreamIterable<T> {
     public default Stream<T> ignoreDisposalError(Consumer<Throwable> action) {
         return new IgnoreDisposalError<T>(this, action);
     }
+    
+    public default Stream<T> ignoreDisposalError() {
+        return new IgnoreDisposalError<T>(this, null);
+    }
 
     // TODO
     // don't use toList in toStreamJava ,

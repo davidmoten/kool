@@ -39,10 +39,12 @@ public final class IgnoreDisposalError<T> implements Stream<T> {
                 try {
                     it.dispose();
                 } catch (Throwable e) {
-                    try {
-                        action.accept(e);
-                    } catch (Throwable e2) {
-                        Plugins.onError(e2);
+                    if (action != null) {
+                        try {
+                            action.accept(e);
+                        } catch (Throwable e2) {
+                            Plugins.onError(e2);
+                        }
                     }
                 }
             }
