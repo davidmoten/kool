@@ -58,6 +58,7 @@ import org.davidmoten.kool.internal.operators.stream.RepeatElement;
 import org.davidmoten.kool.internal.operators.stream.Skip;
 import org.davidmoten.kool.internal.operators.stream.Sorted;
 import org.davidmoten.kool.internal.operators.stream.Split;
+import org.davidmoten.kool.internal.operators.stream.SwitchOnEmpty;
 import org.davidmoten.kool.internal.operators.stream.SwitchOnError;
 import org.davidmoten.kool.internal.operators.stream.Take;
 import org.davidmoten.kool.internal.operators.stream.TakeWithPredicate;
@@ -204,6 +205,10 @@ public interface Stream<T> extends StreamIterable<T> {
     public static Stream<ByteBuffer> byteBuffers(Callable<? extends InputStream> provider, int bufferSize) {
         return new FromBytes(provider, bufferSize);
     }
+    
+    public static Stream<ByteBuffer> bytesBuffers(Callable<? extends InputStream> provider) {
+        return byteBuffers(provider, 8192);
+    }
 
     public static Stream<byte[]> bytes(Callable<? extends InputStream> provider, int bufferSize) {
         return byteBuffers(provider, bufferSize) //
@@ -213,7 +218,11 @@ public interface Stream<T> extends StreamIterable<T> {
                     return b;
                 });
     }
-
+    
+    public static Stream<byte[]> bytes(Callable<? extends InputStream> provider) {
+        return bytes(provider, 8192);
+    }
+    
     public static Stream<Long> range(long start, long length) {
         return create(new Range(start, length));
     }
@@ -527,7 +536,7 @@ public interface Stream<T> extends StreamIterable<T> {
             });
         });
     }
-
+    
     // TODO
     // don't use toList in toStreamJava ,
     // retryWhen,

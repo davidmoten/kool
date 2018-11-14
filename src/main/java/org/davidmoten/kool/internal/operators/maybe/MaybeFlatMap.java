@@ -6,6 +6,7 @@ import java.util.function.Function;
 
 import org.davidmoten.kool.Maybe;
 import org.davidmoten.kool.Stream;
+import org.davidmoten.kool.StreamIterable;
 import org.davidmoten.kool.StreamIterator;
 import org.davidmoten.kool.internal.util.EmptyStream;
 
@@ -14,9 +15,9 @@ import com.github.davidmoten.guavamini.Preconditions;
 public final class MaybeFlatMap<T, R> implements Stream<R> {
 
     private final Maybe<T> maybe;
-    private final Function<? super T, ? extends Stream<? extends R>> mapper;
+    private final Function<? super T, ? extends StreamIterable<? extends R>> mapper;
 
-    public MaybeFlatMap(Maybe<T> maybe, Function<? super T, ? extends Stream<? extends R>> mapper) {
+    public MaybeFlatMap(Maybe<T> maybe, Function<? super T, ? extends StreamIterable<? extends R>> mapper) {
         this.maybe = maybe;
         this.mapper = mapper;
     }

@@ -38,7 +38,7 @@ public interface Maybe<T> extends StreamIterable<T> {
         return new MaybeToStream<T>(this);
     }
 
-    public default <R> Stream<R> flatMap(Function<? super T, ? extends Stream<? extends R>> mapper) {
+    public default <R> Stream<R> flatMap(Function<? super T, ? extends StreamIterable<? extends R>> mapper) {
         return new MaybeFlatMap<T, R>(this, mapper);
     }
 

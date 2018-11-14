@@ -4,16 +4,17 @@ import java.util.function.Function;
 
 import org.davidmoten.kool.Single;
 import org.davidmoten.kool.Stream;
+import org.davidmoten.kool.StreamIterable;
 import org.davidmoten.kool.StreamIterator;
 
 import com.github.davidmoten.guavamini.Preconditions;
 
 public class SingleFlatMap<T, R> implements Stream<R> {
 
-    private final Function<? super T, ? extends Stream<? extends R>> mapper;
+    private final Function<? super T, ? extends StreamIterable<? extends R>> mapper;
     private final Single<T> single;
 
-    public SingleFlatMap(Single<T> single, Function<? super T, ? extends Stream<? extends R>> mapper) {
+    public SingleFlatMap(Single<T> single, Function<? super T, ? extends StreamIterable<? extends R>> mapper) {
         this.single = single;
         this.mapper = mapper;
     }

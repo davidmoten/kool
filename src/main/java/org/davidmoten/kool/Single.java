@@ -23,7 +23,7 @@ public interface Single<T> extends StreamIterable<T>{
         return new Map<T, R>(mapper, this);
     }
 
-    public default <R> Stream<R> flatMap(Function<? super T, ? extends Stream<? extends R>> mapper) {
+    public default <R> Stream<R> flatMap(Function<? super T, ? extends StreamIterable<? extends R>> mapper) {
         return new SingleFlatMap<T, R>(this, mapper);
     }
 
