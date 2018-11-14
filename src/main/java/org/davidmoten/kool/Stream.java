@@ -45,7 +45,7 @@ import org.davidmoten.kool.internal.operators.stream.First;
 import org.davidmoten.kool.internal.operators.stream.FlatMap;
 import org.davidmoten.kool.internal.operators.stream.FromBufferedReader;
 import org.davidmoten.kool.internal.operators.stream.FromInputStream;
-import org.davidmoten.kool.internal.operators.stream.IgnoreDisposeError;
+import org.davidmoten.kool.internal.operators.stream.IgnoreDisposalError;
 import org.davidmoten.kool.internal.operators.stream.IsEmpty;
 import org.davidmoten.kool.internal.operators.stream.Last;
 import org.davidmoten.kool.internal.operators.stream.Map;
@@ -570,8 +570,8 @@ public interface Stream<T> extends StreamIterable<T> {
         });
     }
 
-    public default Stream<T> ignoreDisposeError(Consumer<Throwable> action) {
-        return new IgnoreDisposeError<T>(this, action);
+    public default Stream<T> ignoreDisposalError(Consumer<Throwable> action) {
+        return new IgnoreDisposalError<T>(this, action);
     }
 
     // TODO
