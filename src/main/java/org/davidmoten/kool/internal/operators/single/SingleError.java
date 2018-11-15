@@ -1,20 +1,20 @@
-package org.davidmoten.kool;
+package org.davidmoten.kool.internal.operators.single;
 
-import java.util.Optional;
 import java.util.concurrent.Callable;
 
+import org.davidmoten.kool.Single;
 import org.davidmoten.kool.internal.util.Exceptions;
 
-public class MaybeError<T> implements Maybe<T> {
+public final class SingleError<T> implements Single<T> {
 
     private final Callable<? extends Throwable> callable;
 
-    public MaybeError(Callable<? extends Throwable> callable) {
+    public SingleError(Callable<? extends Throwable> callable) {
         this.callable = callable;
     }
 
     @Override
-    public Optional<T> get() {
+    public T get() {
         return Exceptions.rethrow(callable);
     }
 

@@ -7,6 +7,7 @@ import java.util.function.Function;
 import org.davidmoten.kool.internal.operators.single.Map;
 import org.davidmoten.kool.internal.operators.single.SingleDoOnError;
 import org.davidmoten.kool.internal.operators.single.SingleDoOnValue;
+import org.davidmoten.kool.internal.operators.single.SingleError;
 import org.davidmoten.kool.internal.operators.single.SingleFlatMap;
 import org.davidmoten.kool.internal.operators.single.SingleFromCallable;
 import org.davidmoten.kool.internal.operators.single.SingleIterator;
@@ -27,6 +28,14 @@ public interface Single<T> extends StreamIterable<T> {
 
     public static <T> Single<T> fromCallable(Callable<? extends T> callable) {
         return new SingleFromCallable<T>(callable);
+    }
+    
+    public static <T> Single<T> error(Callable<? extends Throwable> callable) {
+        return new SingleError<T>(callable);
+    }
+    
+    public static <T> Single<T> error(Throwable error) {
+        return error(() -> error);
     }
 
     //////////////////
