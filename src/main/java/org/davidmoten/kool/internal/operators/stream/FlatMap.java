@@ -11,10 +11,10 @@ import com.github.davidmoten.guavamini.Preconditions;
 
 public final class FlatMap<T, R> implements Stream<R> {
 
-    private final Function<? super T, ? extends Stream<? extends R>> function;
+    private final Function<? super T, ? extends StreamIterable<? extends R>> function;
     private final StreamIterable<T> source;
 
-    public FlatMap(Function<? super T, ? extends Stream<? extends R>> function,
+    public FlatMap(Function<? super T, ? extends StreamIterable<? extends R>> function,
             StreamIterable<T> source) {
         this.function = function;
         this.source = source;

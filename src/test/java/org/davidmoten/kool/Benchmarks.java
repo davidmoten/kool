@@ -5,9 +5,12 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Comparator;
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.LongStream;
 
 import org.openjdk.jmh.annotations.Benchmark;
 
@@ -34,7 +37,7 @@ public class Benchmarks {
         return Stream.of(1, 2, 3, 4).toList().size();
     }
 
-//    @Benchmark
+    @Benchmark
     public List<String> readFileJava() throws IOException {
         try (@SuppressWarnings("resource")
         java.util.stream.Stream<String> stream = //
@@ -44,11 +47,32 @@ public class Benchmarks {
         }
     }
 
-//    @Benchmark
+    @Benchmark
     public List<String> readFileKool() throws IOException {
         return Stream.lines(new File("src/test/resources/test2.txt")) //
                 .filter(x -> x.length() % 2 == 0) //
                 .toList();
+    }
+
+    @Benchmark
+    public long flatMapMinMapReduceKool() {
+        return Stream.range(1, 1000) //
+                .flatMap(x -> Stream.of(x, x + 1, x + 4) //
+                        .min(Comparator.naturalOrder())) //
+                .map(Function.identity()) //
+                .reduce((x, y) -> x + y) //
+                .get() //
+                .get();
+    }
+
+    @Benchmark
+    public long flatMapMinMapReduceJavaStreams() {
+        return LongStream.range(1, 1000) //
+                .boxed()
+                .flatMap(x -> java.util.stream.Stream.of(LongStream.of(x, x + 1, x + 4).min().getAsLong())) //
+                .map(Function.identity()) //
+                .reduce((x, y) -> x + y) //
+                .get();
     }
 
     public static void main(String[] args) throws IOException {

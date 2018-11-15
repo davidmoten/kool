@@ -417,7 +417,7 @@ public interface Stream<T> extends StreamIterable<T> {
         return new Concat<T>(this, values);
     }
 
-    public default <R> Stream<R> flatMap(Function<? super T, ? extends Stream<? extends R>> function) {
+    public default <R> Stream<R> flatMap(Function<? super T, ? extends StreamIterable<? extends R>> function) {
         return new FlatMap<T, R>(function, this);
     }
 
