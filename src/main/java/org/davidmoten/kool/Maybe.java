@@ -1,6 +1,5 @@
 package org.davidmoten.kool;
 
-import java.io.IOException;
 import java.util.Optional;
 import java.util.concurrent.Callable;
 import java.util.function.Consumer;

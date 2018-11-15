@@ -11,10 +11,11 @@ import org.davidmoten.kool.exceptions.UncheckedException;
 import com.github.davidmoten.guavamini.Lists;
 import com.github.davidmoten.guavamini.Preconditions;
 
-public class MergeInterleaved<T> implements Stream<T> {
+public final class MergeInterleaved<T> implements Stream<T> {
 
     private final Stream<? extends T>[] streams;
 
+    @SafeVarargs
     public MergeInterleaved(Stream<? extends T>... streams) {
         this.streams = streams;
     }
