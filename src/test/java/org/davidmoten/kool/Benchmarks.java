@@ -57,8 +57,9 @@ public class Benchmarks {
     @Benchmark
     public long flatMapMinMapReduceKool() {
         return Stream.range(1, 1000) //
-                .flatMap(x -> Stream.of(x, x + 1, x + 4) //
-                        .min(Comparator.naturalOrder())) //
+//                .flatMap(x -> Stream.of(x, x + 1, x + 4) //
+//                        .min(Comparator.naturalOrder())) //
+                .flatMap(x -> Stream.of(x).min(Comparator.naturalOrder())) //
                 .map(Function.identity()) //
                 .reduce((x, y) -> x + y) //
                 .get() //
@@ -77,6 +78,9 @@ public class Benchmarks {
 
     public static void main(String[] args) throws IOException {
         Benchmarks b = new Benchmarks();
+        Stream.range(1, 1).flatMap(x -> Maybe.of(x)).count().get();
+//        b.flatMapMinMapReduceKool();
+        System.exit(0);
         while (true) {
             b.readFileJava();
         }

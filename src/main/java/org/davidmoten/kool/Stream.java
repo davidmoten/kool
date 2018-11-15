@@ -54,6 +54,7 @@ import org.davidmoten.kool.internal.operators.stream.IgnoreDisposalError;
 import org.davidmoten.kool.internal.operators.stream.IsEmpty;
 import org.davidmoten.kool.internal.operators.stream.Last;
 import org.davidmoten.kool.internal.operators.stream.Map;
+import org.davidmoten.kool.internal.operators.stream.Max;
 import org.davidmoten.kool.internal.operators.stream.MergeInterleaved;
 import org.davidmoten.kool.internal.operators.stream.PrependOne;
 import org.davidmoten.kool.internal.operators.stream.Range;
@@ -606,11 +607,11 @@ public interface Stream<T> extends StreamIterable<T> {
     }
 
     public default Maybe<T> max(Comparator<? super T> comparator) {
-        return reduce((a, b) -> comparator.compare(a, b) >= 0 ? a : b);
+        return new Max<T>(this, comparator, false);
     }
 
     public default Maybe<T> min(Comparator<? super T> comparator) {
-        return reduce((a, b) -> comparator.compare(a, b) >= 0 ? b : a);
+        return new Max<T>(this, comparator, true);
     }
 
     public default Single<Boolean> all(Predicate<? super T> predicate) {

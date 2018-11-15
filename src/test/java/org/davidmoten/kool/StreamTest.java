@@ -121,6 +121,11 @@ public final class StreamTest {
     }
 
     @Test
+    public void testFlatMapMaybe() {
+        Stream.of(1, 2).flatMap(x -> Maybe.of(x)).test().assertValues(1, 2);
+    }
+
+    @Test
     public void testFirstOfEmpty() {
         Stream.empty().first().test().assertNoValue();
     }
@@ -684,6 +689,22 @@ public final class StreamTest {
                 .max(Comparator.naturalOrder()) //
                 .test() //
                 .assertValue(5);
+    }
+
+    @Test
+    public void testMaxOfOne() {
+        Stream.of(1) //
+                .max(Comparator.naturalOrder()) //
+                .test() //
+                .assertValue(1);
+    }
+
+    @Test
+    public void testMaxOfNone() {
+        Stream.<Integer>empty() //
+                .max(Comparator.naturalOrder()) //
+                .test() //
+                .assertNoValue();
     }
 
     @Test

@@ -24,11 +24,15 @@ public final class MaybeIterator<T> implements StreamIterator<T> {
     @Override
     public T next() {
         load();
-        if (finished) {
+        try {
+            if (finished) {
+                throw new RuntimeException("stream is finished");
+            } else {
+                finished = true;
+                return value.get();
+            }
+        } finally {
             dispose();
-            throw new RuntimeException("stream is finished");
-        }else {
-            return value.get();
         }
     }
 
@@ -37,7 +41,7 @@ public final class MaybeIterator<T> implements StreamIterator<T> {
         finished = true;
         value = null;
     }
-    
+
     private void load() {
         if (!finished && value == null) {
             value = maybe.get();
