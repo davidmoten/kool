@@ -13,5 +13,5 @@ public final class StreamUtils {
     public static final class EmptyHolder {
         public static final Stream<Object> EMPTY = Stream.create(Collections.emptyList());
     }
-
+    
 }

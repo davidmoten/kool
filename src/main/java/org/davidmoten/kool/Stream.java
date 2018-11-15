@@ -29,6 +29,7 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import org.davidmoten.kool.exceptions.UncheckedException;
+import org.davidmoten.kool.internal.operators.stream.All;
 import org.davidmoten.kool.internal.operators.stream.Buffer;
 import org.davidmoten.kool.internal.operators.stream.BufferWithPredicate;
 import org.davidmoten.kool.internal.operators.stream.Collect;
@@ -586,15 +587,17 @@ public interface Stream<T> extends StreamIterable<T> {
     }
 
     public default Maybe<T> max(Comparator<? super T> comparator) {
-        //TODO make lambda singleton
         return reduce((a, b) -> comparator.compare(a, b) >= 0 ? a : b);
     }
     
     public default Maybe<T> min(Comparator<? super T> comparator) {
-        //TODO make lambda singleton
         return reduce((a, b) -> comparator.compare(a, b) >= 0 ? b : a);
     }
-
+    
+    public default Single<Boolean> all(Predicate<? super T> predicate) {
+        return new All<T>(this, predicate);
+    }
+    
     // TODO
     // don't use toList in toStreamJava ,
     // retryWhen,

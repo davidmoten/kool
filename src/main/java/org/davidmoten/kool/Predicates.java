@@ -22,8 +22,12 @@ public final class Predicates {
         return (Predicate<T>) AlwaysFalseHolder.INSTANCE;
     }
 
+    public static <T> Predicate<T> not(Predicate<T> predicate) {
+        return t -> !predicate.test(t);
+    }
     private static final class AlwaysFalseHolder {
         static final Predicate<Object> INSTANCE = t -> false;
     }
 
+    
 }

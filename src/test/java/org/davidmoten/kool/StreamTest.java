@@ -691,4 +691,19 @@ public class StreamTest {
                 .test() //
                 .assertValue(1);
     }
+    
+    @Test
+    public void testAllReturnsTrue() {
+        Stream.of(1, 2, 3).all(x -> x < 4).test().assertValue(true);
+    }
+    
+    @Test
+    public void testAllReturnsFalse() {
+        Stream.of(1, 2, 3).all(x -> x < 3).test().assertValue(false);
+    }
+    
+    @Test
+    public void testAllOfEmptyReturnsTrue() {
+        Stream.<Integer>empty().all(x -> x < 3).test().assertValue(true);
+    }
 }
