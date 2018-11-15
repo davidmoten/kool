@@ -49,6 +49,7 @@ import org.davidmoten.kool.internal.operators.stream.First;
 import org.davidmoten.kool.internal.operators.stream.FlatMap;
 import org.davidmoten.kool.internal.operators.stream.FromBufferedReader;
 import org.davidmoten.kool.internal.operators.stream.FromInputStream;
+import org.davidmoten.kool.internal.operators.stream.Generate;
 import org.davidmoten.kool.internal.operators.stream.IgnoreDisposalError;
 import org.davidmoten.kool.internal.operators.stream.IsEmpty;
 import org.davidmoten.kool.internal.operators.stream.Last;
@@ -136,6 +137,10 @@ public interface Stream<T> extends StreamIterable<T> {
                 }
             }
         });
+    }
+    
+    public static <T> Stream<T> generate(Consumer<Emitter<T>> consumer) {
+        return new Generate<T>(consumer);
     }
 
     public static <T> Stream<T> error(Callable<? extends Throwable> callable) {

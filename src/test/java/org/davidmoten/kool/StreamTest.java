@@ -741,9 +741,49 @@ public class StreamTest {
     public void testTakeLastWhenExceedsAvailableLength() {
         Stream.of(1, 2, 3).takeLast(5).test().assertValues(1, 2, 3);
     }
-    
+
     @Test
     public void testTakeLastWhenEmpty() {
         Stream.<Integer>empty().takeLast(5).test().assertNoValues();
+    }
+
+    @Test
+    public void testGenerateOneValueAndImmediatelyComplete() {
+        Stream.<Integer>generate(emitter -> {
+            emitter.onNext(1);
+            emitter.onComplete();
+        }) //
+                .test() //
+                .assertValues(1) //
+                .assertNoError();
+    }
+
+    @Test
+    public void testGenerateInfiniteValues() {
+        AtomicInteger i = new AtomicInteger();
+        Stream.<Integer>generate(emitter -> {
+            i.incrementAndGet();
+            emitter.onNext(i.get());
+        }) //
+                .take(5).test() //
+                .assertValues(1, 2, 3, 4, 5) //
+                .assertNoError();
+    }
+
+    @Test
+    public void testGenerateConsumerDoesNotCallEmitter() {
+        Stream.<Integer>generate(emitter -> {
+        }) //
+        .test().assertError(IllegalStateException.class);
+    }
+    
+    @Test
+    public void testGenerateConsumerCallsOnNextTwice() {
+        Stream.<Integer>generate(emitter -> {
+            emitter.onNext(1);
+            emitter.onNext(2);
+        }) //
+        .test() //
+        .assertError(IllegalArgumentException.class);
     }
 }
