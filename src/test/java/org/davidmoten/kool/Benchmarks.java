@@ -34,7 +34,7 @@ public class Benchmarks {
         return Stream.of(1, 2, 3, 4).toList().size();
     }
 
-    @Benchmark
+//    @Benchmark
     public List<String> readFileJava() throws IOException {
         try (@SuppressWarnings("resource")
         java.util.stream.Stream<String> stream = //
@@ -44,7 +44,7 @@ public class Benchmarks {
         }
     }
 
-    @Benchmark
+//    @Benchmark
     public List<String> readFileKool() throws IOException {
         return Stream.lines(new File("src/test/resources/test2.txt")) //
                 .filter(x -> x.length() % 2 == 0) //
