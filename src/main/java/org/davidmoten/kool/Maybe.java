@@ -110,5 +110,9 @@ public interface Maybe<T> extends StreamIterable<T> {
     default StreamIterator<T> iterator() {
         return new MaybeIterator<T>(this);
     }
+    
+    public default <R> R to(Function<? super Maybe<T>, R> mapper){
+        return mapper.apply(this);
+    }
 
 }

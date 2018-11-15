@@ -31,8 +31,8 @@ import java.util.function.Supplier;
 import org.davidmoten.kool.exceptions.UncheckedException;
 import org.davidmoten.kool.internal.operators.stream.All;
 import org.davidmoten.kool.internal.operators.stream.Any;
-import org.davidmoten.kool.internal.operators.stream.BufferWithPredicate;
 import org.davidmoten.kool.internal.operators.stream.Buffer;
+import org.davidmoten.kool.internal.operators.stream.BufferWithPredicate;
 import org.davidmoten.kool.internal.operators.stream.Cache;
 import org.davidmoten.kool.internal.operators.stream.Collect;
 import org.davidmoten.kool.internal.operators.stream.Concat;
@@ -642,6 +642,10 @@ public interface Stream<T> extends StreamIterable<T> {
     
     public default Maybe<T> maybe() {
         return new ToMaybe<T>(this);
+    }
+    
+    public default <R> R to(Function<? super Stream<T>, R> mapper){
+        return mapper.apply(this);
     }
 
     // TODO

@@ -69,5 +69,9 @@ public interface Single<T> extends StreamIterable<T> {
     default StreamIterator<T> iterator() {
         return new SingleIterator<T>(this);
     }
+    
+    public default <R> R to(Function<? super Single<T>, R> mapper){
+        return mapper.apply(this);
+    }
 
 }

@@ -803,4 +803,8 @@ public final class StreamTest {
     public void testToMaybeFromTwo() {
         Stream.of(1, 2).maybe().test().assertValue(1);
     }
+
+    public void testTo() {
+        Stream.of(1, 2).to(stream -> stream.count()).test().assertValueOnly(1L);
+    }
 }
