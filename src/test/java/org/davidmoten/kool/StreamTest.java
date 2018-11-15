@@ -825,7 +825,89 @@ public final class StreamTest {
         Stream.of(1, 2).maybe().test().assertValue(1);
     }
 
+    @Test
     public void testTo() {
-        Stream.of(1, 2).to(stream -> stream.count()).test().assertValueOnly(1L);
+        Stream.of(1, 2).to(stream -> stream.count()).test().assertValueOnly(2L);
     }
+
+    @Test
+    public void testFromArrayEmpty() {
+        Stream.fromArray(new Integer[] {}).test().assertNoValuesOnly();
+    }
+
+    @Test
+    public void testFromArrayOne() {
+        Stream.fromArray(new Integer[] { 1 }).test().assertValuesOnly(1);
+    }
+
+    @Test
+    public void testFromArrayTwo() {
+        Stream.fromArray(new Integer[] { 1, 2 }).test().assertValuesOnly(1, 2);
+    }
+
+    @Test
+    public void testFromArrayPartial() {
+        Stream.fromArray(new Integer[] { 1, 2, 3, 4, 5 }, 2, 3).test().assertValuesOnly(3, 4);
+    }
+
+    @Test
+    public void testFromArrayIntEmpty() {
+        Stream.fromArray(new int[] {}).test().assertNoValuesOnly();
+    }
+
+    @Test
+    public void testFromArrayIntOne() {
+        Stream.fromArray(new int[] { 1 }).test().assertValuesOnly(1);
+    }
+
+    @Test
+    public void testFromArrayIntTwo() {
+        Stream.fromArray(new int[] { 1, 2 }).test().assertValuesOnly(1, 2);
+    }
+
+    @Test
+    public void testFromArrayIntPartial() {
+        Stream.fromArray(new int[] { 1, 2, 3, 4, 5 }, 2, 3).test().assertValuesOnly(3, 4);
+    }
+
+    @Test
+    public void testFromArrayDoubleEmpty() {
+        Stream.fromArray(new double[] {}).test().assertNoValuesOnly();
+    }
+
+    @Test
+    public void testFromArrayDoubleOne() {
+        Stream.fromArray(new double[] { 1 }).test().assertValuesOnly(1.0);
+    }
+
+    @Test
+    public void testFromArrayDoubleTwo() {
+        Stream.fromArray(new double[] { 1, 2 }).test().assertValuesOnly(1.0, 2.0);
+    }
+
+    @Test
+    public void testFromArrayDoublePartial() {
+        Stream.fromArray(new double[] { 1, 2, 3, 4, 5 }, 2, 3).test().assertValuesOnly(3.0, 4.0);
+    }
+
+    @Test
+    public void testFromArrayFloatEmpty() {
+        Stream.fromArray(new float[] {}).test().assertNoValuesOnly();
+    }
+
+    @Test
+    public void testFromArrayFloatOne() {
+        Stream.fromArray(new float[] { 1 }).test().assertValuesOnly(1.0f);
+    }
+
+    @Test
+    public void testFromArrayFloatTwo() {
+        Stream.fromArray(new float[] { 1, 2 }).test().assertValuesOnly(1.0f, 2.0f);
+    }
+
+    @Test
+    public void testFromArrayFloatPartial() {
+        Stream.fromArray(new float[] { 1, 2, 3, 4, 5 }, 2, 3).test().assertValuesOnly(3.0f, 4.0f);
+    }
+
 }

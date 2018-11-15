@@ -47,6 +47,10 @@ import org.davidmoten.kool.internal.operators.stream.DoOnNext;
 import org.davidmoten.kool.internal.operators.stream.Filter;
 import org.davidmoten.kool.internal.operators.stream.First;
 import org.davidmoten.kool.internal.operators.stream.FlatMap;
+import org.davidmoten.kool.internal.operators.stream.FromArray;
+import org.davidmoten.kool.internal.operators.stream.FromArrayDouble;
+import org.davidmoten.kool.internal.operators.stream.FromArrayFloat;
+import org.davidmoten.kool.internal.operators.stream.FromArrayInt;
 import org.davidmoten.kool.internal.operators.stream.FromBufferedReader;
 import org.davidmoten.kool.internal.operators.stream.FromInputStream;
 import org.davidmoten.kool.internal.operators.stream.Generate;
@@ -127,7 +131,7 @@ public interface Stream<T> extends StreamIterable<T> {
     }
 
     public static <T> Stream<T> error(Throwable e) {
-        return Stream.fromIterable(new StreamIterable<T>() {
+        return Stream.from(new StreamIterable<T>() {
             @Override
             public StreamIterator<T> iterator() {
                 if (e instanceof RuntimeException) {
@@ -140,13 +144,13 @@ public interface Stream<T> extends StreamIterable<T> {
             }
         });
     }
-    
+
     public static <T> Stream<T> generate(Consumer<Emitter<T>> consumer) {
         return new Generate<T>(consumer);
     }
 
     public static <T> Stream<T> error(Callable<? extends Throwable> callable) {
-        return Stream.fromIterable(new StreamIterable<T>() {
+        return Stream.from(new StreamIterable<T>() {
             @Override
             public StreamIterator<T> iterator() {
                 Throwable e;
@@ -166,8 +170,56 @@ public interface Stream<T> extends StreamIterable<T> {
         });
     }
 
-    public static <T> Stream<T> fromIterable(Iterable<T> iterable) {
+    public static <T> Stream<T> from(Iterable<T> iterable) {
         return create(iterable);
+    }
+
+    public static <T> Stream<T> fromArray(T[] array, int fromIndex, int toIndex) {
+        return new FromArray<T>(array, fromIndex, toIndex);
+    }
+
+    public static <T> Stream<T> fromArray(T[] array) {
+        if (array.length == 0) {
+            return Stream.empty();
+        } else {
+            return fromArray(array, 0, array.length - 1);
+        }
+    }
+
+    public static Stream<Integer> fromArray(int[] array, int fromIndex, int toIndex) {
+        return new FromArrayInt(array, fromIndex, toIndex);
+    }
+
+    public static Stream<Integer> fromArray(int[] array) {
+        if (array.length == 0) {
+            return Stream.empty();
+        } else {
+            return fromArray(array, 0, array.length - 1);
+        }
+    }
+    
+    public static Stream<Double> fromArray(double[] array, int fromIndex, int toIndex) {
+        return new FromArrayDouble(array, fromIndex, toIndex);
+    }
+
+    public static Stream<Double> fromArray(double[] array) {
+        if (array.length == 0) {
+            return Stream.empty();
+        } else {
+            return fromArray(array, 0, array.length - 1);
+        }
+    }
+    
+    public static Stream<Float> fromArray(float[] array, int fromIndex, int toIndex) {
+        return new FromArrayFloat(array, fromIndex, toIndex);
+    }
+
+    public static Stream<Float> fromArray(float[] array) {
+        if (array.length == 0) {
+            return Stream.empty();
+        } else {
+            return fromArray(array, 0, array.length - 1);
+        }
     }
 
     public static <T> Stream<T> fromCallable(Callable<? extends T> callable) {
@@ -528,7 +580,7 @@ public interface Stream<T> extends StreamIterable<T> {
     public default Stream<List<T>> buffer(int size) {
         return buffer(size, size);
     }
-    
+
     public default Stream<List<T>> buffer(int size, int step) {
         return new Buffer<T>(this, size, step);
     }
@@ -640,12 +692,12 @@ public interface Stream<T> extends StreamIterable<T> {
     public default <K> Stream<T> distinctUntilChanged(Function<? super T, K> keySelector) {
         return new DistinctUntilChanged<T, K>(this, keySelector);
     }
-    
+
     public default Maybe<T> maybe() {
         return new ToMaybe<T>(this);
     }
-    
-    public default <R> R to(Function<? super Stream<T>, R> mapper){
+
+    public default <R> R to(Function<? super Stream<T>, R> mapper) {
         return mapper.apply(this);
     }
 

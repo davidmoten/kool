@@ -84,7 +84,7 @@ public class ShakespearePlaysScrabbleWithKool extends ShakespearePlaysScrabble {
                         scrabbleAvailableLetters[entry.getKey() - 'a']));
 
         Function<String, Stream<Integer>> toIntegerStream = string -> Stream
-                .fromIterable(toIterable(string.chars().boxed()));
+                .from(toIterable(string.chars().boxed()));
 
         // Histogram of the letters in a given word
         Function<String, Single<HashMap<Integer, LongWrapper>>> histoOfLetters = word -> toIntegerStream.apply(word) //
@@ -102,7 +102,7 @@ public class ShakespearePlaysScrabbleWithKool extends ShakespearePlaysScrabble {
 
         // number of blanks for a given word
         Function<String, Stream<Long>> nBlanks = word -> histoOfLetters.apply(word) //
-                .flatMap(map -> Stream.fromIterable(map.entrySet())) //
+                .flatMap(map -> Stream.from(map.entrySet())) //
                 .flatMap(blank) //
                 .reduce(Long::sum) //
                 .toStream();
@@ -115,7 +115,7 @@ public class ShakespearePlaysScrabbleWithKool extends ShakespearePlaysScrabble {
         // score taking blanks into account letterScore1
         Function<String, Stream<Integer>> score2 = word -> histoOfLetters //
                 .apply(word) //
-                .flatMap(map -> Stream.fromIterable(map.entrySet())) //
+                .flatMap(map -> Stream.from(map.entrySet())) //
                 .flatMap(letterScore) //
                 .reduce(Integer::sum) //
                 .toStream();
@@ -123,9 +123,9 @@ public class ShakespearePlaysScrabbleWithKool extends ShakespearePlaysScrabble {
         // Placing the word on the board
         // Building the streams of first and last letters
         Function<String, Stream<Integer>> first3 = word -> Stream
-                .fromIterable(toIterable(word.chars().boxed().limit(3)));
+                .from(toIterable(word.chars().boxed().limit(3)));
         Function<String, Stream<Integer>> last3 = word -> Stream
-                .fromIterable(toIterable(word.chars().boxed().skip(3)));
+                .from(toIterable(word.chars().boxed().skip(3)));
 
         // Stream to be maxed
         Function<String, Stream<Integer>> toBeMaxed = word -> Stream //
@@ -151,7 +151,7 @@ public class ShakespearePlaysScrabbleWithKool extends ShakespearePlaysScrabble {
                 .toStream();
 
         Function<Function<String, Stream<Integer>>, Single<TreeMap<Integer, List<String>>>> buildHistoOnScore = score -> Stream
-                .fromIterable(shakespeareWords) //
+                .from(shakespeareWords) //
                 .filter(scrabbleWords::contains) //
                 .filter(word -> checkBlanks.apply(word).first().get().get())
                 .collect(() -> new TreeMap<Integer, List<String>>(Comparator.reverseOrder()),
@@ -168,7 +168,7 @@ public class ShakespearePlaysScrabbleWithKool extends ShakespearePlaysScrabble {
         // best key / value pairs
         List<Entry<Integer, List<String>>> finalList2 = buildHistoOnScore //
                 .apply(score3) //
-                .flatMap(map -> Stream.fromIterable(map.entrySet())) //
+                .flatMap(map -> Stream.from(map.entrySet())) //
                 .take(3) //
                 .toList();
 

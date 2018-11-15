@@ -9,6 +9,7 @@ import org.davidmoten.kool.internal.operators.maybe.MaybeDefer;
 import org.davidmoten.kool.internal.operators.maybe.MaybeDoOnEmpty;
 import org.davidmoten.kool.internal.operators.maybe.MaybeDoOnError;
 import org.davidmoten.kool.internal.operators.maybe.MaybeDoOnValue;
+import org.davidmoten.kool.internal.operators.maybe.MaybeError;
 import org.davidmoten.kool.internal.operators.maybe.MaybeFlatMap;
 import org.davidmoten.kool.internal.operators.maybe.MaybeFromCallable;
 import org.davidmoten.kool.internal.operators.maybe.MaybeIsPresent;

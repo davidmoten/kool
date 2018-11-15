@@ -1,8 +1,9 @@
-package org.davidmoten.kool;
+package org.davidmoten.kool.internal.operators.maybe;
 
 import java.util.Optional;
 import java.util.concurrent.Callable;
 
+import org.davidmoten.kool.Maybe;
 import org.davidmoten.kool.internal.util.Exceptions;
 
 public class MaybeError<T> implements Maybe<T> {

@@ -34,7 +34,7 @@ public final class Cache<T> implements Stream<T> {
                     }
                     boolean hasNext = it.hasNext();
                     if (!hasNext) {
-                        cache = Stream.fromIterable(list);
+                        cache = Stream.from(list);
                         dispose();
                     }
                     return hasNext;
