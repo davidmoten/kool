@@ -8,13 +8,13 @@ import org.davidmoten.kool.StreamIterator;
 import com.github.davidmoten.guavamini.Lists;
 import com.github.davidmoten.guavamini.Preconditions;
 
-public final class Replay<T> implements Stream<T> {
+public final class Cache<T> implements Stream<T> {
 
     private final Stream<T> stream;
     private final List<T> list = Lists.newArrayList();
     private Stream<T> cache;
 
-    public Replay(Stream<T> stream) {
+    public Cache(Stream<T> stream) {
         this.stream = stream;
     }
 

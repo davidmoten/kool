@@ -33,6 +33,7 @@ import org.davidmoten.kool.internal.operators.stream.All;
 import org.davidmoten.kool.internal.operators.stream.Any;
 import org.davidmoten.kool.internal.operators.stream.Buffer;
 import org.davidmoten.kool.internal.operators.stream.BufferWithPredicate;
+import org.davidmoten.kool.internal.operators.stream.Cache;
 import org.davidmoten.kool.internal.operators.stream.Collect;
 import org.davidmoten.kool.internal.operators.stream.Concat;
 import org.davidmoten.kool.internal.operators.stream.Count;
@@ -58,7 +59,6 @@ import org.davidmoten.kool.internal.operators.stream.ReduceNoInitialValue;
 import org.davidmoten.kool.internal.operators.stream.ReduceWithInitialValueSupplier;
 import org.davidmoten.kool.internal.operators.stream.Repeat;
 import org.davidmoten.kool.internal.operators.stream.RepeatElement;
-import org.davidmoten.kool.internal.operators.stream.Replay;
 import org.davidmoten.kool.internal.operators.stream.Skip;
 import org.davidmoten.kool.internal.operators.stream.SkipUntil;
 import org.davidmoten.kool.internal.operators.stream.Sorted;
@@ -74,6 +74,8 @@ import org.davidmoten.kool.internal.operators.stream.Zip;
 import org.davidmoten.kool.internal.util.Iterables;
 import org.davidmoten.kool.internal.util.StreamImpl;
 import org.davidmoten.kool.internal.util.StreamUtils;
+
+import com.github.davidmoten.guavamini.Preconditions;
 
 public interface Stream<T> extends StreamIterable<T> {
 
@@ -563,8 +565,8 @@ public interface Stream<T> extends StreamIterable<T> {
         });
     }
 
-    public default Stream<T> replay() {
-        return new Replay<T>(this);
+    public default Stream<T> cache() {
+        return new Cache<T>(this);
     }
 
     public default Stream<T> every(long n, BiConsumer<Long, T> action) {
@@ -590,19 +592,38 @@ public interface Stream<T> extends StreamIterable<T> {
     public default Maybe<T> max(Comparator<? super T> comparator) {
         return reduce((a, b) -> comparator.compare(a, b) >= 0 ? a : b);
     }
-    
+
     public default Maybe<T> min(Comparator<? super T> comparator) {
         return reduce((a, b) -> comparator.compare(a, b) >= 0 ? b : a);
     }
-    
+
     public default Single<Boolean> all(Predicate<? super T> predicate) {
         return new All<T>(this, predicate);
     }
-    
+
     public default Single<Boolean> any(Predicate<? super T> predicate) {
         return new Any<T>(this, predicate);
     }
-    
+
+    @SuppressWarnings("unchecked")
+    public default <R> Stream<R> cast(Class<R> cls) {
+        Preconditions.checkNotNull(cls);
+        return (Stream<R>) (Stream<Object>) this;
+    }
+
+    public default Single<Boolean> contains(T value) {
+        Preconditions.checkNotNull(value);
+        return any(x -> value.equals(x));
+    }
+
+    public default Stream<T> distinct() {
+        return distinct(Functions.identity());
+    }
+
+    public default <K> Stream<T> distinct(Function<? super T, K> keySelector) {
+        return new Distinct<T, K>(this, keySelector);
+    }
+
     // TODO
     // don't use toList in toStreamJava ,
     // retryWhen,

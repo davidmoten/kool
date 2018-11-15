@@ -32,12 +32,12 @@ public class StreamTest {
 
     @Test
     public void testMapFilter() {
-        assertEquals(1, (long) //
         Stream.of(1, 2) //
                 .map(x -> x + 1) //
                 .filter(x -> x > 2) //
                 .count() //
-                .get());
+                .test() //
+                .assertValue(1L);
     }
 
     @Test
@@ -76,17 +76,17 @@ public class StreamTest {
 
     @Test
     public void testReduceWithNoInitialValue() {
-        assertEquals(10, (int) Stream.of(1, 2, 3, 4).reduce((a, b) -> a + b).get().get());
+        Stream.of(1, 2, 3, 4).reduce((a, b) -> a + b).test().assertValue(10);
     }
 
     @Test
     public void testReduceWithInitialValue() {
-        assertEquals(20, (int) Stream.of(1, 2, 3, 4).reduceWithInitialValue(10, (a, b) -> a + b).get().get());
+        Stream.of(1, 2, 3, 4).reduceWithInitialValue(10, (a, b) -> a + b).test().assertValue(20);
     }
 
     @Test
     public void testFlatMapEmpty() {
-        assertTrue(Stream.of(1, 2, 3).flatMap(x -> Stream.<Integer>empty()).isEmpty().get());
+        Stream.of(1, 2, 3).flatMap(x -> Stream.<Integer>empty()).isEmpty().test().assertValue(true);
     }
 
     @Test
@@ -122,22 +122,22 @@ public class StreamTest {
 
     @Test
     public void testFirstOfEmpty() {
-        assertFalse(Stream.empty().first().get().isPresent());
+        Stream.empty().first().test().assertNoValue();
     }
 
     @Test
     public void testFirst() {
-        assertEquals(1, (int) Stream.of(1, 2, 3).first().get().get());
+        Stream.of(1, 2, 3).first().test().assertValue(1);
     }
 
     @Test
     public void testLastOfEmpty() {
-        assertFalse(Stream.empty().last().get().isPresent());
+        Stream.empty().last().test().assertNoValue();
     }
 
     @Test
     public void testLast() {
-        assertEquals(3, (int) Stream.of(1, 2, 3).last().get().get());
+        Stream.of(1, 2, 3).last().test().assertValue(3);
     }
 
     @Test
@@ -164,17 +164,17 @@ public class StreamTest {
 
     @Test
     public void testGetEmpty() {
-        assertFalse(Stream.empty().get(0).get().isPresent());
+        Stream.empty().get(0).test().assertNoValue();
     }
 
     @Test
     public void testGetWithin() {
-        assertEquals(2, (int) Stream.of(1, 2, 3).get(1).get().get());
+        Stream.of(1, 2, 3).get(1).test().assertValue(2);
     }
 
     @Test
     public void testRangeOnEmpty() {
-        assertTrue(Stream.range(0, 0).isEmpty().get());
+        Stream.range(0, 0).isEmpty().test().assertValue(true);
     }
 
     @Test
@@ -265,7 +265,7 @@ public class StreamTest {
 
     @Test
     public void testConcatEmpties() {
-        assertTrue(Stream.empty().concatWith(Stream.empty()).isEmpty().get());
+        Stream.empty().concatWith(Stream.empty()).isEmpty().test().assertValue(true);
     }
 
     @Test(expected = NoSuchElementException.class)
@@ -301,7 +301,7 @@ public class StreamTest {
 
     @Test
     public void testJoin() {
-        assertEquals("helloAthere", Stream.of("hello", "there").join("A").get());
+        Stream.of("hello", "there").join("A").test().assertValue("helloAthere");
     }
 
     @Test
@@ -542,7 +542,7 @@ public class StreamTest {
     @Test
     public void testReplay() {
         AtomicInteger count = new AtomicInteger();
-        Stream<Integer> stream = Stream.of(1, 2, 3).doOnNext(x -> count.incrementAndGet()).replay();
+        Stream<Integer> stream = Stream.of(1, 2, 3).doOnNext(x -> count.incrementAndGet()).cache();
         stream.test().assertValues(1, 2, 3);
         assertEquals(3, count.get());
         stream.test().assertValues(1, 2, 3);
@@ -716,9 +716,19 @@ public class StreamTest {
     public void testAnyReturnsFalse() {
         Stream.of(1, 2, 3).any(x -> x == 5).test().assertValue(false);
     }
-    
+
     @Test
     public void testAnyOfEmptyReturnsFalse() {
         Stream.<Integer>empty().any(x -> x == 5).test().assertValue(false);
+    }
+
+    @Test
+    public void testDistinct() {
+        Stream.of(1, 1, 2, 3, 3, 4, 4, 4).distinct().test().assertValues(1, 2, 3, 4);
+    }
+    
+    @Test
+    public void testDistinctOnEmpty() {
+        Stream.empty().distinct().test().assertNoValues();
     }
 }

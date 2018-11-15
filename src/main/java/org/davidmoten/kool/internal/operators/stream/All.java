@@ -14,6 +14,8 @@ public final class All<T> implements Single<Boolean> {
     private final Predicate<? super T> predicate;
 
     public All(Stream<T> stream, Predicate<? super T> predicate) {
+        Preconditions.checkNotNull(stream);
+        Preconditions.checkNotNull(predicate);
         this.stream = stream;
         this.predicate = predicate;
     }
