@@ -1,16 +1,19 @@
-package org.davidmoten.kool;
+package org.davidmoten.kool.internal.operators.stream;
 
 import java.util.NoSuchElementException;
 import java.util.function.Function;
 
+import org.davidmoten.kool.Stream;
+import org.davidmoten.kool.StreamIterator;
+
 import com.github.davidmoten.guavamini.Preconditions;
 
-public final class Distinct<T, K> implements Stream<T> {
+public final class DistinctUntilChanged<T, K> implements Stream<T> {
 
     private final Stream<T> stream;
     private final Function<? super T, K> keySelector;
 
-    public Distinct(Stream<T> stream, Function<? super T, K> keySelector) {
+    public DistinctUntilChanged(Stream<T> stream, Function<? super T, K> keySelector) {
         this.stream = stream;
         this.keySelector = keySelector;
     }

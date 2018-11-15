@@ -14,6 +14,7 @@ import org.davidmoten.kool.internal.operators.maybe.MaybeFromCallable;
 import org.davidmoten.kool.internal.operators.maybe.MaybeIsPresent;
 import org.davidmoten.kool.internal.operators.maybe.MaybeIterator;
 import org.davidmoten.kool.internal.operators.maybe.MaybeMap;
+import org.davidmoten.kool.internal.operators.maybe.MaybeOrElse;
 import org.davidmoten.kool.internal.operators.maybe.MaybeToStream;
 import org.davidmoten.kool.internal.util.MaybeImpl;
 
@@ -84,6 +85,10 @@ public interface Maybe<T> extends StreamIterable<T> {
 
     public default Maybe<T> doOnEmpty(Runnable action) {
         return new MaybeDoOnEmpty<T>(this, action);
+    }
+    
+    public default Single<T> orElse(T value) {
+        return new MaybeOrElse<T>(this, value);
     }
 
     default MaybeTester<T> test() {

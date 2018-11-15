@@ -723,12 +723,12 @@ public class StreamTest {
     }
 
     @Test
-    public void testDistinct() {
-        Stream.of(1, 1, 2, 3, 3, 4, 4, 4).distinct().test().assertValues(1, 2, 3, 4);
+    public void testDistinctUntilChanged() {
+        Stream.of(1, 1, 2, 3, 3, 4, 4, 4).distinctUntilChanged().test().assertValues(1, 2, 3, 4);
     }
-    
+
     @Test
-    public void testDistinctOnEmpty() {
-        Stream.empty().distinct().test().assertNoValues();
+    public void testDistinctUntilChangedOnEmpty() {
+        Stream.empty().distinctUntilChanged().test().assertNoValues();
     }
 }

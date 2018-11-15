@@ -38,6 +38,7 @@ import org.davidmoten.kool.internal.operators.stream.Collect;
 import org.davidmoten.kool.internal.operators.stream.Concat;
 import org.davidmoten.kool.internal.operators.stream.Count;
 import org.davidmoten.kool.internal.operators.stream.Defer;
+import org.davidmoten.kool.internal.operators.stream.DistinctUntilChanged;
 import org.davidmoten.kool.internal.operators.stream.DoOnComplete;
 import org.davidmoten.kool.internal.operators.stream.DoOnDispose;
 import org.davidmoten.kool.internal.operators.stream.DoOnEmpty;
@@ -460,7 +461,7 @@ public interface Stream<T> extends StreamIterable<T> {
     public default Maybe<T> get(int index) {
         return take(index + 1).last();
     }
-
+    
     public default Stream<T> take(long n) {
         return new Take<T>(n, this);
     }
@@ -616,12 +617,12 @@ public interface Stream<T> extends StreamIterable<T> {
         return any(x -> value.equals(x));
     }
 
-    public default Stream<T> distinct() {
-        return distinct(Functions.identity());
+    public default Stream<T> distinctUntilChanged() {
+        return distinctUntilChanged(Functions.identity());
     }
 
-    public default <K> Stream<T> distinct(Function<? super T, K> keySelector) {
-        return new Distinct<T, K>(this, keySelector);
+    public default <K> Stream<T> distinctUntilChanged(Function<? super T, K> keySelector) {
+        return new DistinctUntilChanged<T, K>(this, keySelector);
     }
 
     // TODO

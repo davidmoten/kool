@@ -80,4 +80,14 @@ public final class MaybeTest {
         assertTrue(b.get());
     }
     
+    @Test
+    public void testMaybeOrElseWhenNotPresent() {
+        Maybe.<Integer>empty().orElse(2).test().assertValue(2);
+    }
+    
+    @Test
+    public void testMaybeOrElseWhenPresent() {
+        Maybe.of(1).orElse(2).test().assertValue(1);
+    }
+    
 }
