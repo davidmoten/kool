@@ -21,6 +21,7 @@ package org.davidmoten.kool;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.TreeMap;
@@ -78,12 +79,12 @@ public class ShakespearePlaysScrabbleWithKool extends ShakespearePlaysScrabble {
         Function<Integer, Stream<Integer>> scoreOfALetter = letter -> Stream.of(letterScores[letter - 'a']);
 
         // score of the same letters in a word
-        Function<Entry<Integer, LongWrapper>, Stream<Integer>> letterScore = entry -> Stream
-                .of(letterScores[entry.getKey() - 'a']
-                        * Integer.min((int) entry.getValue().get(), scrabbleAvailableLetters[entry.getKey() - 'a']));
+        Function<Entry<Integer, LongWrapper>, Stream<Integer>> letterScore = entry -> Stream.of( ///
+                letterScores[entry.getKey() - 'a'] * Integer.min((int) entry.getValue().get(), //
+                        scrabbleAvailableLetters[entry.getKey() - 'a']));
 
         Function<String, Stream<Integer>> toIntegerStream = string -> Stream
-                .fromIterable(IterableSpliterator.of(string.chars().boxed().spliterator()));
+                .fromIterable(toIterable(string.chars().boxed()));
 
         // Histogram of the letters in a given word
         Function<String, Single<HashMap<Integer, LongWrapper>>> histoOfLetters = word -> toIntegerStream.apply(word) //
@@ -100,37 +101,54 @@ public class ShakespearePlaysScrabbleWithKool extends ShakespearePlaysScrabble {
                 .of(Long.max(0L, entry.getValue().get() - scrabbleAvailableLetters[entry.getKey() - 'a']));
 
         // number of blanks for a given word
-        Function<String, Stream<Long>> nBlanks = word -> histoOfLetters.apply(word)
-                .flatMap(map -> Stream.fromIterable(map.entrySet())).flatMap(blank).reduce(Long::sum).toStream();
+        Function<String, Stream<Long>> nBlanks = word -> histoOfLetters.apply(word) //
+                .flatMap(map -> Stream.fromIterable(map.entrySet())) //
+                .flatMap(blank) //
+                .reduce(Long::sum) //
+                .toStream();
 
         // can a word be written with 2 blanks?
-        Function<String, Stream<Boolean>> checkBlanks = word -> nBlanks.apply(word).flatMap(l -> Stream.of(l <= 2L));
+        Function<String, Stream<Boolean>> checkBlanks = word -> nBlanks //
+                .apply(word) //
+                .flatMap(l -> Stream.of(l <= 2L));
 
         // score taking blanks into account letterScore1
-        Function<String, Stream<Integer>> score2 = word -> histoOfLetters.apply(word)
-                .flatMap(map -> Stream.fromIterable(map.entrySet())).flatMap(letterScore).reduce(Integer::sum)
+        Function<String, Stream<Integer>> score2 = word -> histoOfLetters //
+                .apply(word) //
+                .flatMap(map -> Stream.fromIterable(map.entrySet())) //
+                .flatMap(letterScore) //
+                .reduce(Integer::sum) //
                 .toStream();
 
         // Placing the word on the board
         // Building the streams of first and last letters
         Function<String, Stream<Integer>> first3 = word -> Stream
-                .fromIterable(IterableSpliterator.of(word.chars().boxed().limit(3).spliterator()));
+                .fromIterable(toIterable(word.chars().boxed().limit(3)));
         Function<String, Stream<Integer>> last3 = word -> Stream
-                .fromIterable(IterableSpliterator.of(word.chars().boxed().skip(3).spliterator()));
+                .fromIterable(toIterable(word.chars().boxed().skip(3)));
 
         // Stream to be maxed
-        Function<String, Stream<Integer>> toBeMaxed = word -> Stream.of(first3.apply(word), last3.apply(word))
+        Function<String, Stream<Integer>> toBeMaxed = word -> Stream //
+                .of(first3.apply(word), last3.apply(word)) //
                 .flatMap(stream -> stream);
 
         // Bonus for double letter
-        Function<String, Stream<Integer>> bonusForDoubleLetter = word -> toBeMaxed.apply(word).flatMap(scoreOfALetter)
-                .reduce(Integer::max).toStream();
+        Function<String, Stream<Integer>> bonusForDoubleLetter = word -> toBeMaxed //
+                .apply(word) //
+                .flatMap(scoreOfALetter) //
+                .reduce(Integer::max) //
+                .toStream();
 
         // score of the word put on the board
         Function<String, Stream<Integer>> score3 = word -> Stream
-                .of(score2.apply(word), score2.apply(word), bonusForDoubleLetter.apply(word),
-                        bonusForDoubleLetter.apply(word), Stream.of(word.length() == 7 ? 50 : 0))
-                .flatMap(stream -> stream).reduce(Integer::sum).toStream();
+                .of(score2.apply(word), //
+                        score2.apply(word), //
+                        bonusForDoubleLetter.apply(word), //
+                        bonusForDoubleLetter.apply(word), //
+                        Stream.of(word.length() == 7 ? 50 : 0))
+                .flatMap(stream -> stream) //
+                .reduce(Integer::sum) //
+                .toStream();
 
         Function<Function<String, Stream<Integer>>, Single<TreeMap<Integer, List<String>>>> buildHistoOnScore = score -> Stream
                 .fromIterable(shakespeareWords) //
@@ -157,9 +175,22 @@ public class ShakespearePlaysScrabbleWithKool extends ShakespearePlaysScrabble {
         return finalList2;
     }
 
+    private static <T> Iterable<T> toIterable(java.util.stream.Stream<T> stream) {
+        return new Iterable<T>() {
+
+            @Override
+            public Iterator<T> iterator() {
+                return stream.iterator();
+            }
+
+        };
+    }
+
     public static void main(String[] args) throws Exception {
         ShakespearePlaysScrabbleWithKool s = new ShakespearePlaysScrabbleWithKool();
         s.init();
-        System.out.println(s.measureThroughput());
+        for (;;) {
+            s.measureThroughput();
+        }
     }
 }

@@ -22,18 +22,21 @@ import java.util.stream.Stream;
 
 /**
  * Shakespeare plays Scrabble with Java Streams.
+ * 
  * @author José
  */
 public class ShakespearePlaysScrabbleWithNonParallelStreams extends ShakespearePlaysScrabbleWithStreams {
 
     @Override
     Stream<String> buildShakespeareWordsStream() {
-        return shakespeareWords.stream() ;
+        return shakespeareWords.stream();
     }
 
     public static void main(String[] args) throws Exception {
         ShakespearePlaysScrabbleWithNonParallelStreams s = new ShakespearePlaysScrabbleWithNonParallelStreams();
         s.init();
-        System.out.println(s.measureThroughput());
+        while (true) {
+            s.measureThroughput();
+        }
     }
 }
