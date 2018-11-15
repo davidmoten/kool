@@ -731,4 +731,19 @@ public class StreamTest {
     public void testDistinctUntilChangedOnEmpty() {
         Stream.empty().distinctUntilChanged().test().assertNoValues();
     }
+
+    @Test
+    public void testTakeLast() {
+        Stream.of(1, 2, 3).takeLast(2).test().assertValues(2, 3);
+    }
+
+    @Test
+    public void testTakeLastWhenExceedsAvailableLength() {
+        Stream.of(1, 2, 3).takeLast(5).test().assertValues(1, 2, 3);
+    }
+    
+    @Test
+    public void testTakeLastWhenEmpty() {
+        Stream.<Integer>empty().takeLast(5).test().assertNoValues();
+    }
 }

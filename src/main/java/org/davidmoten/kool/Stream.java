@@ -67,6 +67,7 @@ import org.davidmoten.kool.internal.operators.stream.Split;
 import org.davidmoten.kool.internal.operators.stream.SwitchOnEmpty;
 import org.davidmoten.kool.internal.operators.stream.SwitchOnError;
 import org.davidmoten.kool.internal.operators.stream.Take;
+import org.davidmoten.kool.internal.operators.stream.TakeLast;
 import org.davidmoten.kool.internal.operators.stream.TakeWithPredicate;
 import org.davidmoten.kool.internal.operators.stream.ToSingle;
 import org.davidmoten.kool.internal.operators.stream.Transform;
@@ -461,9 +462,13 @@ public interface Stream<T> extends StreamIterable<T> {
     public default Maybe<T> get(int index) {
         return take(index + 1).last();
     }
-    
+
     public default Stream<T> take(long n) {
         return new Take<T>(n, this);
+    }
+    
+    public default Stream<T> takeLast(long n) {
+        return new TakeLast<T>(this, n);
     }
 
     public default <R> Stream<R> transform(Function<? super Stream<T>, ? extends Stream<? extends R>> transformer) {
