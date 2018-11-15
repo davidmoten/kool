@@ -30,6 +30,7 @@ import java.util.function.Supplier;
 
 import org.davidmoten.kool.exceptions.UncheckedException;
 import org.davidmoten.kool.internal.operators.stream.All;
+import org.davidmoten.kool.internal.operators.stream.Any;
 import org.davidmoten.kool.internal.operators.stream.Buffer;
 import org.davidmoten.kool.internal.operators.stream.BufferWithPredicate;
 import org.davidmoten.kool.internal.operators.stream.Collect;
@@ -596,6 +597,10 @@ public interface Stream<T> extends StreamIterable<T> {
     
     public default Single<Boolean> all(Predicate<? super T> predicate) {
         return new All<T>(this, predicate);
+    }
+    
+    public default Single<Boolean> any(Predicate<? super T> predicate) {
+        return new Any<T>(this, predicate);
     }
     
     // TODO
