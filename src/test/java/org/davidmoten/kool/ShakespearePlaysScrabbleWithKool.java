@@ -41,7 +41,6 @@ import org.openjdk.jmh.annotations.Warmup;
  * Operators used of, from(Iterable), map, flatMap, first, collect, reduce,
  * filter, Maybe.toStream
  * 
- * @author José
  */
 public class ShakespearePlaysScrabbleWithKool extends ShakespearePlaysScrabble {
 
