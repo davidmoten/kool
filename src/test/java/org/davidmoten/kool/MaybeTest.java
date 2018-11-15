@@ -4,9 +4,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.io.IOException;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.davidmoten.kool.exceptions.UncheckedException;
 import org.junit.Test;
 
 public final class MaybeTest {
@@ -88,6 +90,11 @@ public final class MaybeTest {
     @Test
     public void testMaybeOrElseWhenPresent() {
         Maybe.of(1).orElse(2).test().assertValue(1);
+    }
+    
+    @Test(expected=UncheckedException.class)
+    public void testMaybeError() {
+        Maybe.error(new IOException("boo")).get();
     }
     
 }

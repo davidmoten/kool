@@ -138,15 +138,15 @@ public interface Stream<T> extends StreamIterable<T> {
         });
     }
 
-    public static <T> Stream<T> error(Callable<Throwable> callable) {
+    public static <T> Stream<T> error(Callable<? extends Throwable> callable) {
         return Stream.fromIterable(new StreamIterable<T>() {
             @Override
             public StreamIterator<T> iterator() {
                 Throwable e;
                 try {
-                    e = callable.call();
-                } catch (Exception e1) {
-                    throw new UncheckedException(e1);
+                    e = Preconditions.checkNotNull(callable.call());
+                } catch (Throwable e1) {
+                    e = e1;
                 }
                 if (e instanceof RuntimeException) {
                     throw (RuntimeException) e;
@@ -466,7 +466,7 @@ public interface Stream<T> extends StreamIterable<T> {
     public default Stream<T> take(long n) {
         return new Take<T>(n, this);
     }
-    
+
     public default Stream<T> takeLast(long n) {
         return new TakeLast<T>(this, n);
     }

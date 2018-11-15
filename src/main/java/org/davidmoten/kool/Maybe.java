@@ -1,5 +1,6 @@
 package org.davidmoten.kool;
 
+import java.io.IOException;
 import java.util.Optional;
 import java.util.concurrent.Callable;
 import java.util.function.Consumer;
@@ -57,6 +58,14 @@ public interface Maybe<T> extends StreamIterable<T> {
     
     public static <T> Maybe<T> defer(Callable<? extends Maybe<? extends T>> factory) {
         return new MaybeDefer<T>(factory);
+    }
+    
+    public static <T> Maybe<T> error(Callable<? extends Throwable> callable) {
+        return new MaybeError<T>(callable);
+    }
+    
+    public static <T> Maybe<T> error(Throwable error) {
+        return error(() -> error);
     }
 
     //////////////////
