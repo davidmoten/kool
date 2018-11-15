@@ -31,8 +31,8 @@ import java.util.function.Supplier;
 import org.davidmoten.kool.exceptions.UncheckedException;
 import org.davidmoten.kool.internal.operators.stream.All;
 import org.davidmoten.kool.internal.operators.stream.Any;
-import org.davidmoten.kool.internal.operators.stream.Buffer;
 import org.davidmoten.kool.internal.operators.stream.BufferWithPredicate;
+import org.davidmoten.kool.internal.operators.stream.Buffer;
 import org.davidmoten.kool.internal.operators.stream.Cache;
 import org.davidmoten.kool.internal.operators.stream.Collect;
 import org.davidmoten.kool.internal.operators.stream.Concat;
@@ -524,7 +524,11 @@ public interface Stream<T> extends StreamIterable<T> {
     }
 
     public default Stream<List<T>> buffer(int size) {
-        return new Buffer<T>(size, this);
+        return buffer(size, size);
+    }
+    
+    public default Stream<List<T>> buffer(int size, int step) {
+        return new Buffer<T>(this, size, step);
     }
 
     public default Stream<T> skip(int size) {

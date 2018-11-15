@@ -36,15 +36,15 @@ public final class Tester<T> {
     }
 
     public Tester<T> assertNoValuesOnly() {
-        assertNoValues();
         assertNoError();
+        assertNoValues();
         return this;
     }
 
     @SafeVarargs
     public final Tester<T> assertValuesOnly(T... expected) {
-        assertValues(expected);
         assertNoError();
+        assertValues(expected);
         return this;
     }
 

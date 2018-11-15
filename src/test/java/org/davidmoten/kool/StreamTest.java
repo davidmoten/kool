@@ -28,7 +28,7 @@ import org.junit.Test;
 
 import com.github.davidmoten.guavamini.Lists;
 
-public class StreamTest {
+public final class StreamTest {
 
     @Test
     public void testMapFilter() {
@@ -350,7 +350,9 @@ public class StreamTest {
         Stream.of(1, 2, 3, 4, 5) //
                 .buffer(2) //
                 .test() //
-                .assertValuesOnly(Lists.newArrayList(1, 2), Lists.newArrayList(3, 4), Lists.newArrayList(5));
+                .assertNoError()
+                .assertValuesOnly(Lists.newArrayList(1, 2), Lists.newArrayList(3, 4), Lists.newArrayList(5)) //
+        ;
     }
 
     @Test
@@ -719,32 +721,32 @@ public class StreamTest {
 
     @Test
     public void testAnyOfEmptyReturnsFalse() {
-        Stream.<Integer>empty().any(x -> x == 5).test().assertValue(false);
+        Stream.<Integer>empty().any(x -> x == 5).test().assertValueOnly(false);
     }
 
     @Test
     public void testDistinctUntilChanged() {
-        Stream.of(1, 1, 2, 3, 3, 4, 4, 4).distinctUntilChanged().test().assertValues(1, 2, 3, 4);
+        Stream.of(1, 1, 2, 3, 3, 4, 4, 4).distinctUntilChanged().test().assertValuesOnly(1, 2, 3, 4);
     }
 
     @Test
     public void testDistinctUntilChangedOnEmpty() {
-        Stream.empty().distinctUntilChanged().test().assertNoValues();
+        Stream.empty().distinctUntilChanged().test().assertNoValuesOnly();
     }
 
     @Test
     public void testTakeLast() {
-        Stream.of(1, 2, 3).takeLast(2).test().assertValues(2, 3);
+        Stream.of(1, 2, 3).takeLast(2).test().assertValuesOnly(2, 3);
     }
 
     @Test
     public void testTakeLastWhenExceedsAvailableLength() {
-        Stream.of(1, 2, 3).takeLast(5).test().assertValues(1, 2, 3);
+        Stream.of(1, 2, 3).takeLast(5).test().assertValuesOnly(1, 2, 3);
     }
 
     @Test
     public void testTakeLastWhenEmpty() {
-        Stream.<Integer>empty().takeLast(5).test().assertNoValues();
+        Stream.<Integer>empty().takeLast(5).test().assertNoValuesOnly();
     }
 
     @Test
@@ -754,8 +756,7 @@ public class StreamTest {
             emitter.onComplete();
         }) //
                 .test() //
-                .assertValues(1) //
-                .assertNoError();
+                .assertValuesOnly(1);
     }
 
     @Test
@@ -765,25 +766,26 @@ public class StreamTest {
             i.incrementAndGet();
             emitter.onNext(i.get());
         }) //
-                .take(5).test() //
-                .assertValues(1, 2, 3, 4, 5) //
-                .assertNoError();
+                .take(5) //
+                .test() //
+                .assertValuesOnly(1, 2, 3, 4, 5);
+
     }
 
     @Test
     public void testGenerateConsumerDoesNotCallEmitter() {
         Stream.<Integer>generate(emitter -> {
         }) //
-        .test().assertError(IllegalStateException.class);
+                .test().assertError(IllegalStateException.class);
     }
-    
+
     @Test
     public void testGenerateConsumerCallsOnNextTwice() {
         Stream.<Integer>generate(emitter -> {
             emitter.onNext(1);
             emitter.onNext(2);
         }) //
-        .test() //
-        .assertError(IllegalArgumentException.class);
+                .test() //
+                .assertError(IllegalArgumentException.class);
     }
 }

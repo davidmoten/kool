@@ -8,10 +8,15 @@ public final class SingleTester<T> {
         this.single = single;
     }
     
-    public void assertValue(T value) {
+    public SingleTester<T> assertValue(T value) {
         T v = single.get();
         if (!value.equals(v)) {
             throw new AssertionError("single result "+ v + " not equal to " + value);
         }
+        return this;
+    }
+
+    public SingleTester<T> assertValueOnly(T value) {
+        return assertValue(value);
     }
 }

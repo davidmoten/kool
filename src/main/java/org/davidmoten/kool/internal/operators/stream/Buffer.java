@@ -9,21 +9,23 @@ import org.davidmoten.kool.StreamIterator;
 
 import com.github.davidmoten.guavamini.Preconditions;
 
-public final class Buffer<T> implements Stream<List<T>> {
+public class Buffer<T> implements Stream<java.util.List<T>> {
 
+    private final Stream<T> stream;
     private final int size;
-    private final Stream<T> source;
+    private final int step;
 
-    public Buffer(int size, Stream<T> source) {
+    public Buffer(Stream<T> stream, int size, int step) {
+        this.stream = stream;
         this.size = size;
-        this.source = source;
+        this.step = step;
     }
 
     @Override
     public StreamIterator<List<T>> iterator() {
         return new StreamIterator<List<T>>() {
 
-            StreamIterator<T> it = Preconditions.checkNotNull(source.iterator());
+            StreamIterator<T> it = Preconditions.checkNotNull(stream.iterator());
             List<T> buffer = new ArrayList<>(size);
 
             @Override
@@ -39,7 +41,7 @@ public final class Buffer<T> implements Stream<List<T>> {
                     throw new NoSuchElementException();
                 } else {
                     List<T> list = buffer;
-                    buffer = new ArrayList<>();
+                    buffer = new ArrayList<>(buffer.subList(Math.min(step, buffer.size()), buffer.size()));
                     return list;
                 }
             }
