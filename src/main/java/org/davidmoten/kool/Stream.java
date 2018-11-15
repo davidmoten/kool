@@ -70,6 +70,7 @@ import org.davidmoten.kool.internal.operators.stream.SwitchOnError;
 import org.davidmoten.kool.internal.operators.stream.Take;
 import org.davidmoten.kool.internal.operators.stream.TakeLast;
 import org.davidmoten.kool.internal.operators.stream.TakeWithPredicate;
+import org.davidmoten.kool.internal.operators.stream.ToMaybe;
 import org.davidmoten.kool.internal.operators.stream.ToSingle;
 import org.davidmoten.kool.internal.operators.stream.Transform;
 import org.davidmoten.kool.internal.operators.stream.Using;
@@ -638,12 +639,15 @@ public interface Stream<T> extends StreamIterable<T> {
     public default <K> Stream<T> distinctUntilChanged(Function<? super T, K> keySelector) {
         return new DistinctUntilChanged<T, K>(this, keySelector);
     }
+    
+    public default Maybe<T> maybe() {
+        return new ToMaybe<T>(this);
+    }
 
     // TODO
     // don't use toList in toStreamJava ,
     // retryWhen,
-    // interleaveWith, materialize
+    // mergeInterleaveWith, materialize
     // add Single.flatMapMaybe, Maybe.flatMapSingle, Maybe.flatMapMaybe
-    // add Maybe.defer, Single.fromCallable, Single.defer
 
 }

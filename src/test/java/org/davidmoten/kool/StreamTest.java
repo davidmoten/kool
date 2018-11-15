@@ -788,4 +788,19 @@ public final class StreamTest {
                 .test() //
                 .assertError(IllegalArgumentException.class);
     }
+
+    @Test
+    public void testToMaybeFromEmpty() {
+        Stream.empty().maybe().test().assertNoValue();
+    }
+
+    @Test
+    public void testToMaybeFromOne() {
+        Stream.of(1).maybe().test().assertValue(1);
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void testToMaybeFromTwo() {
+        Stream.of(1, 2).maybe().test().assertValue(1);
+    }
 }
