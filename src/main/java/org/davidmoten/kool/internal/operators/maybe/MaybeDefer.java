@@ -5,6 +5,7 @@ import java.util.concurrent.Callable;
 
 import org.davidmoten.kool.Maybe;
 import org.davidmoten.kool.exceptions.UncheckedException;
+import org.davidmoten.kool.internal.util.Exceptions;
 
 public final class MaybeDefer<T> implements Maybe<T> {
 
@@ -19,8 +20,8 @@ public final class MaybeDefer<T> implements Maybe<T> {
     public Optional<T> get() {
         try {
             return (Optional<T>) factory.call().get();
-        } catch (Exception e) {
-            throw new UncheckedException(e);
+        } catch (Throwable e) {
+            return Exceptions.rethrow(e);
         }
     }
 

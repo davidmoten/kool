@@ -2,12 +2,14 @@ package org.davidmoten.kool.internal.operators.stream;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UncheckedIOException;
 import java.nio.ByteBuffer;
 import java.util.NoSuchElementException;
 
 import org.davidmoten.kool.Stream;
 import org.davidmoten.kool.StreamIterator;
 import org.davidmoten.kool.exceptions.UncheckedException;
+import org.davidmoten.kool.internal.util.Exceptions;
 
 import com.github.davidmoten.guavamini.Preconditions;
 
@@ -63,7 +65,7 @@ public final class FromInputStream implements Stream<ByteBuffer> {
                             n = is.read(b);
                         } catch (IOException e) {
                             is = null;
-                            throw new UncheckedException(e);
+                            throw new UncheckedIOException(e);
                         }
                         if (n == -1) {
                             is = null;
@@ -76,7 +78,7 @@ public final class FromInputStream implements Stream<ByteBuffer> {
 
             };
         } catch (Exception e) {
-            throw new UncheckedException(e);
+            return Exceptions.rethrow(e);
         }
     }
 

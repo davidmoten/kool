@@ -7,6 +7,7 @@ import org.davidmoten.kool.Stream;
 import org.davidmoten.kool.StreamIterator;
 import org.davidmoten.kool.exceptions.CompositeException;
 import org.davidmoten.kool.exceptions.UncheckedException;
+import org.davidmoten.kool.internal.util.Exceptions;
 
 import com.github.davidmoten.guavamini.Lists;
 import com.github.davidmoten.guavamini.Preconditions;
@@ -87,10 +88,10 @@ public final class MergeInterleaved<T> implements Stream<T> {
                                 // dispose all and throw
                                 List<Throwable> errors = getDisposalErrors();
                                 if (errors.isEmpty()) {
-                                    throw new UncheckedException(e);
+                                    Exceptions.rethrow(e);
+                                    return;
                                 } else {
                                     errors.add(e);
-                                    System.out.println("errors="+ errors);
                                     throw new CompositeException(errors);
                                 }
                             }

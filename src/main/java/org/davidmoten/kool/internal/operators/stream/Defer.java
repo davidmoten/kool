@@ -5,6 +5,7 @@ import java.util.concurrent.Callable;
 import org.davidmoten.kool.Stream;
 import org.davidmoten.kool.StreamIterator;
 import org.davidmoten.kool.exceptions.UncheckedException;
+import org.davidmoten.kool.internal.util.Exceptions;
 
 import com.github.davidmoten.guavamini.Preconditions;
 
@@ -22,7 +23,7 @@ public final class Defer<T> implements Stream<T> {
         try {
             return Preconditions.checkNotNull((StreamIterator<T>) provider.call().iterator());
         } catch (Exception e) {
-            throw new UncheckedException(e);
+            return Exceptions.rethrow(e);
         }
     }
 

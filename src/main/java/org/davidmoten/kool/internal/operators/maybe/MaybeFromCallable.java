@@ -5,6 +5,7 @@ import java.util.concurrent.Callable;
 
 import org.davidmoten.kool.Maybe;
 import org.davidmoten.kool.exceptions.UncheckedException;
+import org.davidmoten.kool.internal.util.Exceptions;
 
 public final class MaybeFromCallable<T> implements Maybe<T> {
 
@@ -21,8 +22,8 @@ public final class MaybeFromCallable<T> implements Maybe<T> {
         T v = null;
         try {
             v = callable.call();
-        } catch (Exception e) {
-            throw new UncheckedException(e);
+        } catch (Throwable e) {
+            return Exceptions.rethrow(e);
         }
         if (nullable) {
             return Optional.ofNullable(v);

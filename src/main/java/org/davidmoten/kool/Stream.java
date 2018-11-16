@@ -215,7 +215,7 @@ public interface Stream<T> extends StreamIterable<T> {
             try {
                 return readerFactory.call();
             } catch (Exception e) {
-                throw new UncheckedException(e);
+                return Exceptions.rethrow(e);
             }
         }, br -> lines(br));
     }
@@ -250,7 +250,8 @@ public interface Stream<T> extends StreamIterable<T> {
         return linesFromResource(Stream.class, resource, StandardCharsets.UTF_8);
     }
 
-    public static Stream<ByteBuffer> byteBuffers(Callable<? extends InputStream> provider, int bufferSize) {
+    public static Stream<ByteBuffer> byteBuffers(Callable<? extends InputStream> provider,
+            int bufferSize) {
         return using(provider, is -> byteBuffers(is));
     }
 
@@ -318,7 +319,8 @@ public interface Stream<T> extends StreamIterable<T> {
     }
 
     public static <R, T> Stream<T> using(Callable<R> resourceFactory,
-            Function<? super R, ? extends Stream<? extends T>> streamFactory, Consumer<? super R> closer) {
+            Function<? super R, ? extends Stream<? extends T>> streamFactory,
+            Consumer<? super R> closer) {
         return new Using<R, T>(resourceFactory, streamFactory, closer);
     }
 
@@ -392,7 +394,8 @@ public interface Stream<T> extends StreamIterable<T> {
         return new ReduceWithInitialValueSupplier<R, T>(initialValueFactory, reducer, this);
     }
 
-    public default <R> Single<R> collect(Supplier<? extends R> factory, BiConsumer<? super R, ? super T> collector) {
+    public default <R> Single<R> collect(Supplier<? extends R> factory,
+            BiConsumer<? super R, ? super T> collector) {
         return new Collect<T, R>(factory, collector, this).single();
     }
 
@@ -457,7 +460,8 @@ public interface Stream<T> extends StreamIterable<T> {
         return new Concat<T>(this, values);
     }
 
-    public default <R> Stream<R> flatMap(Function<? super T, ? extends StreamIterable<? extends R>> function) {
+    public default <R> Stream<R> flatMap(
+            Function<? super T, ? extends StreamIterable<? extends R>> function) {
         return new FlatMap<T, R>(function, this);
     }
 
@@ -517,15 +521,18 @@ public interface Stream<T> extends StreamIterable<T> {
         return new TakeLast<T>(this, n);
     }
 
-    public default <R> Stream<R> transform(Function<? super Stream<T>, ? extends Stream<? extends R>> transformer) {
+    public default <R> Stream<R> transform(
+            Function<? super Stream<T>, ? extends Stream<? extends R>> transformer) {
         return new Transform<T, R>(transformer, this);
     }
 
-    public default <R> Stream<R> compose(Function<? super Stream<T>, ? extends Stream<? extends R>> transformer) {
+    public default <R> Stream<R> compose(
+            Function<? super Stream<T>, ? extends Stream<? extends R>> transformer) {
         return transform(transformer);
     }
 
-    public default Stream<T> switchOnError(Function<? super Throwable, ? extends Stream<? extends T>> function) {
+    public default Stream<T> switchOnError(
+            Function<? super Throwable, ? extends Stream<? extends T>> function) {
         return new SwitchOnError<T>(function, this);
     }
 
@@ -533,7 +540,8 @@ public interface Stream<T> extends StreamIterable<T> {
         return new SwitchOnEmpty<T>(this, factory);
     }
 
-    public default <R, S> Stream<S> zipWith(Stream<? extends R> stream, BiFunction<T, R, S> combiner) {
+    public default <R, S> Stream<S> zipWith(Stream<? extends R> stream,
+            BiFunction<T, R, S> combiner) {
         return new Zip<R, S, T>(this, stream, combiner);
     }
 
@@ -542,9 +550,11 @@ public interface Stream<T> extends StreamIterable<T> {
         return toList().stream();
     }
 
-    public default <K, V> Single<java.util.Map<K, V>> toMap(Function<? super T, ? extends K> keyFunction,
+    public default <K, V> Single<java.util.Map<K, V>> toMap(
+            Function<? super T, ? extends K> keyFunction,
             Function<? super T, ? extends V> valueFunction) {
-        return collect(HashMap::new, (m, item) -> m.put(keyFunction.apply(item), valueFunction.apply(item)));
+        return collect(HashMap::new,
+                (m, item) -> m.put(keyFunction.apply(item), valueFunction.apply(item)));
     }
 
     public default Single<String> join(String delimiter) {

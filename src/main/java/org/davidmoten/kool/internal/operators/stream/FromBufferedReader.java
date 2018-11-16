@@ -2,11 +2,12 @@ package org.davidmoten.kool.internal.operators.stream;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.util.NoSuchElementException;
 
 import org.davidmoten.kool.Stream;
 import org.davidmoten.kool.StreamIterator;
-import org.davidmoten.kool.exceptions.UncheckedException;
+import org.davidmoten.kool.internal.util.Exceptions;
 
 public final class FromBufferedReader implements Stream<String> {
 
@@ -20,7 +21,7 @@ public final class FromBufferedReader implements Stream<String> {
     public StreamIterator<String> iterator() {
         try {
             return new StreamIterator<String>() {
-                
+
                 String line;
 
                 @Override
@@ -30,14 +31,14 @@ public final class FromBufferedReader implements Stream<String> {
                             return false;
                         }
                         try {
-                            boolean hasNext =  (line = reader.readLine())!= null;
+                            boolean hasNext = (line = reader.readLine()) != null;
                             if (!hasNext) {
-                                //don't close, using will do that
+                                // don't close, using will do that
                                 reader = null;
                             }
                             return hasNext;
                         } catch (IOException e) {
-                           throw new UncheckedException(e);
+                            throw new UncheckedIOException(e);
                         }
                     } else {
                         return true;
@@ -65,7 +66,7 @@ public final class FromBufferedReader implements Stream<String> {
 
             };
         } catch (Exception e) {
-            throw new UncheckedException(e);
+            return Exceptions.rethrow(e);
         }
     }
 
