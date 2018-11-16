@@ -10,7 +10,7 @@ Alternative to `java.util.stream.Stream`:
 * is sometimes slower than `j.u.s.Stream` especially for its primitive specializations
 * has many **more operators** and is generally less verbose
 * streams are **reusable**
-* disposes resources
+* *disposes* resources
 * is designed for synchronous use only
 * models 0..1 and 1 element streams explicitly with `Maybe` and `Single`.
 * does not support streams of nulls (use `Optional` or `Maybe`)
