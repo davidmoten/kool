@@ -15,7 +15,9 @@ import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -72,6 +74,11 @@ public final class StreamTest {
                 .prepend(new Integer[] { 0, 1 }) //
                 .test() //
                 .assertValuesOnly(0, 1, 2, 3);
+    }
+
+    @Test
+    public void testPrependStream() {
+        Stream.of(2, 3).prepend(Stream.of(1)).test().assertValuesOnly(1, 2, 3);
     }
 
     @Test
@@ -205,6 +212,26 @@ public final class StreamTest {
     @Test
     public void testTransform() {
         Stream.of(1, 2).transform(s -> s.map(x -> x + 3)).test().assertValuesOnly(4, 5);
+    }
+
+    @Test
+    public void testCompose() {
+        Stream.of(1, 2).compose(s -> s.map(x -> x + 3)).test().assertValuesOnly(4, 5);
+    }
+
+    @Test
+    public void testToStreamJava() {
+        assertEquals(2, Stream.of(1, 2).toStreamJava().count());
+    }
+
+    @Test
+    public void testToMap() {
+        Map<Integer, Integer> map = Stream.of(1, 2, 3).toMap(x -> x + 1, x -> 2 * x).get();
+        Map<Integer, Integer> expected = new HashMap<>();
+        expected.put(2, 2);
+        expected.put(3, 4);
+        expected.put(4, 6);
+        assertEquals(expected, map);
     }
 
     @Test
@@ -384,6 +411,16 @@ public final class StreamTest {
     }
 
     @Test
+    public void testAfterDispose() {
+        List<Integer> list = new ArrayList<Integer>();
+        Stream //
+                .using(() -> list, x -> Stream.of(1, 2), x -> x.add(2)) //
+                .doAfterDispose(() -> list.add(1)) //
+                .forEach();
+        assertEquals(Lists.newArrayList(2, 1), list);
+    }
+
+    @Test
     public void testSkip() {
         Stream.of(1, 2, 3, 4).skip(2).test().assertValuesOnly(3, 4);
     }
@@ -511,6 +548,11 @@ public final class StreamTest {
     @Test
     public void testFindFirst() {
         Stream.of(1, 2, 3, 4).findFirst(x -> x > 2).test().assertValue(3);
+    }
+
+    @Test
+    public void testFindFirstAlwaysFalse() {
+        Stream.of(1, 2, 3, 4).findFirst(Predicates.alwaysFalse()).test().assertNoValue();
     }
 
     @Test
@@ -927,4 +969,14 @@ public final class StreamTest {
                 .forEach();
     }
 
+    @Test
+    public void testIgnoreDisposalError() {
+        Stream.using(() -> 1, //
+                n -> Stream.of(n), //
+                n -> {
+                    throw new RuntimeException("boo");
+                }) //
+                .ignoreDisposalError() //
+                .test().assertValuesOnly(1);
+    }
 }
