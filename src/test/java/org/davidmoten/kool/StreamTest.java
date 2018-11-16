@@ -30,6 +30,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import com.github.davidmoten.guavamini.Lists;
+import com.github.davidmoten.guavamini.Sets;
 
 public final class StreamTest {
 
@@ -676,6 +677,16 @@ public final class StreamTest {
     }
 
     @Test
+    public void testByteBuffersWithDefaultBufferSizeOneElementOutput() {
+        ByteBuffer bb = Stream
+                .byteBuffers(() -> new ByteArrayInputStream("hello there".getBytes(StandardCharsets.UTF_8))).single() //
+                .get();
+        byte[] x = new byte[bb.remaining()];
+        bb.get(x);
+        assertEquals("hello there", new String(x, StandardCharsets.UTF_8));
+    }
+
+    @Test
     public void testByteBuffersManyElementsOutput() {
         byte[] b = Stream.byteBuffers(() -> new ByteArrayInputStream("hello there".getBytes(StandardCharsets.UTF_8)), 2)
                 .collect(() -> new ByteArrayOutputStream(), (c, bb) -> {
@@ -754,16 +765,17 @@ public final class StreamTest {
         });
 
         Stream.mergeInterleaved(a, b) //
-                // .doOnError(e -> e.printStackTrace()) //
+//                .printStackTrace() //
                 .test() //
                 .assertValues(1, 2) //
                 .assertError(CompositeException.class) //
                 .assertError(e -> {
                     CompositeException ex = (CompositeException) e;
-                    Throwable exb = ex.getCause().getCause();
-                    Throwable exa = exb.getCause();
-                    System.out.println(exb.getMessage());
-                    return exb.getMessage().equals("2") && exa.getMessage().equals("1");
+                    System.out.println(ex.getExceptions());
+                    
+                    Throwable exa = ex.getExceptions().get(0);
+                    Throwable exb = ex.getExceptions().get(1);
+                    return ex.getExceptions().size() == 2 &&  exb.getMessage().equals("2") && exa.getMessage().equals("1");
                 });
     }
 
@@ -1014,6 +1026,44 @@ public final class StreamTest {
                     throw new RuntimeException("boo");
                 }) //
                 .ignoreDisposalError() //
-                .test().assertValuesOnly(1);
+                .test() //
+                .assertValuesOnly(1);
+    }
+
+    @Test
+    public void testIgnoreDisposalErrorWithConsumer() {
+        checkTrue(b -> Stream.using(() -> 1, //
+                n -> Stream.of(n), //
+                n -> {
+                    throw new RuntimeException("boo");
+                }) //
+                .ignoreDisposalError(t -> b.set(true)) //
+                .test() //
+                .assertValuesOnly(1));
+    }
+
+    @Test
+    public void testRangeLong() {
+        Stream.rangeLong(1, 3).test().assertValuesOnly(1L, 2L, 3L);
+    }
+
+    @Test
+    public void testOrdinalsLong() {
+        Stream.ordinalsLong().take(3).test().assertValuesOnly(1L, 2L, 3L);
+    }
+
+    @Test
+    public void testRepeatElementInfinte() {
+        assertEquals("a", Stream.repeatElement("a").take(100).last().get().get());
+    }
+
+    @Test
+    public void testHasElements() {
+        assertTrue(Stream.of(1, 2, 3).hasElements().get());
+    }
+
+    @Test
+    public void testToSet() {
+        assertEquals(Sets.newHashSet(1, 2), Stream.of(1, 2).toSet());
     }
 }

@@ -13,7 +13,7 @@ public final class Tester<T> {
     public Tester(Stream<T> stream) {
         list = new ArrayList<T>();
         try {
-            stream.forEach(x -> list.add(x));
+            stream.forEach(list::add);
             this.error = null;
         } catch (Throwable e) {
             this.error = e;

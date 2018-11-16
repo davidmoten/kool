@@ -50,7 +50,8 @@ public final class MergeInterleaved<T> implements Stream<T> {
             public void dispose() {
                 if (list != null) {
                     try {
-                        throw new CompositeException(getDisposalErrors());
+                        List<Throwable> errors = getDisposalErrors();
+                        throw new CompositeException(errors);
                     } finally {
                         list = null;
                     }
@@ -89,6 +90,7 @@ public final class MergeInterleaved<T> implements Stream<T> {
                                     throw new UncheckedException(e);
                                 } else {
                                     errors.add(e);
+                                    System.out.println("errors="+ errors);
                                     throw new CompositeException(errors);
                                 }
                             }

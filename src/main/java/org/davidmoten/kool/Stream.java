@@ -428,6 +428,11 @@ public interface Stream<T> extends StreamIterable<T> {
         count().get();
     }
 
+    @Override
+    public default void forEach(Consumer<? super T> consumer) {
+        doOnNext(consumer).count().get();
+    }
+
     public default Stream<T> println() {
         return doOnNext(System.out::println);
     }
@@ -637,6 +642,7 @@ public interface Stream<T> extends StreamIterable<T> {
     }
 
     public default Stream<T> ignoreDisposalError(Consumer<Throwable> action) {
+        Preconditions.checkNotNull(action);
         return new IgnoreDisposalError<T>(this, action);
     }
 
@@ -685,6 +691,10 @@ public interface Stream<T> extends StreamIterable<T> {
 
     public default <R> R to(Function<? super Stream<T>, R> mapper) {
         return mapper.apply(this);
+    }
+
+    public default Stream<T> printStackTrace() {
+        return doOnError(x -> x.printStackTrace());
     }
 
     // TODO
