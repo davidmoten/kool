@@ -5,21 +5,21 @@ import java.util.NoSuchElementException;
 import org.davidmoten.kool.Stream;
 import org.davidmoten.kool.StreamIterator;
 
-public final class Range implements Stream<Integer> {
+public final class RangeLong implements Stream<Long> {
 
-    private final int start;
-    private final int length;
+    private final long start;
+    private final long length;
 
-    public Range(int start, int length) {
+    public RangeLong(long start, long length) {
         this.start = start;
         this.length = length;
     }
 
     @Override
-    public StreamIterator<Integer> iterator() {
-        return new StreamIterator<Integer>() {
+    public StreamIterator<Long> iterator() {
+        return new StreamIterator<Long>() {
 
-            int i = start;
+            long i = start;
 
             @Override
             public boolean hasNext() {
@@ -27,7 +27,7 @@ public final class Range implements Stream<Integer> {
             }
 
             @Override
-            public  Integer next() {
+            public Long next() {
                 if (i - start < length) {
                     return i++;
                 } else {

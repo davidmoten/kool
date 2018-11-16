@@ -62,6 +62,7 @@ import org.davidmoten.kool.internal.operators.stream.Max;
 import org.davidmoten.kool.internal.operators.stream.MergeInterleaved;
 import org.davidmoten.kool.internal.operators.stream.PrependOne;
 import org.davidmoten.kool.internal.operators.stream.Range;
+import org.davidmoten.kool.internal.operators.stream.RangeLong;
 import org.davidmoten.kool.internal.operators.stream.ReduceNoInitialValue;
 import org.davidmoten.kool.internal.operators.stream.ReduceWithInitialValueSupplier;
 import org.davidmoten.kool.internal.operators.stream.Repeat;
@@ -197,7 +198,7 @@ public interface Stream<T> extends StreamIterable<T> {
             return fromArray(array, 0, array.length - 1);
         }
     }
-    
+
     public static Stream<Double> fromArray(double[] array, int fromIndex, int toIndex) {
         return new FromArrayDouble(array, fromIndex, toIndex);
     }
@@ -209,7 +210,7 @@ public interface Stream<T> extends StreamIterable<T> {
             return fromArray(array, 0, array.length - 1);
         }
     }
-    
+
     public static Stream<Float> fromArray(float[] array, int fromIndex, int toIndex) {
         return new FromArrayFloat(array, fromIndex, toIndex);
     }
@@ -318,12 +319,20 @@ public interface Stream<T> extends StreamIterable<T> {
         return bytes(in, DEFAULT_BUFFER_SIZE);
     }
 
-    public static Stream<Long> range(long start, long length) {
-        return create(new Range(start, length));
+    public static Stream<Integer> range(int start, int length) {
+        return new Range(start, length);
     }
 
-    public static Stream<Long> ordinals() {
-        return range(1, Long.MAX_VALUE);
+    public static Stream<Long> rangeLong(long start, long length) {
+        return new RangeLong(start, length);
+    }
+
+    public static Stream<Long> ordinalsLong() {
+        return rangeLong(1, Long.MAX_VALUE);
+    }
+
+    public static Stream<Integer> ordinals() {
+        return range(1, Integer.MAX_VALUE);
     }
 
     public static <T> Stream<T> defer(Callable<? extends Stream<? extends T>> provider) {
@@ -623,15 +632,19 @@ public interface Stream<T> extends StreamIterable<T> {
         return new BufferWithPredicate<T>(condition, emitRemainder, true, this);
     }
 
-    public default Stream<Indexed<T>> mapWithIndex() {
+    public default Stream<Indexed<T>> mapWithIndex(int startIndex) {
         return defer(() -> {
-            int[] index = new int[1];
+            int[] index = new int[] { startIndex };
             return map(x -> {
                 int n = index[0];
                 index[0] = n + 1;
                 return Indexed.create(x, n);
             });
         });
+    }
+    
+    public default Stream<Indexed<T>> mapWithIndex() {
+        return mapWithIndex(0);
     }
 
     public default Stream<T> cache() {

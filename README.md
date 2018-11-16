@@ -38,6 +38,36 @@ Add this dependency to your pom.xml:
     <version>VERSION_HERE</version>
 </dependency>
 ```
+## Example
+```java
+import org.davidmoten.kool.Stream;
+
+Stream //
+  .range(1, 10)
+  .flatMap(n -> Stream
+      .range(1, n)
+      .reduceWithInitialValue(0, (a, b) -> a + b))
+  .mapWithIndex(1)
+  .println()
+  .forEach();
+```
+
+output:
+```
+Indexed[index=1, value=1]
+Indexed[index=2, value=3]
+Indexed[index=3, value=6]
+Indexed[index=4, value=10]
+Indexed[index=5, value=15]
+Indexed[index=6, value=21]
+Indexed[index=7, value=28]
+Indexed[index=8, value=36]
+Indexed[index=9, value=45]
+Indexed[index=10, value=55]
+```
+## Differences from java.util.stream.Stream
+The primary difference is that kool.Stream is **reusable** so to get a concrete value from a kool.Stream you often need some terminating call like `get()` or `forEach()`.
+
 ## Checklist for new operators
 * wrap calls to `it.next()` with `Preconditions.checkNotNull`
 * wrap calls to function parameters passed to operator with `Preconditions.checkNotNull`

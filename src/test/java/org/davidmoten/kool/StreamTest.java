@@ -126,6 +126,11 @@ public final class StreamTest {
     }
 
     @Test
+    public void testFlatMapSingle() {
+        Stream.of(1, 2).flatMap(x -> Single.of(x)).test().assertValues(1, 2);
+    }
+
+    @Test
     public void testFirstOfEmpty() {
         Stream.empty().first().test().assertNoValue();
     }
@@ -184,12 +189,12 @@ public final class StreamTest {
 
     @Test
     public void testRange() {
-        Stream.range(1, 3).test().assertValuesOnly(1L, 2L, 3L);
+        Stream.range(1, 3).test().assertValuesOnly(1, 2, 3);
     }
 
     @Test
     public void testOrdinals() {
-        Stream.ordinals().take(3).test().assertValuesOnly(1L, 2L, 3L);
+        Stream.ordinals().take(3).test().assertValuesOnly(1, 2, 3);
     }
 
     @Test
@@ -908,6 +913,18 @@ public final class StreamTest {
     @Test
     public void testFromArrayFloatPartial() {
         Stream.fromArray(new float[] { 1, 2, 3, 4, 5 }, 2, 3).test().assertValuesOnly(3.0f, 4.0f);
+    }
+
+    @Test
+    public void testReadMeExample() {
+        Stream //
+                .range(1, 10) //
+                .flatMap(n -> Stream //
+                        .range(1, n) //
+                        .reduceWithInitialValue(0, (a, b) -> a + b)) //
+                .mapWithIndex(1) //
+                .println() //
+                .forEach();
     }
 
 }

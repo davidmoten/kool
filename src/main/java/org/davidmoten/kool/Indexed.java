@@ -24,6 +24,10 @@ public final class Indexed<T> {
     public int index() {
         return index;
     }
+    
+    public Indexed<T> incrementIndex() {
+        return new Indexed<T>(t, index + 1);
+    }
 
     @Override
     public int hashCode() {
@@ -52,7 +56,7 @@ public final class Indexed<T> {
 
     @Override
     public String toString() {
-        return "Indexed[value=" + t + ", index=" + index + "]";
+        return "Indexed[index=" + index + ", value=" + t + "]";
     }
 
 }
