@@ -81,6 +81,7 @@ import org.davidmoten.kool.internal.operators.stream.ToSingle;
 import org.davidmoten.kool.internal.operators.stream.Transform;
 import org.davidmoten.kool.internal.operators.stream.Using;
 import org.davidmoten.kool.internal.operators.stream.Zip;
+import org.davidmoten.kool.internal.util.Exceptions;
 import org.davidmoten.kool.internal.util.Iterables;
 import org.davidmoten.kool.internal.util.StreamImpl;
 import org.davidmoten.kool.internal.util.StreamUtils;
@@ -135,13 +136,7 @@ public interface Stream<T> extends StreamIterable<T> {
         return Stream.from(new StreamIterable<T>() {
             @Override
             public StreamIterator<T> iterator() {
-                if (e instanceof RuntimeException) {
-                    throw (RuntimeException) e;
-                } else if (e instanceof Error) {
-                    throw (Error) e;
-                } else {
-                    throw new UncheckedException(e);
-                }
+                return Exceptions.rethrow(e);
             }
         });
     }
@@ -154,19 +149,7 @@ public interface Stream<T> extends StreamIterable<T> {
         return Stream.from(new StreamIterable<T>() {
             @Override
             public StreamIterator<T> iterator() {
-                Throwable e;
-                try {
-                    e = Preconditions.checkNotNull(callable.call());
-                } catch (Throwable e1) {
-                    e = e1;
-                }
-                if (e instanceof RuntimeException) {
-                    throw (RuntimeException) e;
-                } else if (e instanceof Error) {
-                    throw (Error) e;
-                } else {
-                    throw new UncheckedException(e);
-                }
+                return Exceptions.rethrow(callable);
             }
         });
     }
@@ -221,16 +204,6 @@ public interface Stream<T> extends StreamIterable<T> {
         } else {
             return fromArray(array, 0, array.length - 1);
         }
-    }
-
-    public static <T> Stream<T> fromCallable(Callable<? extends T> callable) {
-        return defer(() -> {
-            try {
-                return Stream.of(callable.call());
-            } catch (Exception e) {
-                return Stream.error(e);
-            }
-        });
     }
 
     public static Stream<String> lines(BufferedReader reader) {
@@ -642,7 +615,7 @@ public interface Stream<T> extends StreamIterable<T> {
             });
         });
     }
-    
+
     public default Stream<Indexed<T>> mapWithIndex() {
         return mapWithIndex(0);
     }

@@ -7,6 +7,7 @@ import java.util.function.Function;
 import org.davidmoten.kool.Stream;
 import org.davidmoten.kool.StreamIterator;
 import org.davidmoten.kool.exceptions.UncheckedException;
+import org.davidmoten.kool.internal.util.Exceptions;
 
 import com.github.davidmoten.guavamini.Preconditions;
 
@@ -48,8 +49,8 @@ public final class Using<R, T> implements Stream<T> {
                     closer.accept(resource);
                 }
             };
-        } catch (Exception e) {
-            throw new UncheckedException(e);
+        } catch (Throwable e) {
+            return Exceptions.rethrow(e);
         }
     }
 

@@ -11,6 +11,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
+import java.io.UncheckedIOException;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -40,6 +41,12 @@ public final class StreamTest {
                 .count() //
                 .test() //
                 .assertValue(1L);
+    }
+
+    @Test
+    public void testFilterWithAlwaysTrueDoesNotModifyStreamAtAll() {
+        Stream<Integer> s = Stream.of(1, 2);
+        assertTrue(s.filter(Predicates.alwaysTrue()) == s);
     }
 
     @Test
@@ -243,6 +250,11 @@ public final class StreamTest {
     }
 
     @Test
+    public void testErrorFromCallable() {
+        Stream.error(() -> new IOException("boo")).test().assertError(UncheckedException.class);
+    }
+
+    @Test
     public void testDoOnErrorWithErrorSource() {
         Throwable[] err = new Throwable[1];
         try {
@@ -254,6 +266,11 @@ public final class StreamTest {
             assertEquals("boo", t.getMessage());
             assertEquals("boo", err[0].getMessage());
         }
+    }
+
+    @Test
+    public void testFromCallable() {
+
     }
 
     @Test
@@ -528,6 +545,26 @@ public final class StreamTest {
     @Test
     public void testLinesFromResource() {
         Stream.linesFromResource("/test3.txt").test().assertValuesOnly("hello", "there", "world");
+    }
+
+    @Test
+    public void testLinesFromResource2() {
+        Stream.linesFromResource("/test3.txt", StandardCharsets.UTF_8).test().assertValuesOnly("hello", "there",
+                "world");
+    }
+
+    @Test
+    public void testLinesFromFactoryThatThrows() {
+        Stream.lines(() -> {
+            throw new IOException();
+        }) //
+                .test() //
+                .assertError(UncheckedException.class);
+    }
+
+    @Test
+    public void testLinesFromFileThatDoesNotExist() {
+        Stream.lines(new File("THIS_FILE_DOES_NOT_EXIST")).test().assertError(UncheckedIOException.class);
     }
 
     @Test
