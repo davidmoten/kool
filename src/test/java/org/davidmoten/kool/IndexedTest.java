@@ -15,7 +15,7 @@ public class IndexedTest {
         assertEquals("a", v.value());
         assertEquals(123, v.index());
         assertEquals(4871, v.hashCode());
-        assertEquals("Indexed[value=a, index=123]", v.toString());
+        assertEquals("Indexed[index=123, value=a]", v.toString());
     }
 
     @Test(expected = NullPointerException.class)
