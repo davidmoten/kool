@@ -23,6 +23,21 @@ If you need non-blocking and/or asynchronous streaming use [RxJava](https://gith
 
 Note also that [ixjava](https://github.com/akarnokd/ixjava) predates this library and is also a pull-based and iterator-based library for reusable streams but does not model `Maybe` and `Single`.
 
+## How to build
+```bash
+mvn clean install
+```
+
+## Getting started
+Add this dependency to your pom.xml:
+
+```xml
+<dependency>
+    <groupId>com.github.davidmoten</groupId>
+    <artifactId>kool</artifactId>
+    <version>VERSION_HERE</version>
+</dependency>
+```
 ## Checklist for new operators
 * wrap calls to `it.next()` with `Preconditions.checkNotNull`
 * wrap calls to function parameters passed to operator with `Preconditions.checkNotNull`
