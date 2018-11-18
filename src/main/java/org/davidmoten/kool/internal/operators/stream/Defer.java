@@ -20,7 +20,7 @@ public final class Defer<T> implements Stream<T> {
     @Override
     public StreamIterator<T> iterator() {
         try {
-            return Preconditions.checkNotNull((StreamIterator<T>) provider.call().iterator());
+            return (StreamIterator<T>) provider.call().iteratorChecked();
         } catch (Exception e) {
             return Exceptions.rethrow(e);
         }

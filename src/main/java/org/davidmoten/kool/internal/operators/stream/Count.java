@@ -16,12 +16,12 @@ public final class Count implements Single<Long> {
 
     @Override
     public Long get() {
-        StreamIterator<?> it = stream.iterator();
+        StreamIterator<?> it = stream.iteratorChecked();
         long count = 0;
         try {
             while (it.hasNext()) {
                 count++;
-                Preconditions.checkNotNull(it.next());
+                it.nextChecked();
             }
         } finally {
             it.dispose();
