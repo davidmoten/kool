@@ -6,8 +6,7 @@ import java.util.NoSuchElementException;
 
 import org.davidmoten.kool.Stream;
 import org.davidmoten.kool.StreamIterator;
-
-import com.github.davidmoten.guavamini.Preconditions;
+import org.davidmoten.kool.internal.util.StreamUtils;
 
 public class Buffer<T> implements Stream<java.util.List<T>> {
 
@@ -25,7 +24,7 @@ public class Buffer<T> implements Stream<java.util.List<T>> {
     public StreamIterator<List<T>> iterator() {
         return new StreamIterator<List<T>>() {
 
-            StreamIterator<T> it = Preconditions.checkNotNull(stream.iterator());
+            StreamIterator<T> it = StreamUtils.iterator(stream);
             List<T> buffer = new ArrayList<>(size);
 
             @Override
@@ -53,7 +52,7 @@ public class Buffer<T> implements Stream<java.util.List<T>> {
 
             private void loadNext() {
                 while (buffer.size() < size && it.hasNext()) {
-                    T t = Preconditions.checkNotNull(it.next());
+                    T t = StreamUtils.next(it);
                     buffer.add(t);
                 }
             }
