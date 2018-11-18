@@ -1068,4 +1068,14 @@ public final class StreamTest {
     public void testToSet() {
         assertEquals(Sets.newHashSet(1, 2), Stream.of(1, 2).toSet());
     }
+
+    @Test
+    public void testDistinctEmpty() {
+        Stream.empty().distinct().test().assertNoValues();
+    }
+
+    @Test
+    public void testDistinct() {
+        Stream.of(1, 1, 2, 3, 1, 2, 4, 3).distinct().test().assertValuesOnly(1, 2, 3, 4);
+    }
 }

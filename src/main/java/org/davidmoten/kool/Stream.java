@@ -28,7 +28,6 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-import org.davidmoten.kool.exceptions.UncheckedException;
 import org.davidmoten.kool.internal.operators.stream.All;
 import org.davidmoten.kool.internal.operators.stream.Any;
 import org.davidmoten.kool.internal.operators.stream.Buffer;
@@ -38,6 +37,7 @@ import org.davidmoten.kool.internal.operators.stream.Collect;
 import org.davidmoten.kool.internal.operators.stream.Concat;
 import org.davidmoten.kool.internal.operators.stream.Count;
 import org.davidmoten.kool.internal.operators.stream.Defer;
+import org.davidmoten.kool.internal.operators.stream.Distinct;
 import org.davidmoten.kool.internal.operators.stream.DistinctUntilChanged;
 import org.davidmoten.kool.internal.operators.stream.DoOnComplete;
 import org.davidmoten.kool.internal.operators.stream.DoOnDispose;
@@ -689,6 +689,14 @@ public interface Stream<T> extends StreamIterable<T> {
 
     public default Stream<T> distinctUntilChanged() {
         return distinctUntilChanged(Functions.identity());
+    }
+
+    public default <K> Stream<T> distinct(Function<? super T, K> keySelector) {
+        return new Distinct<T, K>(this, keySelector);
+    }
+
+    public default Stream<T> distinct() {
+        return distinct(Function.identity());
     }
 
     public default <K> Stream<T> distinctUntilChanged(Function<? super T, K> keySelector) {
