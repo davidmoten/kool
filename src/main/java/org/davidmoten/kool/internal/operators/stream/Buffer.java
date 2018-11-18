@@ -40,7 +40,8 @@ public class Buffer<T> implements Stream<java.util.List<T>> {
                     throw new NoSuchElementException();
                 } else {
                     List<T> list = buffer;
-                    buffer = new ArrayList<>(buffer.subList(Math.min(step, buffer.size()), buffer.size()));
+                    buffer = new ArrayList<>(
+                            buffer.subList(Math.min(step, buffer.size()), buffer.size()));
                     return list;
                 }
             }
@@ -52,8 +53,7 @@ public class Buffer<T> implements Stream<java.util.List<T>> {
 
             private void loadNext() {
                 while (buffer.size() < size && it.hasNext()) {
-                    T t = StreamUtils.next(it);
-                    buffer.add(t);
+                    buffer.add(StreamUtils.next(it));
                 }
             }
         };

@@ -7,6 +7,7 @@ import java.util.function.BiPredicate;
 
 import org.davidmoten.kool.Stream;
 import org.davidmoten.kool.StreamIterator;
+import org.davidmoten.kool.internal.util.StreamUtils;
 
 import com.github.davidmoten.guavamini.Preconditions;
 
@@ -28,7 +29,7 @@ public final class BufferWithPredicate<T> implements Stream<List<T>> {
     @Override
     public StreamIterator<List<T>> iterator() {
         return new StreamIterator<List<T>>() {
-            StreamIterator<T> it = Preconditions.checkNotNull(source.iterator());
+            StreamIterator<T> it = StreamUtils.iterator(source);
             List<T> buffer = new ArrayList<>();
             List<T> nextBuffer = new ArrayList<>();
             boolean ready;
@@ -60,7 +61,7 @@ public final class BufferWithPredicate<T> implements Stream<List<T>> {
 
             private void loadNext() {
                 while (!ready && it.hasNext()) {
-                    T t = Preconditions.checkNotNull(it.next());
+                    T t = StreamUtils.next(it);
                     boolean b = condition.test(buffer, t);
                     if (!until) {
                         // while
