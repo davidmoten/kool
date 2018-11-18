@@ -6,6 +6,7 @@ import java.util.function.Supplier;
 
 import org.davidmoten.kool.Stream;
 import org.davidmoten.kool.StreamIterator;
+import org.davidmoten.kool.internal.util.StreamUtils;
 
 import com.github.davidmoten.guavamini.Preconditions;
 
@@ -26,7 +27,7 @@ public final class Collect<T, R> implements Stream<R> {
     public StreamIterator<R> iterator() {
         return new StreamIterator<R>() {
 
-            StreamIterator<T> it = Preconditions.checkNotNull(source.iterator());
+            StreamIterator<T> it = StreamUtils.iterator(source);
             R value;
 
             @Override
@@ -59,7 +60,7 @@ public final class Collect<T, R> implements Stream<R> {
                 if (value == null && it != null) {
                     R c = factory.get();
                     while (it.hasNext()) {
-                        collector.accept(c, Preconditions.checkNotNull(it.next()));
+                        collector.accept(c, StreamUtils.next(it));
                     }
                     it.dispose();
                     value = c;

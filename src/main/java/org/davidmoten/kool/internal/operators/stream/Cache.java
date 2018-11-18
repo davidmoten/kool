@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.davidmoten.kool.Stream;
 import org.davidmoten.kool.StreamIterator;
+import org.davidmoten.kool.internal.util.StreamUtils;
 
 import com.github.davidmoten.guavamini.Lists;
 import com.github.davidmoten.guavamini.Preconditions;
@@ -25,7 +26,7 @@ public final class Cache<T> implements Stream<T> {
         } else {
             return new StreamIterator<T>() {
 
-                StreamIterator<T> it = Preconditions.checkNotNull(stream.iterator());
+                StreamIterator<T> it = StreamUtils.iterator(stream);
 
                 @Override
                 public boolean hasNext() {
@@ -42,7 +43,7 @@ public final class Cache<T> implements Stream<T> {
 
                 @Override
                 public T next() {
-                    T v = Preconditions.checkNotNull(it.next());
+                    T v = StreamUtils.next(it);
                     list.add(v);
                     return v;
                 }
