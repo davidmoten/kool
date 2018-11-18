@@ -1,13 +1,10 @@
 package org.davidmoten.kool.internal.operators.stream;
 
-import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 import org.davidmoten.kool.Stream;
 import org.davidmoten.kool.StreamIterable;
 import org.davidmoten.kool.StreamIterator;
-
-import com.github.davidmoten.guavamini.Preconditions;
 
 public final class Concat<T> implements Stream<T> {
 
@@ -23,7 +20,7 @@ public final class Concat<T> implements Stream<T> {
     public StreamIterator<T> iterator() {
         return new StreamIterator<T>() {
 
-            StreamIterator<? extends T> a = Preconditions.checkNotNull(source1.iterator());
+            StreamIterator<? extends T> a = source1.iteratorChecked();
             StreamIterator<? extends T> b = null;
 
             @Override
@@ -45,18 +42,18 @@ public final class Concat<T> implements Stream<T> {
             @Override
             public T next() {
                 if (a != null && a.hasNext()) {
-                    return Preconditions.checkNotNull(a.next());
+                    return a.nextChecked();
                 } else if (b().hasNext()) {
-                    return Preconditions.checkNotNull(b().next());
+                    return b().nextChecked();
                 } else {
                     dispose();
                     throw new NoSuchElementException();
                 }
             }
 
-            private Iterator<? extends T> b() {
+            private StreamIterator<? extends T> b() {
                 if (b == null) {
-                    b = Preconditions.checkNotNull(source2.iterator());
+                    b = source2.iteratorChecked();
                 }
                 return b;
             }
