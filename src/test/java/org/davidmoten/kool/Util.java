@@ -25,14 +25,19 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.github.davidmoten.guavamini.Preconditions;
+
 public final class Util {
 
-    private Util() { }
+    private Util() {
+    }
 
     public static Set<String> readScrabbleWords() {
-        Set<String> scrabbleWords = new HashSet<>() ;
-        try (java.util.stream.Stream<String> scrabbleWordsStream = Files.lines(new File("src/test/resources/ospd.txt").toPath())) {
-            scrabbleWords.addAll(scrabbleWordsStream.map(String::toLowerCase).collect(Collectors.toSet()));
+        Set<String> scrabbleWords = new HashSet<>();
+        try (java.util.stream.Stream<String> scrabbleWordsStream = Files
+                .lines(new File("src/test/resources/ospd.txt").toPath())) {
+            scrabbleWords.addAll(
+                    scrabbleWordsStream.map(String::toLowerCase).collect(Collectors.toSet()));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -40,13 +45,16 @@ public final class Util {
     }
 
     public static Set<String> readShakespeareWords() {
-        Set<String> shakespeareWords = new HashSet<>() ;
-        try (java.util.stream.Stream<String> shakespeareWordsStream = Files.lines(new File("src/test/resources/words.shakespeare.txt").toPath())) {
-            shakespeareWords.addAll(shakespeareWordsStream.map(String::toLowerCase).collect(Collectors.toSet()));
+        Set<String> shakespeareWords = new HashSet<>();
+        try (java.util.stream.Stream<String> shakespeareWordsStream = Files
+                .lines(new File("src/test/resources/words.shakespeare.txt").toPath())) {
+            shakespeareWords.addAll(
+                    shakespeareWordsStream.map(String::toLowerCase).collect(Collectors.toSet()));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
-        return shakespeareWords ;
+        return shakespeareWords;
     }
+
 }

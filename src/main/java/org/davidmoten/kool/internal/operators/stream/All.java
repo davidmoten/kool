@@ -5,6 +5,7 @@ import java.util.function.Predicate;
 import org.davidmoten.kool.Single;
 import org.davidmoten.kool.Stream;
 import org.davidmoten.kool.StreamIterator;
+import org.davidmoten.kool.internal.util.StreamUtils;
 
 import com.github.davidmoten.guavamini.Preconditions;
 
@@ -22,10 +23,10 @@ public final class All<T> implements Single<Boolean> {
 
     @Override
     public Boolean get() {
-        StreamIterator<T> it = Preconditions.checkNotNull(stream.iterator());
+        StreamIterator<T> it = StreamUtils.iterator(stream);
         try {
             while (it.hasNext()) {
-                if (!predicate.test(Preconditions.checkNotNull(it.next()))) {
+                if (!predicate.test(StreamUtils.next(it))) {
                     return false;
                 }
             }
