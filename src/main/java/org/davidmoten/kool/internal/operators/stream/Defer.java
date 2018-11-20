@@ -6,8 +6,6 @@ import org.davidmoten.kool.Stream;
 import org.davidmoten.kool.StreamIterator;
 import org.davidmoten.kool.internal.util.Exceptions;
 
-import com.github.davidmoten.guavamini.Preconditions;
-
 public final class Defer<T> implements Stream<T> {
 
     private final Callable<? extends Stream<? extends T>> provider;
