@@ -27,6 +27,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.stream.StreamSupport;
 
 import org.davidmoten.kool.internal.operators.stream.All;
 import org.davidmoten.kool.internal.operators.stream.Any;
@@ -546,8 +547,7 @@ public interface Stream<T> extends StreamIterable<T> {
     }
 
     public default java.util.stream.Stream<T> toStreamJava() {
-        // TODO don't use toList
-        return toList().stream();
+        return StreamSupport.stream(this.spliterator(), false);
     }
 
     public default <K, V> Single<java.util.Map<K, V>> toMap(
@@ -716,7 +716,6 @@ public interface Stream<T> extends StreamIterable<T> {
     }
 
     // TODO
-    // don't use toList in toStreamJava ,
     // retryWhen,
     // mergeInterleaveWith, materialize
     // add Single.flatMapMaybe, Maybe.flatMapSingle, Maybe.flatMapMaybe
