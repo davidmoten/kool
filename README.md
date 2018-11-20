@@ -12,7 +12,7 @@ Alternative to `java.util.stream.Stream`:
 * streams are **reusable**
 * **disposes** resources
 * is designed for synchronous use only
-* models 0..1 and 1 element streams explicitly with `Maybe` and `Single`.
+* models 0..1 and 1 element streams explicitly with **`Maybe`** and **`Single`**.
 * does not support streams of nulls (use `Optional` or `Maybe`)
 
 Status: *pre-alpha* (in development)
