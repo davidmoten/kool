@@ -11,9 +11,9 @@ import com.github.davidmoten.guavamini.Preconditions;
 public final class IgnoreDisposalError<T> implements Stream<T> {
 
     private final Stream<T> stream;
-    private final Consumer<Throwable> action;
+    private final Consumer<? super Throwable> action;
 
-    public IgnoreDisposalError(Stream<T> stream, Consumer<Throwable> action) {
+    public IgnoreDisposalError(Stream<T> stream, Consumer<? super Throwable> action) {
         this.stream = stream;
         this.action = action;
     }

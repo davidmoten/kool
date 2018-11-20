@@ -651,7 +651,7 @@ public interface Stream<T> extends StreamIterable<T> {
         });
     }
 
-    public default Stream<T> ignoreDisposalError(Consumer<Throwable> action) {
+    public default Stream<T> ignoreDisposalError(Consumer<? super Throwable> action) {
         Preconditions.checkNotNull(action);
         return new IgnoreDisposalError<T>(this, action);
     }
