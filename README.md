@@ -21,7 +21,7 @@ Maven site reports are [here](https://davidmoten.github.io/kool) including [java
 
 If you need non-blocking and/or asynchronous streaming use [RxJava](https://github.com/ReactiveX/RxJava).
 
-Note also that [ixjava](https://github.com/akarnokd/ixjava) predates this library and is also a pull-based and iterator-based library for reusable streams but does not model `Maybe` and `Single`.
+Note also that [IxJava](https://github.com/akarnokd/ixjava) predates this library and is also a pull-based and iterator-based library for reusable streams but does not model `Maybe` and `Single`.
 
 ## How to build
 ```bash
