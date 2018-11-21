@@ -383,7 +383,7 @@ public interface Stream<T> extends StreamIterable<T> {
     }
 
     public default Maybe<T> reduce(BiFunction<? super T, ? super T, ? extends T> reducer) {
-        return new ReduceNoInitialValue<T>(reducer, this).iterator().next();
+        return new ReduceNoInitialValue<T>(reducer, this);
     }
 
     public default <R> Maybe<R> reduceWithInitialValue(R initialValue,
