@@ -46,7 +46,7 @@ Stream //
   .range(1, 10)
   .flatMap(n -> Stream
       .range(1, n)
-      .reduceWithInitialValue(0, (a, b) -> a + b))
+      .reduce(0, (a, b) -> a + b))
   .mapWithIndex(1)
   .println()
   .forEach();
@@ -65,6 +65,11 @@ Indexed[index=8, value=36]
 Indexed[index=9, value=45]
 Indexed[index=10, value=55]
 ```
+
+## Benchmarks
+JMH is used for benchmarks. 
+
+The Shakespear Plays Scrabble benchmark uses the following factories and operators: `of`, `from`, `chars`, `map`, `flatMap`, `collect`, `reduce`, `take`, `filter`.
 
 ## Checklist for new operators
 * wrap calls to `it.next()` with `Preconditions.checkNotNull`
