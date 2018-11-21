@@ -3,21 +3,21 @@ package org.davidmoten.kool.internal.operators.stream;
 import org.davidmoten.kool.Stream;
 import org.davidmoten.kool.StreamIterator;
 
-public final class FromArrayDouble implements Stream<Double> {
+public final class FromChars implements Stream<Integer> {
 
-    private final double[] array;
+    private final CharSequence chars;
     private final int fromIndex;
     private final int toIndex;
 
-    public FromArrayDouble(double[] array, int fromIndex, int toIndex) {
-        this.array = array;
+    public FromChars(CharSequence chars, int fromIndex, int toIndex) {
+        this.chars = chars;
         this.fromIndex = fromIndex;
         this.toIndex = toIndex;
     }
 
     @Override
-    public StreamIterator<Double> iterator() {
-        return new StreamIterator<Double>() {
+    public StreamIterator<Integer> iterator() {
+        return new StreamIterator<Integer>() {
 
             int i = fromIndex;
 
@@ -27,8 +27,8 @@ public final class FromArrayDouble implements Stream<Double> {
             }
 
             @Override
-            public Double next() {
-                return array[i++];
+            public Integer next() {
+                return (int) chars.charAt(i++);
             }
 
             @Override
@@ -38,4 +38,5 @@ public final class FromArrayDouble implements Stream<Double> {
 
         };
     }
+
 }

@@ -23,7 +23,7 @@ public final class FromArrayFloat implements Stream<Float> {
 
             @Override
             public boolean hasNext() {
-                return i <= toIndex;
+                return i < toIndex;
             }
 
             @Override

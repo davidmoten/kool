@@ -13,6 +13,7 @@ import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -34,6 +35,7 @@ import org.davidmoten.kool.internal.operators.stream.Any;
 import org.davidmoten.kool.internal.operators.stream.Buffer;
 import org.davidmoten.kool.internal.operators.stream.BufferWithPredicate;
 import org.davidmoten.kool.internal.operators.stream.Cache;
+import org.davidmoten.kool.internal.operators.stream.FromChars;
 import org.davidmoten.kool.internal.operators.stream.Collect;
 import org.davidmoten.kool.internal.operators.stream.Concat;
 import org.davidmoten.kool.internal.operators.stream.Count;
@@ -143,6 +145,14 @@ public interface Stream<T> extends StreamIterable<T> {
         });
     }
 
+    public static Stream<Integer> chars(CharSequence s) {
+        return chars(s, 0, s.length());
+    }
+    
+    public static Stream<Integer> chars(CharSequence s, int fromIndex, int toIndex) {
+        return new FromChars(s, fromIndex, toIndex);
+    }
+    
     public static <T> Stream<T> generate(Consumer<Emitter<T>> consumer) {
         return new Generate<T>(consumer);
     }
@@ -168,7 +178,7 @@ public interface Stream<T> extends StreamIterable<T> {
         if (array.length == 0) {
             return Stream.empty();
         } else {
-            return fromArray(array, 0, array.length - 1);
+            return fromArray(array, 0, array.length);
         }
     }
 
@@ -180,7 +190,7 @@ public interface Stream<T> extends StreamIterable<T> {
         if (array.length == 0) {
             return Stream.empty();
         } else {
-            return fromArray(array, 0, array.length - 1);
+            return fromArray(array, 0, array.length);
         }
     }
 
@@ -192,7 +202,7 @@ public interface Stream<T> extends StreamIterable<T> {
         if (array.length == 0) {
             return Stream.empty();
         } else {
-            return fromArray(array, 0, array.length - 1);
+            return fromArray(array, 0, array.length);
         }
     }
 
@@ -204,7 +214,7 @@ public interface Stream<T> extends StreamIterable<T> {
         if (array.length == 0) {
             return Stream.empty();
         } else {
-            return fromArray(array, 0, array.length - 1);
+            return fromArray(array, 0, array.length);
         }
     }
 

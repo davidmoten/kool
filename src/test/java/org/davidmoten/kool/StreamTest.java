@@ -934,7 +934,7 @@ public final class StreamTest {
 
     @Test
     public void testFromArrayPartial() {
-        Stream.fromArray(new Integer[] { 1, 2, 3, 4, 5 }, 2, 3).test().assertValuesOnly(3, 4);
+        Stream.fromArray(new Integer[] { 1, 2, 3, 4, 5 }, 2, 4).test().assertValuesOnly(3, 4);
     }
 
     @Test
@@ -954,7 +954,7 @@ public final class StreamTest {
 
     @Test
     public void testFromArrayIntPartial() {
-        Stream.fromArray(new int[] { 1, 2, 3, 4, 5 }, 2, 3).test().assertValuesOnly(3, 4);
+        Stream.fromArray(new int[] { 1, 2, 3, 4, 5 }, 2, 4).test().assertValuesOnly(3, 4);
     }
 
     @Test
@@ -974,7 +974,7 @@ public final class StreamTest {
 
     @Test
     public void testFromArrayDoublePartial() {
-        Stream.fromArray(new double[] { 1, 2, 3, 4, 5 }, 2, 3).test().assertValuesOnly(3.0, 4.0);
+        Stream.fromArray(new double[] { 1, 2, 3, 4, 5 }, 2, 4).test().assertValuesOnly(3.0, 4.0);
     }
 
     @Test
@@ -994,7 +994,7 @@ public final class StreamTest {
 
     @Test
     public void testFromArrayFloatPartial() {
-        Stream.fromArray(new float[] { 1, 2, 3, 4, 5 }, 2, 3).test().assertValuesOnly(3.0f, 4.0f);
+        Stream.fromArray(new float[] { 1, 2, 3, 4, 5 }, 2, 4).test().assertValuesOnly(3.0f, 4.0f);
     }
 
     @Test

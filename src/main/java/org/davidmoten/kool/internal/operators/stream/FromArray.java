@@ -13,7 +13,7 @@ public class FromArray<T> implements Stream<T> {
 
     public FromArray(T[] array, int fromIndex, int toIndex) {
         Preconditions.checkArgument(fromIndex >= 0 && fromIndex <= toIndex);
-        Preconditions.checkArgument(toIndex < array.length);
+        Preconditions.checkArgument(toIndex <= array.length);
         this.array = array;
         this.fromIndex = fromIndex;
         this.toIndex = toIndex;
@@ -28,7 +28,7 @@ public class FromArray<T> implements Stream<T> {
 
             @Override
             public boolean hasNext() {
-                return i <= toIndex;
+                return i < toIndex;
             }
 
             @Override
