@@ -28,6 +28,7 @@ import java.util.Map.Entry;
 import java.util.TreeMap;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
@@ -108,16 +109,14 @@ public class ShakespearePlaysScrabbleWithKool extends ShakespearePlaysScrabble {
                                 entry.getValue().get() - scrabbleAvailableLetters[entry.getKey() - 'a']));
 
         // number of blanks for a given word
-        Function<String, Stream<Long>> nBlanks = word -> //
+        Function<String, Long> nBlanks = word -> //
         Stream.from(histoOfLetters.apply(word).entrySet()) //
                 .flatMap(blank) //
-                .reduce(Long::sum) //
-                .toStream();
+                .reduceWithInitialValue(0L, Long::sum) //
+                .get().get();
 
         // can a word be written with 2 blanks?
-        Function<String, Stream<Boolean>> checkBlanks = word -> nBlanks //
-                .apply(word) //
-                .flatMap(l -> Stream.of(l <= 2L));
+        Predicate<String> checkBlanks = word -> nBlanks.apply(word) <= 2;
 
         // score taking blanks into account letterScore1
         Function<String, Stream<Integer>> score2 = word -> //
@@ -128,8 +127,8 @@ public class ShakespearePlaysScrabbleWithKool extends ShakespearePlaysScrabble {
 
         // Placing the word on the board
         // Building the streams of first and last letters
-        Function<String, Stream<Integer>> first3 = word -> Stream.from(toIterable(word.chars().boxed().limit(3)));
-        Function<String, Stream<Integer>> last3 = word -> Stream.from(toIterable(word.chars().boxed().skip(3)));
+        Function<String, Stream<Integer>> first3 = word -> Stream.chars(word).take(3);
+        Function<String, Stream<Integer>> last3 = word -> Stream.chars(word).skip(3);
 
         // Stream to be maxed
         Function<String, Stream<Integer>> toBeMaxed = word -> Stream //
@@ -155,7 +154,7 @@ public class ShakespearePlaysScrabbleWithKool extends ShakespearePlaysScrabble {
         Function<Function<String, Stream<Integer>>, Single<TreeMap<Integer, List<String>>>> buildHistoOnScore = score -> Stream
                 .from(shakespeareWords) //
                 .filter(scrabbleWords::contains) //
-                .filter(word -> checkBlanks.apply(word).first().get().get())
+                .filter(checkBlanks) //
                 .collect(() -> new TreeMap<Integer, List<String>>(Comparator.reverseOrder()),
                         (TreeMap<Integer, List<String>> map, String word) -> {
                             Integer key = score.apply(word).first().get().get();
