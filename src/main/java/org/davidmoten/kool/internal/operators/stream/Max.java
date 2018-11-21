@@ -7,8 +7,6 @@ import org.davidmoten.kool.Maybe;
 import org.davidmoten.kool.Stream;
 import org.davidmoten.kool.StreamIterator;
 
-import com.github.davidmoten.guavamini.Preconditions;
-
 public class Max<T> implements Maybe<T> {
 
     private final Stream<T> stream;
@@ -23,7 +21,7 @@ public class Max<T> implements Maybe<T> {
 
     @Override
     public Optional<T> get() {
-        StreamIterator<T> it = Preconditions.checkNotNull(stream.iterator());
+        StreamIterator<T> it = stream.iteratorChecked();
         try {
             T max = null;
             while (it.hasNext()) {

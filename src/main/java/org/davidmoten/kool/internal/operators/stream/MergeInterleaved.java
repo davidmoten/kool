@@ -9,7 +9,6 @@ import org.davidmoten.kool.exceptions.CompositeException;
 import org.davidmoten.kool.internal.util.Exceptions;
 
 import com.github.davidmoten.guavamini.Lists;
-import com.github.davidmoten.guavamini.Preconditions;
 
 public final class MergeInterleaved<T> implements Stream<T> {
 
@@ -112,7 +111,7 @@ public final class MergeInterleaved<T> implements Stream<T> {
     static <T> List<StreamIterator<? extends T>> getIterators(Stream<? extends T>[] streams) {
         List<StreamIterator<? extends T>> list = Lists.newArrayList();
         for (Stream<? extends T> stream : streams) {
-            list.add(Preconditions.checkNotNull(stream.iterator()));
+            list.add(stream.iteratorChecked());
         }
         return list;
     }

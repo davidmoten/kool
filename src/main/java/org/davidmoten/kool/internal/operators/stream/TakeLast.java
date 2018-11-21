@@ -4,8 +4,6 @@ import org.davidmoten.kool.Stream;
 import org.davidmoten.kool.StreamIterator;
 import org.davidmoten.kool.internal.util.EvictingQueue;
 
-import com.github.davidmoten.guavamini.Preconditions;
-
 public final class TakeLast<T> implements Stream<T> {
 
     private final Stream<T> stream;
@@ -20,7 +18,7 @@ public final class TakeLast<T> implements Stream<T> {
     public StreamIterator<T> iterator() {
         return new StreamIterator<T>() {
 
-            StreamIterator<T> it = Preconditions.checkNotNull(stream.iterator());
+            StreamIterator<T> it = stream.iteratorChecked();
             EvictingQueue<T> queue = new EvictingQueue<T>(n);
             
             @Override
