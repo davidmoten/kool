@@ -132,7 +132,7 @@ public class ShakespearePlaysScrabbleWithKool extends ShakespearePlaysScrabble {
                 .from(shakespeareWords) //
                 .filter(scrabbleWords::contains) //
                 .filter(checkBlanks) //
-                .collect(() -> new TreeMap<Integer, List<String>>(Comparator.reverseOrder()),
+                .collect(() -> new TreeMap<Integer, List<String>>(Comparator.reverseOrder()), //
                         (TreeMap<Integer, List<String>> map, String word) -> {
                             Integer key = score.apply(word);
                             List<String> list = map.get(key);

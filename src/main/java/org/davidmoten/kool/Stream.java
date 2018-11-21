@@ -13,6 +13,7 @@ import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -148,11 +149,11 @@ public interface Stream<T> extends StreamIterable<T> {
     public static Stream<Integer> chars(CharSequence s) {
         return chars(s, 0, s.length());
     }
-    
+
     public static Stream<Integer> chars(CharSequence s, int fromIndex, int toIndex) {
         return new FromChars(s, fromIndex, toIndex);
     }
-    
+
     public static <T> Stream<T> generate(Consumer<Emitter<T>> consumer) {
         return new Generate<T>(consumer);
     }
@@ -262,8 +263,7 @@ public interface Stream<T> extends StreamIterable<T> {
         return linesFromResource(Stream.class, resource, StandardCharsets.UTF_8);
     }
 
-    public static Stream<ByteBuffer> byteBuffers(Callable<? extends InputStream> provider,
-            int bufferSize) {
+    public static Stream<ByteBuffer> byteBuffers(Callable<? extends InputStream> provider, int bufferSize) {
         return using(provider, is -> byteBuffers(is));
     }
 
@@ -331,8 +331,7 @@ public interface Stream<T> extends StreamIterable<T> {
     }
 
     public static <R, T> Stream<T> using(Callable<R> resourceFactory,
-            Function<? super R, ? extends Stream<? extends T>> streamFactory,
-            Consumer<? super R> closer) {
+            Function<? super R, ? extends Stream<? extends T>> streamFactory, Consumer<? super R> closer) {
         return new Using<R, T>(resourceFactory, streamFactory, closer);
     }
 
@@ -396,8 +395,7 @@ public interface Stream<T> extends StreamIterable<T> {
         return new ReduceNoInitialValue<T>(reducer, this);
     }
 
-    public default <R> Single<R> reduce(R initialValue,
-            BiFunction<? super R, ? super T, ? extends R> reducer) {
+    public default <R> Single<R> reduce(R initialValue, BiFunction<? super R, ? super T, ? extends R> reducer) {
         return reduceWithInitialValue(() -> initialValue, reducer);
     }
 
@@ -406,9 +404,55 @@ public interface Stream<T> extends StreamIterable<T> {
         return new ReduceWithInitialValueSupplier<R, T>(initialValueFactory, reducer, this);
     }
 
-    public default <R> Single<R> collect(Supplier<? extends R> factory,
-            BiConsumer<? super R, ? super T> collector) {
+    public default <R> Single<R> collect(Callable<? extends R> factory, BiConsumer<? super R, ? super T> collector) {
         return new Collect<T, R>(factory, collector, this);
+    }
+
+    public default <K, V, D extends Collection<V>> Single<java.util.Map<K, D>> toMultimap( //
+            Callable<java.util.Map<K, D>> mapFactory, //
+            Function<? super T, ? extends K> keySelector, //
+            Function<? super T, ? extends V> valueSelector, //
+            Callable<D> collectionFactory) {
+        return collect(mapFactory, (map, t) -> {
+            K k = keySelector.apply(t);
+            V v = valueSelector.apply(t);
+            D x = map.get(k);
+            if (x == null) {
+                try {
+                    x = collectionFactory.call();
+                    map.put(k,  x);
+                } catch (Exception e) {
+                    Exceptions.rethrow(e);
+                }
+            }
+            x.add(v);
+        });
+    }
+
+    public default <K, V> Single<java.util.Map<K, List<V>>> toMultimapList( //
+            Callable<java.util.Map<K, List<V>>> mapFactory, //
+            Function<? super T, ? extends K> keySelector, //
+            Function<? super T, ? extends V> valueSelector) {
+        return toMultimap(mapFactory, keySelector, valueSelector, ArrayList::new);
+    }
+
+    public default <K, V> Single<java.util.Map<K, Set<V>>> toMultimapSet( //
+            Callable<java.util.Map<K, Set<V>>> mapFactory, //
+            Function<? super T, ? extends K> keySelector, //
+            Function<? super T, ? extends V> valueSelector) {
+        return toMultimap(mapFactory, keySelector, valueSelector, HashSet::new);
+    }
+
+    public default <K> Single<java.util.Map<K, List<T>>> toMultimapList( //
+            Callable<java.util.Map<K, List<T>>> mapFactory, //
+            Function<? super T, ? extends K> keySelector) {
+        return toMultimapList(mapFactory, keySelector, Function.identity());
+    }
+
+    public default <K> Single<java.util.Map<K, Set<T>>> toMultimapSet( //
+            Callable<java.util.Map<K, Set<T>>> mapFactory, //
+            Function<? super T, ? extends K> keySelector) {
+        return toMultimapSet(mapFactory, keySelector, Function.identity());
     }
 
     public default Single<T> single() {
@@ -472,8 +516,7 @@ public interface Stream<T> extends StreamIterable<T> {
         return new Concat<T>(this, values);
     }
 
-    public default <R> Stream<R> flatMap(
-            Function<? super T, ? extends StreamIterable<? extends R>> function) {
+    public default <R> Stream<R> flatMap(Function<? super T, ? extends StreamIterable<? extends R>> function) {
         return new FlatMap<T, R>(function, this);
     }
 
@@ -533,18 +576,15 @@ public interface Stream<T> extends StreamIterable<T> {
         return new TakeLast<T>(this, n);
     }
 
-    public default <R> Stream<R> transform(
-            Function<? super Stream<T>, ? extends Stream<? extends R>> transformer) {
+    public default <R> Stream<R> transform(Function<? super Stream<T>, ? extends Stream<? extends R>> transformer) {
         return new Transform<T, R>(transformer, this);
     }
 
-    public default <R> Stream<R> compose(
-            Function<? super Stream<T>, ? extends Stream<? extends R>> transformer) {
+    public default <R> Stream<R> compose(Function<? super Stream<T>, ? extends Stream<? extends R>> transformer) {
         return transform(transformer);
     }
 
-    public default Stream<T> switchOnError(
-            Function<? super Throwable, ? extends Stream<? extends T>> function) {
+    public default Stream<T> switchOnError(Function<? super Throwable, ? extends Stream<? extends T>> function) {
         return new SwitchOnError<T>(function, this);
     }
 
@@ -552,8 +592,7 @@ public interface Stream<T> extends StreamIterable<T> {
         return new SwitchOnEmpty<T>(this, factory);
     }
 
-    public default <R, S> Stream<S> zipWith(Stream<? extends R> stream,
-            BiFunction<T, R, S> combiner) {
+    public default <R, S> Stream<S> zipWith(Stream<? extends R> stream, BiFunction<T, R, S> combiner) {
         return new Zip<R, S, T>(this, stream, combiner);
     }
 
@@ -561,11 +600,9 @@ public interface Stream<T> extends StreamIterable<T> {
         return StreamSupport.stream(this.spliterator(), false);
     }
 
-    public default <K, V> Single<java.util.Map<K, V>> toMap(
-            Function<? super T, ? extends K> keyFunction,
+    public default <K, V> Single<java.util.Map<K, V>> toMap(Function<? super T, ? extends K> keyFunction,
             Function<? super T, ? extends V> valueFunction) {
-        return collect(HashMap::new,
-                (m, item) -> m.put(keyFunction.apply(item), valueFunction.apply(item)));
+        return collect(HashMap::new, (m, item) -> m.put(keyFunction.apply(item), valueFunction.apply(item)));
     }
 
     public default Single<String> join(String delimiter) {
@@ -725,15 +762,15 @@ public interface Stream<T> extends StreamIterable<T> {
     public default Stream<T> printStackTrace() {
         return doOnError(Throwable::printStackTrace);
     }
-    
+
     public default Stream<Notification<T>> materialize() {
         return new Materialize<T>(this);
     }
-    
+
     public default Stream<T> reverse() {
         return new Reverse<T>(this);
     }
-    
+
     // TODO
     // retryWhen,
     // reverse
