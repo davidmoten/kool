@@ -59,6 +59,7 @@ import org.davidmoten.kool.internal.operators.stream.IgnoreDisposalError;
 import org.davidmoten.kool.internal.operators.stream.IsEmpty;
 import org.davidmoten.kool.internal.operators.stream.Last;
 import org.davidmoten.kool.internal.operators.stream.Map;
+import org.davidmoten.kool.internal.operators.stream.Materialize;
 import org.davidmoten.kool.internal.operators.stream.Max;
 import org.davidmoten.kool.internal.operators.stream.MergeInterleaved;
 import org.davidmoten.kool.internal.operators.stream.PrependOne;
@@ -397,7 +398,7 @@ public interface Stream<T> extends StreamIterable<T> {
 
     public default <R> Single<R> collect(Supplier<? extends R> factory,
             BiConsumer<? super R, ? super T> collector) {
-        return new Collect<T, R>(factory, collector, this).single();
+        return new Collect<T, R>(factory, collector, this);
     }
 
     public default Single<T> single() {
@@ -714,7 +715,11 @@ public interface Stream<T> extends StreamIterable<T> {
     public default Stream<T> printStackTrace() {
         return doOnError(x -> x.printStackTrace());
     }
-
+    
+    public default Stream<Notification<T>> materialize() {
+        return new Materialize<T>(this);
+    }
+    
     // TODO
     // retryWhen,
     // mergeInterleaveWith, materialize
