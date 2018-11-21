@@ -1,61 +1,31 @@
 package org.davidmoten.kool.internal.operators.stream;
 
-import java.util.NoSuchElementException;
+import java.util.Optional;
 
-import org.davidmoten.kool.Stream;
+import org.davidmoten.kool.Maybe;
 import org.davidmoten.kool.StreamIterable;
 import org.davidmoten.kool.StreamIterator;
 
-import com.github.davidmoten.guavamini.Preconditions;
+public final class First<T> implements Maybe<T> {
 
-public final class First<T> implements Stream<T> {
+    private final StreamIterable<T> stream;
 
-    private final StreamIterable<T> source;
-
-    public First(StreamIterable<T> source) {
-        this.source = source;
+    public First(StreamIterable<T> stream) {
+        this.stream = stream;
     }
 
     @Override
-    public StreamIterator<T> iterator() {
-        return new StreamIterator<T>() {
-
-            StreamIterator<T> it = source.iteratorChecked();
-            T value;
-
-            @Override
-            public boolean hasNext() {
-                loadNext();
-                return value != null;
+    public Optional<T> get() {
+        StreamIterator<T> it = stream.iteratorChecked();
+        try {
+            if (it.hasNext()) {
+                return Optional.of(it.nextChecked());
+            } else {
+                return Optional.empty();
             }
-
-            @Override
-            public T next() {
-                loadNext();
-                if (value == null || it == null) {
-                    dispose();
-                    throw new NoSuchElementException();
-                } else {
-                    dispose();
-                    it = null;
-                    return value;
-                }
-            }
-
-            private void loadNext() {
-                if (value == null && it != null && it.hasNext()) {
-                    value = it.nextChecked();
-                }
-            }
-
-            @Override
-            public void dispose() {
-                if (it != null) {
-                    it.dispose();
-                }
-            }
-
-        };
+        } finally {
+            it.dispose();
+        }
     }
 
 }

@@ -476,7 +476,7 @@ public interface Stream<T> extends StreamIterable<T> {
     }
 
     public default Maybe<T> first() {
-        return Iterables.first(new First<T>(this).iterator());
+        return new First<T>(this);
     }
 
     public default Stream<T> doOnNext(Consumer<? super T> consumer) {

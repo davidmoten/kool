@@ -62,7 +62,7 @@ public final class StreamTest {
 
     @Test
     public void testFirstDispose() {
-        checkTrue(b -> Stream.of(1, 2).doOnDispose(() -> b.set(true)).first());
+        checkTrue(b -> Stream.of(1, 2).doOnDispose(() -> b.set(true)).first().get());
     }
 
     private static void checkTrue(Consumer<AtomicBoolean> consumer) {
@@ -425,7 +425,7 @@ public final class StreamTest {
 
     @Test
     public void testBufferDispose() {
-        checkTrue(b -> Stream.of(1, 2).doOnDispose(() -> b.set(true)).buffer(1).first());
+        checkTrue(b -> Stream.of(1, 2).doOnDispose(() -> b.set(true)).buffer(1).first().get());
     }
 
     @Test

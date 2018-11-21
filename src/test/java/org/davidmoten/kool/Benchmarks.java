@@ -13,26 +13,28 @@ import java.util.stream.IntStream;
 import java.util.stream.LongStream;
 
 import org.openjdk.jmh.annotations.Benchmark;
+import org.openjdk.jmh.annotations.Scope;
+import org.openjdk.jmh.annotations.State;
 
-//@State(Scope.Benchmark)
+@State(Scope.Benchmark)
 public class Benchmarks {
 
-    // @Benchmark
+    @Benchmark
     public long rangeOneTo100CountJava() {
         return IntStream.range(1, 100).count();
     }
 
-    // @Benchmark
+    @Benchmark
     public long rangeOneTo100CountKool() {
         return Stream.range(1, 100).count().get();
     }
 
-    // @Benchmark
+    @Benchmark
     public int toListJava() {
         return java.util.stream.Stream.of(1, 2, 3, 4).collect(Collectors.toList()).size();
     }
 
-    // @Benchmark
+    @Benchmark
     public int toListKool() {
         return Stream.of(1, 2, 3, 4).toList().size();
     }
@@ -57,8 +59,8 @@ public class Benchmarks {
     @Benchmark
     public long flatMapMinMapReduceKool() {
         return Stream.range(1, 1000) //
-//                .flatMap(x -> Stream.of(x, x + 1, x + 4) //
-//                        .min(Comparator.naturalOrder())) //
+                // .flatMap(x -> Stream.of(x, x + 1, x + 4) //
+                // .min(Comparator.naturalOrder())) //
                 .flatMap(x -> Stream.of(x).min(Comparator.naturalOrder())) //
                 .map(Function.identity()) //
                 .reduce((x, y) -> x + y) //
@@ -69,8 +71,7 @@ public class Benchmarks {
     @Benchmark
     public long flatMapMinMapReduceJavaStreams() {
         return LongStream.range(1, 1000) //
-                .boxed()
-                .flatMap(x -> java.util.stream.Stream.of(LongStream.of(x, x + 1, x + 4).min().getAsLong())) //
+                .boxed().flatMap(x -> java.util.stream.Stream.of(LongStream.of(x, x + 1, x + 4).min().getAsLong())) //
                 .map(Function.identity()) //
                 .reduce((x, y) -> x + y) //
                 .get();
@@ -79,7 +80,7 @@ public class Benchmarks {
     public static void main(String[] args) throws IOException {
         Benchmarks b = new Benchmarks();
         Stream.range(1, 1).flatMap(x -> Maybe.of(x)).count().get();
-//        b.flatMapMinMapReduceKool();
+        // b.flatMapMinMapReduceKool();
         System.exit(0);
         while (true) {
             b.readFileJava();
