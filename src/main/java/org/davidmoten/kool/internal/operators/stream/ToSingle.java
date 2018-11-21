@@ -6,8 +6,6 @@ import org.davidmoten.kool.Single;
 import org.davidmoten.kool.Stream;
 import org.davidmoten.kool.StreamIterator;
 
-import com.github.davidmoten.guavamini.Preconditions;
-
 public class ToSingle<T> implements Single<T> {
 
     private final Stream<T> stream;
@@ -18,10 +16,10 @@ public class ToSingle<T> implements Single<T> {
 
     @Override
     public T get() {
-        StreamIterator<T> it = stream.iterator();
+        StreamIterator<T> it = stream.iteratorChecked();
         try {
             if (it.hasNext()) {
-                T v = Preconditions.checkNotNull(it.next());
+                T v = it.nextChecked();
                 if (it.hasNext()) {
                     throw new IllegalArgumentException("stream must only have one element but has more");
                 } else {

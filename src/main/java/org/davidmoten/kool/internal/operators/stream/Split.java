@@ -61,7 +61,7 @@ public final class Split implements Stream<String> {
                         }
                     }
                     while (it.hasNext()) {
-                        String s = Preconditions.checkNotNull(it.next()).toString();
+                        String s = it.nextChecked().toString();
                         b.append(s);
                         int i = b.indexOf(delimiter, startFrom);
                         if (i != -1) {

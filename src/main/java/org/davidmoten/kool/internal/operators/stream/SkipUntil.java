@@ -39,11 +39,11 @@ public final class SkipUntil<T> implements Stream<T> {
                 if (it != null) {
                     if (foundFirst) {
                         if (next == null && it.hasNext()) {
-                            next = Preconditions.checkNotNull(it.next());
+                            next = it.nextChecked();
                         }
                     } else {
                         while ((next == null || !nextPredicateValue) && it.hasNext()) {
-                            next = Preconditions.checkNotNull(it.next());
+                            next = it.nextChecked();
                             nextPredicateValue = predicate.test(next);
                             if (negate)
                                 nextPredicateValue = !nextPredicateValue;

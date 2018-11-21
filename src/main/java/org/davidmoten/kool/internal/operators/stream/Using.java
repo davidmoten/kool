@@ -8,15 +8,14 @@ import org.davidmoten.kool.Stream;
 import org.davidmoten.kool.StreamIterator;
 import org.davidmoten.kool.internal.util.Exceptions;
 
-import com.github.davidmoten.guavamini.Preconditions;
-
 public final class Using<R, T> implements Stream<T> {
 
     private final Callable<R> resourceFactory;
     private final Function<? super R, ? extends Stream<? extends T>> streamFactory;
     private final Consumer<? super R> closer;
 
-    public Using(Callable<R> resourceFactory, Function<? super R, ? extends Stream<? extends T>> streamFactory,
+    public Using(Callable<R> resourceFactory,
+            Function<? super R, ? extends Stream<? extends T>> streamFactory,
             Consumer<? super R> closer) {
         this.resourceFactory = resourceFactory;
         this.streamFactory = streamFactory;
@@ -30,7 +29,8 @@ public final class Using<R, T> implements Stream<T> {
 
                 R resource = resourceFactory.call();
                 @SuppressWarnings("unchecked")
-                StreamIterator<T> it = Preconditions.checkNotNull((StreamIterator<T>) streamFactory.apply(resource).iterator());
+                StreamIterator<T> it = (StreamIterator<T>) streamFactory.apply(resource)
+                        .iteratorChecked();
 
                 @Override
                 public boolean hasNext() {
@@ -39,7 +39,7 @@ public final class Using<R, T> implements Stream<T> {
 
                 @Override
                 public T next() {
-                    return Preconditions.checkNotNull(it.next());
+                    return it.nextChecked();
                 }
 
                 @Override

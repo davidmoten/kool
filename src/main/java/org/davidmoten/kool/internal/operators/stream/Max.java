@@ -27,7 +27,7 @@ public class Max<T> implements Maybe<T> {
         try {
             T max = null;
             while (it.hasNext()) {
-                T v = Preconditions.checkNotNull(it.next());
+                T v = it.nextChecked();
                 if (max == null) {
                     max = v;
                 } else {

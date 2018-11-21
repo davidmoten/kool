@@ -57,10 +57,10 @@ public final class SwitchOnError<T> implements Stream<T> {
             @Override
             public T next() {
                 if (switched) {
-                    return Preconditions.checkNotNull(it.next());
+                    return it.nextChecked();
                 } else {
                     try {
-                        return Preconditions.checkNotNull(it.next());
+                        return it.nextChecked();
                     } catch (RuntimeException | Error e) {
                         switched = true;
                         it.dispose();

@@ -13,7 +13,6 @@ import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -35,7 +34,6 @@ import org.davidmoten.kool.internal.operators.stream.Any;
 import org.davidmoten.kool.internal.operators.stream.Buffer;
 import org.davidmoten.kool.internal.operators.stream.BufferWithPredicate;
 import org.davidmoten.kool.internal.operators.stream.Cache;
-import org.davidmoten.kool.internal.operators.stream.FromChars;
 import org.davidmoten.kool.internal.operators.stream.Collect;
 import org.davidmoten.kool.internal.operators.stream.Concat;
 import org.davidmoten.kool.internal.operators.stream.Count;
@@ -55,6 +53,7 @@ import org.davidmoten.kool.internal.operators.stream.FromArrayDouble;
 import org.davidmoten.kool.internal.operators.stream.FromArrayFloat;
 import org.davidmoten.kool.internal.operators.stream.FromArrayInt;
 import org.davidmoten.kool.internal.operators.stream.FromBufferedReader;
+import org.davidmoten.kool.internal.operators.stream.FromChars;
 import org.davidmoten.kool.internal.operators.stream.FromInputStream;
 import org.davidmoten.kool.internal.operators.stream.Generate;
 import org.davidmoten.kool.internal.operators.stream.IgnoreDisposalError;
@@ -732,6 +731,7 @@ public interface Stream<T> extends StreamIterable<T> {
     
     // TODO
     // retryWhen,
+    // reverse
     // mergeInterleaveWith, materialize
     // add Single.flatMapMaybe, Maybe.flatMapSingle, Maybe.flatMapMaybe
 

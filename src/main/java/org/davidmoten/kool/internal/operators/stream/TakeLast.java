@@ -47,7 +47,7 @@ public final class TakeLast<T> implements Stream<T> {
             private void load() {
                 if (it != null) {
                     while (it.hasNext()) {
-                        queue.add(Preconditions.checkNotNull(it.next()));
+                        queue.add(it.nextChecked());
                     }
                     it = null;
                 }

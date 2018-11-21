@@ -24,7 +24,7 @@ public final class TakeWithPredicate<T> implements Stream<T> {
     public StreamIterator<T> iterator() {
         return new StreamIterator<T>() {
 
-            StreamIterator<T> it = Preconditions.checkNotNull(source.iterator());
+            StreamIterator<T> it = source.iteratorChecked();
 
             T value;
 
@@ -49,7 +49,7 @@ public final class TakeWithPredicate<T> implements Stream<T> {
             private void loadNext() {
                 if (value == null && it != null) {
                     if (it.hasNext()) {
-                        T v = Preconditions.checkNotNull(it.next());
+                        T v = it.nextChecked();
                         boolean test = predicate.test(v);
                         final boolean ok;
                         if (until) {

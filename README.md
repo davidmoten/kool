@@ -70,5 +70,6 @@ Indexed[index=10, value=55]
 * wrap calls to `it.next()` with `Preconditions.checkNotNull`
 * wrap calls to function parameters passed to operator with `Preconditions.checkNotNull`
 * dispose upstream iterables as soon as no longer required
+* don't dispose upstream iterable as soon as hasNext returns true
 * set upstream iterable reference to null (to help gc) when no longer required
 

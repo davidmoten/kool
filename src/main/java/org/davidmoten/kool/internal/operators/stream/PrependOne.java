@@ -38,7 +38,7 @@ public final class PrependOne<T> implements Stream<T> {
                     value = null;
                     return t;
                 } else {
-                    return Preconditions.checkNotNull(it.next());
+                    return it.nextChecked();
                 }
             }
 

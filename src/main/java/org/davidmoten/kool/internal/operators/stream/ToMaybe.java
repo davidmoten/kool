@@ -6,8 +6,6 @@ import org.davidmoten.kool.Maybe;
 import org.davidmoten.kool.Stream;
 import org.davidmoten.kool.StreamIterator;
 
-import com.github.davidmoten.guavamini.Preconditions;
-
 public class ToMaybe<T> implements Maybe<T> {
 
     private final Stream<T> stream;
@@ -18,12 +16,12 @@ public class ToMaybe<T> implements Maybe<T> {
 
     @Override
     public Optional<T> get() {
-        StreamIterator<T> it = Preconditions.checkNotNull(stream.iterator());
+        StreamIterator<T> it = stream.iteratorChecked();
         try {
             if (!it.hasNext()) {
                 return Optional.empty();
             } else {
-                T v = Preconditions.checkNotNull(it.next());
+                T v = it.nextChecked();
                 if (it.hasNext()) {
                     throw new IllegalStateException("stream has more than one element so cannot convert to Maybe");
                 } else {

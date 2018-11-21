@@ -27,7 +27,7 @@ public final class DistinctUntilChanged<T, K> implements Stream<T> {
             @Override
             public void load() {
                 while (it.hasNext()) {
-                    T v = Preconditions.checkNotNull(it.next());
+                    T v = it.nextChecked();
                     K k = Preconditions.checkNotNull(keySelector.apply(v));
                     if (!k.equals(key)) {
                         key = k;
