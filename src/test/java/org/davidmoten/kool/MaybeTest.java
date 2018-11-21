@@ -97,4 +97,24 @@ public final class MaybeTest {
         Maybe.error(new IOException("boo")).get();
     }
     
+    @Test
+    public void testMaybeToStream() {
+        Maybe.of(1).toStream().test().assertValuesOnly(1);
+    }
+    
+    @Test
+    public void testMaybeToStreamFromEmpty() {
+        Maybe.empty().toStream().test().assertNoValuesOnly();
+    }
+    
+    @Test
+    public void testMaybeIsPresent() {
+        Maybe.of(1).isPresent().test().assertValueOnly(true);
+    }
+    
+    @Test
+    public void testMaybeIsPresentWhenEmpty() {
+        Maybe.empty().isPresent().test().assertValueOnly(false);
+    }
+    
 }
