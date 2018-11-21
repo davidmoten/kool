@@ -22,7 +22,11 @@ public abstract class BaseStreamIterator<R, T> implements StreamIterator<T> {
     public final boolean hasNext() {
         loadNext();
         // don't put in check on it = null
-        return next != null;
+        boolean result = next != null;
+        if (!result) {
+            dispose();
+        }
+        return result;
     }
 
     @Override
