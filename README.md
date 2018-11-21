@@ -6,7 +6,7 @@
 
 Alternative to `java.util.stream.Stream`:
 
-* is sometimes much faster (3x) for synchonronous use
+* is sometimes much faster for synchonronous use ([benchmarks](benchmarks.md))
 * has many **more operators** and is generally less verbose
 * streams are **reusable**
 * **disposes** resources
