@@ -408,7 +408,7 @@ public interface Stream<T> extends StreamIterable<T> {
         return new Collect<T, R>(factory, collector, this);
     }
 
-    public default <K, V, D extends Collection<V>> Single<java.util.Map<K, D>> toMultimap( //
+    public default <K, V, D extends Collection<V>> Single<java.util.Map<K, D>> groupBy( //
             Callable<java.util.Map<K, D>> mapFactory, //
             Function<? super T, ? extends K> keySelector, //
             Function<? super T, ? extends V> valueSelector, //
@@ -420,7 +420,7 @@ public interface Stream<T> extends StreamIterable<T> {
             if (x == null) {
                 try {
                     x = collectionFactory.call();
-                    map.put(k,  x);
+                    map.put(k, x);
                 } catch (Exception e) {
                     Exceptions.rethrow(e);
                 }
@@ -429,30 +429,40 @@ public interface Stream<T> extends StreamIterable<T> {
         });
     }
 
-    public default <K, V> Single<java.util.Map<K, List<V>>> toMultimapList( //
+    public default <K, V> Single<java.util.Map<K, List<V>>> grouByList( //
             Callable<java.util.Map<K, List<V>>> mapFactory, //
             Function<? super T, ? extends K> keySelector, //
             Function<? super T, ? extends V> valueSelector) {
-        return toMultimap(mapFactory, keySelector, valueSelector, ArrayList::new);
+        return groupBy(mapFactory, keySelector, valueSelector, ArrayList::new);
     }
 
-    public default <K, V> Single<java.util.Map<K, Set<V>>> toMultimapSet( //
+    public default <K, V> Single<java.util.Map<K, Set<V>>> groupBySet( //
             Callable<java.util.Map<K, Set<V>>> mapFactory, //
             Function<? super T, ? extends K> keySelector, //
             Function<? super T, ? extends V> valueSelector) {
-        return toMultimap(mapFactory, keySelector, valueSelector, HashSet::new);
+        return groupBy(mapFactory, keySelector, valueSelector, HashSet::new);
     }
 
-    public default <K> Single<java.util.Map<K, List<T>>> toMultimapList( //
+    public default <K> Single<java.util.Map<K, List<T>>> groupByList( //
             Callable<java.util.Map<K, List<T>>> mapFactory, //
             Function<? super T, ? extends K> keySelector) {
-        return toMultimapList(mapFactory, keySelector, Function.identity());
+        return grouByList(mapFactory, keySelector, Function.identity());
     }
 
-    public default <K> Single<java.util.Map<K, Set<T>>> toMultimapSet( //
+    public default <K> Single<java.util.Map<K, Set<T>>> groupBySet( //
             Callable<java.util.Map<K, Set<T>>> mapFactory, //
             Function<? super T, ? extends K> keySelector) {
-        return toMultimapSet(mapFactory, keySelector, Function.identity());
+        return groupBySet(mapFactory, keySelector, Function.identity());
+    }
+
+    public default <K> Single<java.util.Map<K, List<T>>> groupByList( //
+            Function<? super T, ? extends K> keySelector) {
+        return grouByList(HashMap::new, keySelector, Function.identity());
+    }
+
+    public default <K> Single<java.util.Map<K, Set<T>>> groupBySet( //
+            Function<? super T, ? extends K> keySelector) {
+        return groupBySet(HashMap::new, keySelector, Function.identity());
     }
 
     public default Single<T> single() {

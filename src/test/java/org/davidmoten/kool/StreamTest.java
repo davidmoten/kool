@@ -1096,20 +1096,20 @@ public final class StreamTest {
     }
 
     @Test
-    public void testMultipmapList() {
+    public void testGroupByList() {
         Map<Integer, List<Integer>> map = new HashMap<>();
         map.put(0, Lists.newArrayList(3, 6, 9));
         map.put(1, Lists.newArrayList(1, 4, 7, 10));
         map.put(2, Lists.newArrayList(2, 5, 8));
         Stream //
                 .range(1, 10) //
-                .toMultimapList(HashMap::new, i -> i % 3) //
+                .groupByList(i -> i % 3) //
                 .test() //
                 .assertValueOnly(map);
     }
 
     @Test
-    public void testMultipmapSet() {
+    public void testGroupBySet() {
         Map<Integer, Set<Integer>> map = new HashMap<>();
         map.put(0, Sets.newHashSet(3, 6, 9));
         map.put(1, Sets.newHashSet(1, 4, 7, 10));
@@ -1117,7 +1117,7 @@ public final class StreamTest {
         Stream //
                 .range(1, 10) //
                 .repeat(2) //
-                .toMultimapSet(HashMap::new, i -> i % 3) //
+                .groupBySet(i -> i % 3) //
                 .test() //
                 .assertValueOnly(map);
     }
