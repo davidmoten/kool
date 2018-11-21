@@ -26,7 +26,7 @@ public final class ReduceWithInitialValueSupplier<R, T> implements Single<R> {
     public R get() {
         StreamIterator<T> it = null;
         try {
-            it = Preconditions.checkNotNull(source.iterator());
+            it = source.iteratorChecked();
             R r = Preconditions.checkNotNull(initialValue.get());
             while (it.hasNext()) {
                 r = Preconditions.checkNotNull(reducer.apply(r, it.next()));

@@ -16,10 +16,12 @@ public final class IsEmpty implements Single<Boolean> {
 
     @Override
     public Boolean get() {
-        StreamIterator<?> it = Preconditions.checkNotNull(source.iterator());
-        boolean hasNext = it.hasNext();
-        it.dispose();
-        return !hasNext;
+        StreamIterator<?> it = source.iteratorChecked();
+        try {
+            return !it.hasNext();
+        } finally {
+            it.dispose();
+        }
     }
 
 }

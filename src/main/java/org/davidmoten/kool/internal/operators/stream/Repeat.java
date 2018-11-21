@@ -21,7 +21,7 @@ public final class Repeat<T> implements Stream<T> {
     public StreamIterator<T> iterator() {
         return new StreamIterator<T>() {
 
-            StreamIterator<T> it = Preconditions.checkNotNull(source.iterator());
+            StreamIterator<T> it = source.iteratorChecked();
             long i = 0;
 
             @Override
@@ -34,7 +34,7 @@ public final class Repeat<T> implements Stream<T> {
                     if (i == count) {
                         return false;
                     }
-                    it = Preconditions.checkNotNull(source.iterator());
+                    it = source.iteratorChecked();
                 }
                 return true;
             }

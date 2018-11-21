@@ -21,7 +21,7 @@ public final class Split implements Stream<String> {
     public StreamIterator<String> iterator() {
         return new StreamIterator<String>() {
 
-            StreamIterator<?> it = Preconditions.checkNotNull(source.iterator());
+            StreamIterator<?> it = source.iteratorChecked();
             StringBuilder b = new StringBuilder();
             String next;
             int startFrom;

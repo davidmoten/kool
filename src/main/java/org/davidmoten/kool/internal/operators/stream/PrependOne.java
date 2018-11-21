@@ -19,7 +19,7 @@ public final class PrependOne<T> implements Stream<T> {
     @Override
     public StreamIterator<T> iterator() {
         return new StreamIterator<T>() {
-            final StreamIterator<T> it = Preconditions.checkNotNull(source.iterator());
+            final StreamIterator<T> it = source.iteratorChecked();
             T value = PrependOne.this.value;
 
             @Override

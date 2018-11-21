@@ -29,7 +29,7 @@ public final class SwitchOnError<T> implements Stream<T> {
             @SuppressWarnings("unchecked")
             private StreamIterator<T> getIterator() {
                 try {
-                    return Preconditions.checkNotNull(source.iterator());
+                    return source.iteratorChecked();
                 } catch (RuntimeException | Error e) {
                     switched = true;
                     return Preconditions.checkNotNull(((Stream<T>) function.apply(e)).iterator());

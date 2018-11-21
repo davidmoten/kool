@@ -19,7 +19,7 @@ public final class Skip<T> implements Stream<T> {
     public StreamIterator<T> iterator() {
         return new StreamIterator<T>() {
 
-            StreamIterator<T> it = Preconditions.checkNotNull(source.iterator());
+            StreamIterator<T> it = source.iteratorChecked();
             int n = count;
 
             @Override

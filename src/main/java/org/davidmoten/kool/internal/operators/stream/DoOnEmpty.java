@@ -25,7 +25,7 @@ public final class DoOnEmpty<T> implements Stream<T> {
             @Override
             public boolean hasNext() {
                 check();
-                return it == null || it.hasNext();
+                return it.hasNext();
             }
 
             @Override
