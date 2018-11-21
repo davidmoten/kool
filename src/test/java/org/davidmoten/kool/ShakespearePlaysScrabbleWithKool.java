@@ -41,8 +41,8 @@ import org.openjdk.jmh.annotations.Warmup;
 /**
  * Shakespeare plays Scrabble with Kool.
  * 
- * Operators used of, from(Iterable), map, flatMap, first, collect, reduce,
- * filter, Maybe.toStream
+ * Operators used of, from(Iterable), map, flatMap, collect, reduce, reduceWithInitialValue, take,
+ * filter
  * 
  */
 public class ShakespearePlaysScrabbleWithKool extends ShakespearePlaysScrabble {
@@ -112,7 +112,7 @@ public class ShakespearePlaysScrabbleWithKool extends ShakespearePlaysScrabble {
         Function<String, Long> nBlanks = word -> //
         Stream.from(histoOfLetters.apply(word).entrySet()) //
                 .flatMap(blank) //
-                .reduceWithInitialValue(0L, Long::sum) //
+                .reduce(0L, Long::sum) //
                 .get();
 
         // can a word be written with 2 blanks?
@@ -122,7 +122,7 @@ public class ShakespearePlaysScrabbleWithKool extends ShakespearePlaysScrabble {
         Function<String, Integer> score2 = word -> //
         Stream.from(histoOfLetters.apply(word).entrySet()) //
                 .map(letterScore) //
-                .reduceWithInitialValue(0, Integer::sum) //
+                .reduce(0, Integer::sum) //
                 .get();
 
         // Placing the word on the board

@@ -96,7 +96,7 @@ public final class StreamTest {
 
     @Test
     public void testReduceWithInitialValue() {
-        Stream.of(1, 2, 3, 4).reduceWithInitialValue(10, (a, b) -> a + b).test().assertValue(20);
+        Stream.of(1, 2, 3, 4).reduce(10, (a, b) -> a + b).test().assertValue(20);
     }
 
     @Test
@@ -1014,7 +1014,7 @@ public final class StreamTest {
                 .range(1, 10) //
                 .flatMap(n -> Stream //
                         .range(1, n) //
-                        .reduceWithInitialValue(0, (a, b) -> a + b)) //
+                        .reduce(0, (a, b) -> a + b)) //
                 .mapWithIndex(1) //
                 .println() //
                 .forEach();
