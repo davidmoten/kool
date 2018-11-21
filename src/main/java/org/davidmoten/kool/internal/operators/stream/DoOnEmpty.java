@@ -1,9 +1,9 @@
 package org.davidmoten.kool.internal.operators.stream;
 
+import java.util.NoSuchElementException;
+
 import org.davidmoten.kool.Stream;
 import org.davidmoten.kool.StreamIterator;
-
-import com.github.davidmoten.guavamini.Preconditions;
 
 public final class DoOnEmpty<T> implements Stream<T> {
 
@@ -19,19 +19,23 @@ public final class DoOnEmpty<T> implements Stream<T> {
     public StreamIterator<T> iterator() {
         return new StreamIterator<T>() {
 
-            StreamIterator<T> it = Preconditions.checkNotNull(stream.iterator());
+            StreamIterator<T> it = stream.iteratorChecked();
             boolean checkedForEmpty;
 
             @Override
             public boolean hasNext() {
                 check();
-                return it.hasNext();
+                return it == null || it.hasNext();
             }
 
             @Override
             public T next() {
                 check();
-                return Preconditions.checkNotNull(it.next());
+                if (it == null) {
+                    throw new NoSuchElementException();
+                } else {
+                    return it.nextChecked();
+                }
             }
 
             @Override

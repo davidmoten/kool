@@ -1,14 +1,12 @@
 package org.davidmoten.kool.internal.operators.stream;
 
-import java.util.NoSuchElementException;
+import java.util.Optional;
 
-import org.davidmoten.kool.Stream;
+import org.davidmoten.kool.Maybe;
 import org.davidmoten.kool.StreamIterable;
 import org.davidmoten.kool.StreamIterator;
 
-import com.github.davidmoten.guavamini.Preconditions;
-
-public class Last<T> implements Stream<T> {
+public final class Last<T> implements Maybe<T> {
 
     private StreamIterable<T> source;
 
@@ -17,46 +15,17 @@ public class Last<T> implements Stream<T> {
     }
 
     @Override
-    public StreamIterator<T> iterator() {
-        return new StreamIterator<T>() {
-
-            StreamIterator<T> it = Preconditions.checkNotNull(source.iterator());
-            T t;
-
-            @Override
-            public boolean hasNext() {
-                moveToLast();
-                return it != null && t != null;
+    public Optional<T> get() {
+        StreamIterator<T> it = source.iteratorChecked();
+        try {
+            T t = null;
+            while (it.hasNext()) {
+                t = it.nextChecked();
             }
-
-            @Override
-            public T next() {
-                moveToLast();
-                if (t == null) {
-                    it.dispose();
-                    throw new NoSuchElementException();
-                } else {
-                    it.dispose();
-                    it = null;
-                    return t;
-                }
-            }
-
-            private void moveToLast() {
-                if (it != null) {
-                    while (it.hasNext()) {
-                        t = Preconditions.checkNotNull(it.next());
-                    }
-                }
-            }
-
-            @Override
-            public void dispose() {
-                if (it != null) {
-                    it.dispose();
-                }
-            }
-        };
+            return Optional.ofNullable(t);
+        } finally {
+            it.dispose();
+        }
     }
 
 }

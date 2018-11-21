@@ -508,7 +508,7 @@ public interface Stream<T> extends StreamIterable<T> {
     }
 
     public default Maybe<T> last() {
-        return Iterables.first(new Last<T>(this).iterator());
+        return new Last<T>(this);
     }
 
     public default Maybe<T> get(int index) {

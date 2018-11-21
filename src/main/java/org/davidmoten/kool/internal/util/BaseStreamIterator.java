@@ -2,7 +2,7 @@ package org.davidmoten.kool.internal.util;
 
 import java.util.NoSuchElementException;
 
-import org.davidmoten.kool.Stream;
+import org.davidmoten.kool.StreamIterable;
 import org.davidmoten.kool.StreamIterator;
 
 public abstract class BaseStreamIterator<R, T> implements StreamIterator<T> {
@@ -10,14 +10,14 @@ public abstract class BaseStreamIterator<R, T> implements StreamIterator<T> {
     protected T next;
     protected StreamIterator<R> it;
 
-    public BaseStreamIterator(Stream<R> stream) {
+    public BaseStreamIterator(StreamIterable<R> stream) {
         this.it = stream.iteratorChecked();
     }
 
     @Override
     public final boolean hasNext() {
         loadNext();
-        return next != null;
+        return it != null && next != null;
     }
 
     @Override

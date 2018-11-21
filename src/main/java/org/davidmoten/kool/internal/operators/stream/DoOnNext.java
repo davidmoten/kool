@@ -22,7 +22,7 @@ public final class DoOnNext<T> implements Stream<T> {
     public StreamIterator<T> iterator() {
         return new StreamIterator<T>() {
 
-            final StreamIterator<T> it = Preconditions.checkNotNull(source.iterator());
+            final StreamIterator<T> it = source.iteratorChecked();
 
             @Override
             public boolean hasNext() {
@@ -31,7 +31,7 @@ public final class DoOnNext<T> implements Stream<T> {
 
             @Override
             public T next() {
-                T t = Preconditions.checkNotNull(it.next());
+                T t = it.nextChecked();
                 consumer.accept(t);
                 return t;
             }

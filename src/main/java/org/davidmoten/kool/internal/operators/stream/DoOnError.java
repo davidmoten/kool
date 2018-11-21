@@ -36,7 +36,7 @@ public final class DoOnError<T> implements Stream<T> {
             @Override
             public T next() {
                 try {
-                    return Preconditions.checkNotNull(it.next());
+                    return it.nextChecked();
                 } catch (RuntimeException | Error t) {
                     consumer.accept(t);
                     throw t;
@@ -45,7 +45,7 @@ public final class DoOnError<T> implements Stream<T> {
 
             private StreamIterator<T> getIterator() {
                 try {
-                    return Preconditions.checkNotNull(source.iterator());
+                    return source.iteratorChecked();
                 } catch (RuntimeException | Error t) {
                     consumer.accept(t);
                     throw t;
