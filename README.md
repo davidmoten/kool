@@ -6,14 +6,14 @@
 
 Alternative to `java.util.stream.Stream`:
 
-* is sometimes faster (3x) for synchonronous use
-* is sometimes slower than `j.u.s.Stream` especially for its primitive specializations
+* is sometimes much faster (3x) for synchonronous use
 * has many **more operators** and is generally less verbose
 * streams are **reusable**
 * **disposes** resources
 * is designed for synchronous use only
 * models 0..1 and 1 element streams explicitly with **`Maybe`** and **`Single`**.
 * does not support streams of nulls (use `Optional` or `Maybe`)
+* ~10% faster on *Shakespeare Plays Scrabble* benchmark
 
 Status: *pre-alpha* (in development)
 
@@ -65,8 +65,6 @@ Indexed[index=8, value=36]
 Indexed[index=9, value=45]
 Indexed[index=10, value=55]
 ```
-## Differences from java.util.stream.Stream
-The primary difference is that kool.Stream is **reusable** so to get a concrete value from a kool.Stream you often need some terminating call like `get()` or `forEach()`.
 
 ## Checklist for new operators
 * wrap calls to `it.next()` with `Preconditions.checkNotNull`
