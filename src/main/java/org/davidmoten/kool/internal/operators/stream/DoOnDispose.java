@@ -3,8 +3,6 @@ package org.davidmoten.kool.internal.operators.stream;
 import org.davidmoten.kool.Stream;
 import org.davidmoten.kool.StreamIterator;
 
-import com.github.davidmoten.guavamini.Preconditions;
-
 public final class DoOnDispose<T> implements Stream<T> {
 
     private final Runnable action;
@@ -21,7 +19,7 @@ public final class DoOnDispose<T> implements Stream<T> {
     public StreamIterator<T> iterator() {
         return new StreamIterator<T>() {
 
-            StreamIterator<T> it = Preconditions.checkNotNull(source.iterator());
+            StreamIterator<T> it = source.iteratorChecked();
 
             @Override
             public boolean hasNext() {
@@ -30,17 +28,20 @@ public final class DoOnDispose<T> implements Stream<T> {
 
             @Override
             public T next() {
-                return Preconditions.checkNotNull(it.next());
+                return it.nextChecked();
             }
 
             @Override
             public void dispose() {
-                if (before) {
-                    action.run();
-                }
-                it.dispose();
-                if (!before) {
-                    action.run();
+                if (it != null) {
+                    if (before) {
+                        action.run();
+                    }
+                    it.dispose();
+                    it = null;
+                    if (!before) {
+                        action.run();
+                    }
                 }
             }
 
