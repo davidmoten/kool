@@ -95,7 +95,8 @@ public abstract class ShakespearePlaysScrabbleWithStreams extends ShakespearePla
         // number of blanks for a given word
         Function<String, Long> nBlanks =
                 word -> histoOfLetters.apply(word)
-                            .entrySet().stream()
+                            .entrySet()
+                            .stream()
                             .mapToLong(blank)
                             .sum();
 

@@ -7,8 +7,6 @@ import org.davidmoten.kool.Stream;
 import org.davidmoten.kool.StreamIterable;
 import org.davidmoten.kool.StreamIterator;
 
-import com.github.davidmoten.guavamini.Preconditions;
-
 public final class FlatMap<T, R> implements Stream<R> {
 
     private final Function<? super T, ? extends StreamIterable<? extends R>> function;
