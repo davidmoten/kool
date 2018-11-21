@@ -20,7 +20,7 @@ public final class First<T> implements Stream<T> {
     public StreamIterator<T> iterator() {
         return new StreamIterator<T>() {
 
-            StreamIterator<T> it = Preconditions.checkNotNull(source.iterator());
+            StreamIterator<T> it = source.iteratorChecked();
             T value;
 
             @Override
@@ -44,7 +44,7 @@ public final class First<T> implements Stream<T> {
 
             private void loadNext() {
                 if (value == null && it != null && it.hasNext()) {
-                    value = Preconditions.checkNotNull(it.next());
+                    value = it.nextChecked();
                 }
             }
 

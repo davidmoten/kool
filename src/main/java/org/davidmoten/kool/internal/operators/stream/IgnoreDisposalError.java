@@ -6,8 +6,6 @@ import org.davidmoten.kool.Plugins;
 import org.davidmoten.kool.Stream;
 import org.davidmoten.kool.StreamIterator;
 
-import com.github.davidmoten.guavamini.Preconditions;
-
 public final class IgnoreDisposalError<T> implements Stream<T> {
 
     private final Stream<T> stream;
@@ -22,7 +20,7 @@ public final class IgnoreDisposalError<T> implements Stream<T> {
     public StreamIterator<T> iterator() {
         return new StreamIterator<T>() {
 
-            StreamIterator<T> it = Preconditions.checkNotNull(stream.iterator());
+            StreamIterator<T> it = stream.iteratorChecked();
 
             @Override
             public boolean hasNext() {
@@ -31,19 +29,22 @@ public final class IgnoreDisposalError<T> implements Stream<T> {
 
             @Override
             public T next() {
-                return Preconditions.checkNotNull(it.next());
+                return it.nextChecked();
             }
 
             @Override
             public void dispose() {
-                try {
-                    it.dispose();
-                } catch (Throwable e) {
-                    if (action != null) {
-                        try {
-                            action.accept(e);
-                        } catch (Throwable e2) {
-                            Plugins.onError(e2);
+                if (it != null) {
+                    try {
+                        it.dispose();
+                        it = null;
+                    } catch (Throwable e) {
+                        if (action != null) {
+                            try {
+                                action.accept(e);
+                            } catch (Throwable e2) {
+                                Plugins.onError(e2);
+                            }
                         }
                     }
                 }
