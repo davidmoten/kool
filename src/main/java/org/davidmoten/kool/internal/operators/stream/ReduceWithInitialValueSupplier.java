@@ -1,16 +1,15 @@
 package org.davidmoten.kool.internal.operators.stream;
 
-import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
-import org.davidmoten.kool.Maybe;
+import org.davidmoten.kool.Single;
 import org.davidmoten.kool.StreamIterable;
 import org.davidmoten.kool.StreamIterator;
 
 import com.github.davidmoten.guavamini.Preconditions;
 
-public final class ReduceWithInitialValueSupplier<R, T> implements Maybe<R> {
+public final class ReduceWithInitialValueSupplier<R, T> implements Single<R> {
 
     private final Supplier<R> initialValue;
     private final BiFunction<? super R, ? super T, ? extends R> reducer;
@@ -24,7 +23,7 @@ public final class ReduceWithInitialValueSupplier<R, T> implements Maybe<R> {
     }
 
     @Override
-    public Optional<R> get() {
+    public R get() {
         StreamIterator<T> it = null;
         try {
             it = Preconditions.checkNotNull(source.iterator());
@@ -32,7 +31,7 @@ public final class ReduceWithInitialValueSupplier<R, T> implements Maybe<R> {
             while (it.hasNext()) {
                 r = Preconditions.checkNotNull(reducer.apply(r, it.next()));
             }
-            return Optional.of(r);
+            return r;
         } finally {
             if (it != null) {
                 it.dispose();

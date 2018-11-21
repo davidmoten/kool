@@ -396,12 +396,12 @@ public interface Stream<T> extends StreamIterable<T> {
         return new ReduceNoInitialValue<T>(reducer, this);
     }
 
-    public default <R> Maybe<R> reduceWithInitialValue(R initialValue,
+    public default <R> Single<R> reduceWithInitialValue(R initialValue,
             BiFunction<? super R, ? super T, ? extends R> reducer) {
         return reduce(() -> initialValue, reducer);
     }
 
-    public default <R> Maybe<R> reduce(Supplier<R> initialValueFactory,
+    public default <R> Single<R> reduce(Supplier<R> initialValueFactory,
             BiFunction<? super R, ? super T, ? extends R> reducer) {
         return new ReduceWithInitialValueSupplier<R, T>(initialValueFactory, reducer, this);
     }

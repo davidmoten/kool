@@ -113,17 +113,17 @@ public class ShakespearePlaysScrabbleWithKool extends ShakespearePlaysScrabble {
         Stream.from(histoOfLetters.apply(word).entrySet()) //
                 .flatMap(blank) //
                 .reduceWithInitialValue(0L, Long::sum) //
-                .get().get();
+                .get();
 
         // can a word be written with 2 blanks?
         Predicate<String> checkBlanks = word -> nBlanks.apply(word) <= 2;
 
         // score taking blanks into account letterScore1
-        Function<String, Stream<Integer>> score2 = word -> //
+        Function<String, Integer> score2 = word -> //
         Stream.from(histoOfLetters.apply(word).entrySet()) //
                 .map(letterScore) //
-                .reduce(Integer::sum) //
-                .toStream();
+                .reduceWithInitialValue(0, Integer::sum) //
+                .get();
 
         // Placing the word on the board
         // Building the streams of first and last letters
@@ -136,28 +136,24 @@ public class ShakespearePlaysScrabbleWithKool extends ShakespearePlaysScrabble {
                 .flatMap(Functions.identity());
 
         // Bonus for double letter
-        Function<String, Stream<Integer>> bonusForDoubleLetter = word -> toBeMaxed //
+        Function<String, Integer> bonusForDoubleLetter = word -> toBeMaxed //
                 .apply(word) //
                 .map(scoreOfALetter) //
-                .reduce(Integer::max) //
-                .toStream();
+                .reduce(Integer::max).get() //
+                .orElse(0);
 
         // score of the word put on the board
-        Function<String, Stream<Integer>> score3 = word -> Stream.of(score2.apply(word), //
-                score2.apply(word), //
-                bonusForDoubleLetter.apply(word), //
-                bonusForDoubleLetter.apply(word), //
-                Stream.of(word.length() == 7 ? 50 : 0)).flatMap(stream -> stream) //
-                .reduce(Integer::sum) //
-                .toStream();
+        // score of the word put on the board
+        Function<String, Integer> score3 = word -> 2 * (score2.apply(word) + bonusForDoubleLetter.apply(word))
+                + (word.length() == 7 ? 50 : 0);
 
-        Function<Function<String, Stream<Integer>>, Single<TreeMap<Integer, List<String>>>> buildHistoOnScore = score -> Stream
+        Function<Function<String, Integer>, Single<TreeMap<Integer, List<String>>>> buildHistoOnScore = score -> Stream
                 .from(shakespeareWords) //
                 .filter(scrabbleWords::contains) //
                 .filter(checkBlanks) //
                 .collect(() -> new TreeMap<Integer, List<String>>(Comparator.reverseOrder()),
                         (TreeMap<Integer, List<String>> map, String word) -> {
-                            Integer key = score.apply(word).first().get().get();
+                            Integer key = score.apply(word);
                             List<String> list = map.get(key);
                             if (list == null) {
                                 list = new ArrayList<>();
