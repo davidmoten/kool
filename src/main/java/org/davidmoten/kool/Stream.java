@@ -70,6 +70,7 @@ import org.davidmoten.kool.internal.operators.stream.ReduceNoInitialValue;
 import org.davidmoten.kool.internal.operators.stream.ReduceWithInitialValueSupplier;
 import org.davidmoten.kool.internal.operators.stream.Repeat;
 import org.davidmoten.kool.internal.operators.stream.RepeatElement;
+import org.davidmoten.kool.internal.operators.stream.Reverse;
 import org.davidmoten.kool.internal.operators.stream.Skip;
 import org.davidmoten.kool.internal.operators.stream.SkipUntil;
 import org.davidmoten.kool.internal.operators.stream.Sorted;
@@ -722,11 +723,15 @@ public interface Stream<T> extends StreamIterable<T> {
     }
 
     public default Stream<T> printStackTrace() {
-        return doOnError(x -> x.printStackTrace());
+        return doOnError(Throwable::printStackTrace);
     }
     
     public default Stream<Notification<T>> materialize() {
         return new Materialize<T>(this);
+    }
+    
+    public default Stream<T> reverse() {
+        return new Reverse<T>(this);
     }
     
     // TODO
