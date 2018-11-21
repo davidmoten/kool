@@ -49,7 +49,7 @@ public interface Single<T> extends StreamIterable<T> {
     public default <R> Stream<R> flatMap(Function<? super T, ? extends StreamIterable<? extends R>> mapper) {
         return new SingleFlatMap<T, R>(this, mapper);
     }
-
+    
     public default Single<T> doOnValue(Consumer<? super T> consumer) {
         return new SingleDoOnValue<T>(consumer, this);
     }

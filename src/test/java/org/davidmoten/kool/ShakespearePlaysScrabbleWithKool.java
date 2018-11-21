@@ -163,13 +163,13 @@ public class ShakespearePlaysScrabbleWithKool extends ShakespearePlaysScrabble {
                         });
 
         // best key / value pairs
-        List<Entry<Integer, List<String>>> finalList2 = buildHistoOnScore //
+        List<Entry<Integer, List<String>>> finalList = buildHistoOnScore //
                 .apply(score3) //
                 .flatMap(map -> Stream.from(map.entrySet())) //
                 .take(3) //
                 .toList();
 
-        return finalList2;
+        return finalList;
     }
 
     private static <T> Iterable<T> toIterable(java.util.stream.Stream<T> stream) {
