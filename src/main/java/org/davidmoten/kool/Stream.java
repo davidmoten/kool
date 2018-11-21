@@ -96,6 +96,7 @@ import com.github.davidmoten.guavamini.Preconditions;
 public interface Stream<T> extends StreamIterable<T> {
 
     public static final int DEFAULT_BUFFER_SIZE = 16;
+    public static final int DEFAULT_BYTE_BUFFER_SIZE = 8192;
 
     //////////////////
     // Factories
@@ -268,11 +269,11 @@ public interface Stream<T> extends StreamIterable<T> {
     }
 
     public static Stream<ByteBuffer> byteBuffers(Callable<? extends InputStream> provider) {
-        return byteBuffers(provider, DEFAULT_BUFFER_SIZE);
+        return byteBuffers(provider, DEFAULT_BYTE_BUFFER_SIZE);
     }
 
     public static Stream<ByteBuffer> byteBuffers(InputStream in) {
-        return byteBuffers(in, DEFAULT_BUFFER_SIZE);
+        return byteBuffers(in, DEFAULT_BYTE_BUFFER_SIZE);
     }
 
     public static Stream<ByteBuffer> byteBuffers(InputStream in, int bufferSize) {
@@ -289,7 +290,7 @@ public interface Stream<T> extends StreamIterable<T> {
     }
 
     public static Stream<byte[]> bytes(Callable<? extends InputStream> provider) {
-        return bytes(provider, DEFAULT_BUFFER_SIZE);
+        return bytes(provider, DEFAULT_BYTE_BUFFER_SIZE);
     }
 
     public static Stream<byte[]> bytes(InputStream in, int bufferSize) {
@@ -361,8 +362,16 @@ public interface Stream<T> extends StreamIterable<T> {
         return new RepeatElement<T>(t, count);
     }
 
+    /**
+     * Returns an interleaved merge of the streams (one item emitted from each
+     * stream in round-robin style).
+     * 
+     * @param streams
+     *            to be merged
+     * @return merges streams (interleaved)
+     */
     @SafeVarargs
-    public static <T> Stream<T> mergeInterleaved(Stream<? extends T>... streams) {
+    public static <T> Stream<T> merge(Stream<? extends T>... streams) {
         return new MergeInterleaved<T>(streams);
     }
 
@@ -457,12 +466,12 @@ public interface Stream<T> extends StreamIterable<T> {
 
     public default <K> Single<java.util.Map<K, List<T>>> groupByList( //
             Function<? super T, ? extends K> keySelector) {
-        return grouByList(HashMap::new, keySelector, Function.identity());
+        return groupByList(HashMap::new, keySelector);
     }
 
     public default <K> Single<java.util.Map<K, Set<T>>> groupBySet( //
             Function<? super T, ? extends K> keySelector) {
-        return groupBySet(HashMap::new, keySelector, Function.identity());
+        return groupBySet(HashMap::new, keySelector);
     }
 
     public default Single<T> single() {
@@ -783,7 +792,6 @@ public interface Stream<T> extends StreamIterable<T> {
 
     // TODO
     // retryWhen,
-    // reverse
     // mergeInterleaveWith, materialize
     // add Single.flatMapMaybe, Maybe.flatMapSingle, Maybe.flatMapMaybe
 

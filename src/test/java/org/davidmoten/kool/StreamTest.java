@@ -10,6 +10,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.io.StringReader;
 import java.io.UncheckedIOException;
 import java.nio.ByteBuffer;
@@ -699,8 +700,16 @@ public final class StreamTest {
     }
 
     @Test
+    public void testBytesWithFactory() {
+        Stream.bytes(() -> new ByteArrayInputStream("hello there".getBytes(StandardCharsets.UTF_8)))
+                .map(x -> new String(x, StandardCharsets.UTF_8)) //
+                .test() //
+                .assertValues("hello there");
+    }
+
+    @Test
     public void testBytes() {
-        Stream.bytes(() -> new ByteArrayInputStream("hello there".getBytes(StandardCharsets.UTF_8)), 100)
+        Stream.bytes(new ByteArrayInputStream("hello there".getBytes(StandardCharsets.UTF_8)))
                 .map(x -> new String(x, StandardCharsets.UTF_8)) //
                 .test() //
                 .assertValues("hello there");
@@ -722,37 +731,37 @@ public final class StreamTest {
 
     @Test
     public void testMergeInterleavedEmpty() {
-        Stream.mergeInterleaved(Stream.empty()).test().assertNoValues();
+        Stream.merge(Stream.empty()).test().assertNoValues();
     }
 
     @Test
     public void testMergeInterleavedOneStreamOneValue() {
-        Stream.mergeInterleaved(Stream.of(1)).test().assertValues(1);
+        Stream.merge(Stream.of(1)).test().assertValues(1);
     }
 
     @Test
     public void testMergeInterleavedOneStreamManyValues() {
-        Stream.mergeInterleaved(Stream.of(1, 2, 3)).test().assertValues(1, 2, 3);
+        Stream.merge(Stream.of(1, 2, 3)).test().assertValues(1, 2, 3);
     }
 
     @Test
     public void testMergeInterleavedOneStreamOneStreamWithEmpty() {
-        Stream.mergeInterleaved(Stream.of(1, 2, 3), Stream.empty()).test().assertValues(1, 2, 3);
+        Stream.merge(Stream.of(1, 2, 3), Stream.empty()).test().assertValues(1, 2, 3);
     }
 
     @Test
     public void testMergeInterleavedOneStreamEmptyWithOneStream() {
-        Stream.mergeInterleaved(Stream.empty(), Stream.of(1, 2, 3)).test().assertValues(1, 2, 3);
+        Stream.merge(Stream.empty(), Stream.of(1, 2, 3)).test().assertValues(1, 2, 3);
     }
 
     @Test
     public void testMergeInterleavedTwoStreamsSameSize() {
-        Stream.mergeInterleaved(Stream.of(1, 3, 5), Stream.of(2, 4, 6)).test().assertValues(1, 2, 3, 4, 5, 6);
+        Stream.merge(Stream.of(1, 3, 5), Stream.of(2, 4, 6)).test().assertValues(1, 2, 3, 4, 5, 6);
     }
 
     @Test
     public void testMergeInterleavedFirstStreamBiggerThanSecond() {
-        Stream.mergeInterleaved(Stream.of(1, 3, 5, 6, 7), Stream.of(2, 4)).test().assertValues(1, 2, 3, 4, 5, 6, 7);
+        Stream.merge(Stream.of(1, 3, 5, 6, 7), Stream.of(2, 4)).test().assertValues(1, 2, 3, 4, 5, 6, 7);
     }
 
     @Test
@@ -765,7 +774,7 @@ public final class StreamTest {
             throw new RuntimeException("" + x);
         });
 
-        Stream.mergeInterleaved(a, b) //
+        Stream.merge(a, b) //
                 .test() //
                 .assertValues(1, 2) //
                 .assertError(CompositeException.class);
@@ -1122,4 +1131,43 @@ public final class StreamTest {
                 .assertValueOnly(map);
     }
 
+    @Test
+    public void testOfWith6() {
+        Stream.of(1, 2, 3, 4, 5, 6).test().assertValuesOnly(1, 2, 3, 4, 5, 6);
+    }
+
+    @Test
+    public void testOfWith7() {
+        Stream.of(1, 2, 3, 4, 5, 6, 7).test().assertValuesOnly(1, 2, 3, 4, 5, 6, 7);
+    }
+
+    @Test
+    public void testClass() {
+        Stream<Number> s = Stream.<Integer>of(1, 2, 3).cast(Number.class);
+        s.test().assertValues(1, 2, 3);
+    }
+
+    @Test
+    public void testContains() {
+        Stream.of(1, 2, 3).contains(2).test().assertValueOnly(true);
+    }
+
+    @Test
+    public void testPrintStackTrace() {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        PrintStream err = new PrintStream(bytes);
+        PrintStream prev = System.err;
+        System.setErr(err);
+        try {
+            Stream.error(new RuntimeException("expected error")) //
+                    .printStackTrace() //
+                    .switchOnError(e -> Stream.empty()) //
+                    .forEach();
+            String msg = new String(bytes.toByteArray(), StandardCharsets.UTF_8);
+            assertTrue(msg.startsWith("java.lang.RuntimeException: expected error"));
+        } finally {
+            System.setErr(prev);
+        }
+
+    }
 }
