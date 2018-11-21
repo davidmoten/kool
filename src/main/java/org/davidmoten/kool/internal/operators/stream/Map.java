@@ -23,21 +23,24 @@ public final class Map<T, R> implements Stream<R> {
     public StreamIterator<R> iterator() {
         return new StreamIterator<R>() {
 
-            final StreamIterator<T> it = Preconditions.checkNotNull(source.iterator());
+            StreamIterator<T> it = source.iteratorChecked();
 
             @Override
             public boolean hasNext() {
-                return it.hasNext();
+                return it != null && it.hasNext();
             }
 
             @Override
             public R next() {
-                return function.apply(Preconditions.checkNotNull(it.next()));
+                return function.apply(it.nextChecked());
             }
 
             @Override
             public void dispose() {
-                it.dispose();
+                if (it != null) {
+                    it.dispose();
+                    it = null;
+                }
             }
 
         };

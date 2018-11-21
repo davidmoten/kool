@@ -11,13 +11,18 @@ public abstract class BaseStreamIterator<R, T> implements StreamIterator<T> {
     protected StreamIterator<R> it;
 
     public BaseStreamIterator(StreamIterable<R> stream) {
-        this.it = stream.iteratorChecked();
+        this.it = init(stream);
+    }
+
+    public StreamIterator<R> init(StreamIterable<R> stream) {
+        return stream.iteratorChecked();
     }
 
     @Override
     public final boolean hasNext() {
         loadNext();
-        return it != null && next != null;
+        // don't put in check on it = null
+        return next != null;
     }
 
     @Override
@@ -47,7 +52,7 @@ public abstract class BaseStreamIterator<R, T> implements StreamIterator<T> {
             next = null;
         }
     }
-    
+
     /**
      * Guaranteed preconditions are that it != null and next == null.
      */

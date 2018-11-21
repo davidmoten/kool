@@ -37,7 +37,6 @@ public final class IgnoreDisposalError<T> implements Stream<T> {
                 if (it != null) {
                     try {
                         it.dispose();
-                        it = null;
                     } catch (Throwable e) {
                         if (action != null) {
                             try {
@@ -46,6 +45,8 @@ public final class IgnoreDisposalError<T> implements Stream<T> {
                                 Plugins.onError(e2);
                             }
                         }
+                    } finally {
+                        it = null;
                     }
                 }
             }
