@@ -417,8 +417,8 @@ public interface Stream<T> extends StreamIterable<T> {
         return new Collect<T, R>(factory, collector, this);
     }
 
-    public default <K, V, D extends Collection<V>> Single<java.util.Map<K, D>> groupBy( //
-            Callable<java.util.Map<K, D>> mapFactory, //
+    public default <M extends java.util.Map<K, D>, K, V, D extends Collection<V>> Single<M> groupBy( //
+            Callable<M> mapFactory, //
             Function<? super T, ? extends K> keySelector, //
             Function<? super T, ? extends V> valueSelector, //
             Callable<D> collectionFactory) {
@@ -438,28 +438,28 @@ public interface Stream<T> extends StreamIterable<T> {
         });
     }
 
-    public default <K, V> Single<java.util.Map<K, List<V>>> grouByList( //
-            Callable<java.util.Map<K, List<V>>> mapFactory, //
+    public default <M extends java.util.Map<K, List<V>>, K, V> Single<M> groupByList( //
+            Callable<M> mapFactory, //
             Function<? super T, ? extends K> keySelector, //
             Function<? super T, ? extends V> valueSelector) {
         return groupBy(mapFactory, keySelector, valueSelector, ArrayList::new);
     }
 
-    public default <K, V> Single<java.util.Map<K, Set<V>>> groupBySet( //
-            Callable<java.util.Map<K, Set<V>>> mapFactory, //
+    public default <M extends java.util.Map<K, Set<V>>, K, V> Single<M> groupBySet( //
+            Callable<M> mapFactory, //
             Function<? super T, ? extends K> keySelector, //
             Function<? super T, ? extends V> valueSelector) {
         return groupBy(mapFactory, keySelector, valueSelector, HashSet::new);
     }
 
-    public default <K> Single<java.util.Map<K, List<T>>> groupByList( //
-            Callable<java.util.Map<K, List<T>>> mapFactory, //
+    public default <M extends java.util.Map<K, List<T>>, K> Single<M> groupByList( //
+            Callable<M> mapFactory, //
             Function<? super T, ? extends K> keySelector) {
-        return grouByList(mapFactory, keySelector, Function.identity());
+        return groupByList(mapFactory, keySelector, Function.identity());
     }
 
-    public default <K> Single<java.util.Map<K, Set<T>>> groupBySet( //
-            Callable<java.util.Map<K, Set<T>>> mapFactory, //
+    public default <M extends java.util.Map<K, Set<T>>, K> Single<M> groupBySet( //
+            Callable<M> mapFactory, //
             Function<? super T, ? extends K> keySelector) {
         return groupBySet(mapFactory, keySelector, Function.identity());
     }

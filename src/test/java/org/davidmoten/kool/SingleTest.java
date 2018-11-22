@@ -4,7 +4,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.davidmoten.kool.exceptions.TestException;
 import org.junit.Test;
 
 public class SingleTest {
