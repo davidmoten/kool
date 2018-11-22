@@ -5,8 +5,10 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.davidmoten.kool.exceptions.UncheckedException;
 import org.junit.Test;
@@ -123,13 +125,42 @@ public final class MaybeTest {
     }
 
     @Test
-    public void testDoOnError() {
+    public void testFromCallableReturnsEmpty() {
+        Maybe.fromCallable(() -> 1).test().assertValue(1);
+    }
 
+    @Test
+    public void testFromCallableReturnsNull() {
+        Maybe.fromCallable(() -> null).test().assertError(NullPointerException.class);
+    }
+
+    @Test
+    public void testFromCallableNullableReturnsNull() {
+        Maybe.fromCallableNullable(() -> null).test().assertNoValue();
+    }
+
+    @Test
+    public void testDoOnError() {
+        AtomicReference<String> b = new AtomicReference<>();
+        Maybe.error(new RuntimeException("boo")).doOnError(e -> b.set(e.getMessage())) //
+                .switchOnError(e -> Maybe.empty()) //
+                .forEach();
+        assertEquals("boo", b.get());
     }
 
     @Test
     public void testDefer() {
-
+        Maybe.defer(() -> Maybe.of(1)).test().assertValue(1);
+    }
+    
+    @Test
+    public void testFromOptional() {
+        Maybe.fromOptional(Optional.of(1)).test().assertValue(1);
+    }
+    
+    @Test
+    public void testFromOptionalEmpty() {
+        Maybe.fromOptional(Optional.empty()).test().assertNoValue();
     }
 
 }

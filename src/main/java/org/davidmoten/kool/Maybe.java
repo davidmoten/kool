@@ -16,6 +16,7 @@ import org.davidmoten.kool.internal.operators.maybe.MaybeIsPresent;
 import org.davidmoten.kool.internal.operators.maybe.MaybeIterator;
 import org.davidmoten.kool.internal.operators.maybe.MaybeMap;
 import org.davidmoten.kool.internal.operators.maybe.MaybeOrElse;
+import org.davidmoten.kool.internal.operators.maybe.MaybeSwitchOnError;
 import org.davidmoten.kool.internal.operators.maybe.MaybeToStream;
 import org.davidmoten.kool.internal.util.MaybeImpl;
 
@@ -24,7 +25,7 @@ import com.github.davidmoten.guavamini.Preconditions;
 public interface Maybe<T> extends StreamIterable<T> {
 
     Optional<T> get();
-    
+
     //////////////////
     // Factories
     //////////////////
@@ -32,6 +33,14 @@ public interface Maybe<T> extends StreamIterable<T> {
     public static <T> Maybe<T> of(T value) {
         Preconditions.checkNotNull(value);
         return new MaybeImpl<T>(Optional.of(value));
+    }
+
+    public static <T> Maybe<T> fromOptional(Optional<? extends T> optional) {
+        if (optional.isPresent()) {
+            return Maybe.of(optional.get());
+        } else {
+            return Maybe.empty();
+        }
     }
 
     public static <T> Maybe<T> fromCallableNullable(Callable<? extends T> callable) {
@@ -49,21 +58,20 @@ public interface Maybe<T> extends StreamIterable<T> {
             return new MaybeImpl<T>(Optional.of(value));
         }
     }
-    
+
     @SuppressWarnings("unchecked")
     public static <T> Maybe<T> empty() {
         return (Maybe<T>) MaybeImpl.EmptyHolder.INSTANCE;
     }
 
-    
     public static <T> Maybe<T> defer(Callable<? extends Maybe<? extends T>> factory) {
         return new MaybeDefer<T>(factory);
     }
-    
+
     public static <T> Maybe<T> error(Callable<? extends Throwable> callable) {
         return new MaybeError<T>(callable);
     }
-    
+
     public static <T> Maybe<T> error(Throwable error) {
         return error(() -> error);
     }
@@ -71,7 +79,7 @@ public interface Maybe<T> extends StreamIterable<T> {
     //////////////////
     // Operators
     //////////////////
-    
+
     public default <R> Maybe<R> map(Function<? super T, ? extends R> mapper) {
         return new MaybeMap<T, R>(this, mapper);
     }
@@ -95,7 +103,7 @@ public interface Maybe<T> extends StreamIterable<T> {
     public default Maybe<T> doOnEmpty(Runnable action) {
         return new MaybeDoOnEmpty<T>(this, action);
     }
-    
+
     public default Single<T> orElse(T value) {
         return new MaybeOrElse<T>(this, value);
     }
@@ -111,9 +119,17 @@ public interface Maybe<T> extends StreamIterable<T> {
     default StreamIterator<T> iterator() {
         return new MaybeIterator<T>(this);
     }
-    
-    public default <R> R to(Function<? super Maybe<T>, R> mapper){
+
+    public default <R> R to(Function<? super Maybe<T>, R> mapper) {
         return mapper.apply(this);
+    }
+
+    public default void forEach() {
+        get();
+    }
+
+    default Maybe<T> switchOnError(Function<? super Throwable, ? extends Maybe<? extends T>> function) {
+        return new MaybeSwitchOnError<T>(this, function);
     }
 
 }
