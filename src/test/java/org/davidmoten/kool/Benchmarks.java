@@ -30,13 +30,13 @@ public class Benchmarks {
     }
 
     @Benchmark
-    public int toListJava() {
-        return java.util.stream.Stream.of(1, 2, 3, 4).collect(Collectors.toList()).size();
+    public int mapToListJava() {
+        return java.util.stream.Stream.of(1, 2, 3, 4, 5, 6, 7, 8).map(x -> x + 1).collect(Collectors.toList()).size();
     }
 
     @Benchmark
-    public int toListKool() {
-        return Stream.of(1, 2, 3, 4).toList().size();
+    public int mapToListKool() {
+        return Stream.of(1, 2, 3, 4, 5, 6, 7, 8).map(x -> x + 1).toList().size();
     }
 
     @Benchmark
