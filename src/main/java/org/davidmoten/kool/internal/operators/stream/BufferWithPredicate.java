@@ -3,10 +3,10 @@ package org.davidmoten.kool.internal.operators.stream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.function.BiPredicate;
 
 import org.davidmoten.kool.Stream;
 import org.davidmoten.kool.StreamIterator;
+import org.davidmoten.kool.function.BiPredicate;
 
 public final class BufferWithPredicate<T> implements Stream<List<T>> {
 
@@ -59,7 +59,7 @@ public final class BufferWithPredicate<T> implements Stream<List<T>> {
             private void loadNext() {
                 while (!ready && it.hasNext()) {
                     T t = it.nextChecked();
-                    boolean b = condition.test(buffer, t);
+                    boolean b = condition.testUnchecked(buffer, t);
                     if (!until) {
                         // while
                         if (b) {

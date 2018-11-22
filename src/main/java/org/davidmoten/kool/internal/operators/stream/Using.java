@@ -1,11 +1,11 @@
 package org.davidmoten.kool.internal.operators.stream;
 
 import java.util.concurrent.Callable;
-import java.util.function.Consumer;
-import java.util.function.Function;
 
 import org.davidmoten.kool.Stream;
 import org.davidmoten.kool.StreamIterator;
+import org.davidmoten.kool.function.Consumer;
+import org.davidmoten.kool.function.Function;
 import org.davidmoten.kool.internal.util.Exceptions;
 
 public final class Using<R, T> implements Stream<T> {
@@ -14,8 +14,7 @@ public final class Using<R, T> implements Stream<T> {
     private final Function<? super R, ? extends Stream<? extends T>> streamFactory;
     private final Consumer<? super R> closer;
 
-    public Using(Callable<R> resourceFactory,
-            Function<? super R, ? extends Stream<? extends T>> streamFactory,
+    public Using(Callable<R> resourceFactory, Function<? super R, ? extends Stream<? extends T>> streamFactory,
             Consumer<? super R> closer) {
         this.resourceFactory = resourceFactory;
         this.streamFactory = streamFactory;
@@ -29,8 +28,7 @@ public final class Using<R, T> implements Stream<T> {
 
                 R resource = resourceFactory.call();
                 @SuppressWarnings("unchecked")
-                StreamIterator<T> it = (StreamIterator<T>) streamFactory.apply(resource)
-                        .iteratorChecked();
+                StreamIterator<T> it = (StreamIterator<T>) streamFactory.apply(resource).iteratorChecked();
 
                 @Override
                 public boolean hasNext() {
@@ -45,7 +43,7 @@ public final class Using<R, T> implements Stream<T> {
                 @Override
                 public void dispose() {
                     it.dispose();
-                    closer.accept(resource);
+                    closer.acceptUnchecked(resource);
                 }
             };
         } catch (Throwable e) {

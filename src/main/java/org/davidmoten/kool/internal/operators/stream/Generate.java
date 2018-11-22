@@ -1,11 +1,12 @@
 package org.davidmoten.kool.internal.operators.stream;
 
 import java.util.NoSuchElementException;
-import java.util.function.Consumer;
 
 import org.davidmoten.kool.Emitter;
 import org.davidmoten.kool.Stream;
 import org.davidmoten.kool.StreamIterator;
+import org.davidmoten.kool.function.Consumer;
+import org.davidmoten.kool.internal.util.Exceptions;
 
 import com.github.davidmoten.guavamini.Preconditions;
 
@@ -74,7 +75,7 @@ public final class Generate<T> implements Stream<T> {
 
         private void load() {
             if (!complete && next == null) {
-                consumer.accept(this);
+                consumer.acceptUnchecked(this);
                 if (!complete && next == null) {
                     throw new IllegalStateException("must call either emitter.onNext or emitter.onComplete");
                 }

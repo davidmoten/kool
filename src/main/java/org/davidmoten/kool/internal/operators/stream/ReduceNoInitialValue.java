@@ -1,11 +1,12 @@
 package org.davidmoten.kool.internal.operators.stream;
 
 import java.util.Optional;
-import java.util.function.BiFunction;
 
 import org.davidmoten.kool.Maybe;
 import org.davidmoten.kool.StreamIterable;
 import org.davidmoten.kool.StreamIterator;
+import org.davidmoten.kool.function.BiFunction;
+import org.davidmoten.kool.internal.util.Exceptions;
 
 import com.github.davidmoten.guavamini.Preconditions;
 
@@ -33,9 +34,18 @@ public final class ReduceNoInitialValue<T> implements Maybe<T> {
         } else {
             return Optional.empty();
         }
-        T v = reducer.apply(a, b);
+        T v;
+        try {
+            v = reducer.apply(a, b);
+        } catch (Exception e) {
+            return Exceptions.rethrow(e);
+        }
         while (it.hasNext()) {
-            v = Preconditions.checkNotNull(reducer.apply(v, it.nextChecked()));
+            try {
+                v = Preconditions.checkNotNull(reducer.apply(v, it.nextChecked()));
+            } catch (Exception e) {
+                return Exceptions.rethrow(e);
+            }
         }
         return Optional.of(v);
     }

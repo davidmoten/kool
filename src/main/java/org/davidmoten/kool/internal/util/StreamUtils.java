@@ -5,6 +5,7 @@ import java.util.Collections;
 import org.davidmoten.kool.Stream;
 import org.davidmoten.kool.StreamIterable;
 import org.davidmoten.kool.StreamIterator;
+import org.davidmoten.kool.function.Function;
 
 import com.github.davidmoten.guavamini.Preconditions;
 
@@ -16,6 +17,10 @@ public final class StreamUtils {
 
     public static final class EmptyHolder {
         public static final Stream<Object> EMPTY = Stream.create(Collections.emptyList());
+    }
+
+    public static final class FunctionIdentityHolder {
+        public static final Function<Object, Object> IDENTITY = x -> x;
     }
 
     public static <T> StreamIterator<T> iterator(StreamIterable<T> iter) {

@@ -1,11 +1,12 @@
 package org.davidmoten.kool.internal.operators.stream;
 
 import java.util.NoSuchElementException;
-import java.util.function.Function;
 
 import org.davidmoten.kool.Stream;
 import org.davidmoten.kool.StreamIterable;
 import org.davidmoten.kool.StreamIterator;
+import org.davidmoten.kool.function.Function;
+import org.davidmoten.kool.internal.util.Exceptions;
 
 public final class FlatMap<T, R> implements Stream<R> {
 
@@ -50,7 +51,12 @@ public final class FlatMap<T, R> implements Stream<R> {
                 while (true) {
                     if (b == null) {
                         if (a.hasNext()) {
-                            b = function.apply(a.nextChecked()).iteratorChecked();
+                            try {
+                                b = function.apply(a.nextChecked()).iteratorChecked();
+                            } catch (Exception e) {
+                                Exceptions.rethrow(e);
+                                return;
+                            }
                         } else {
                             return;
                         }

@@ -28,6 +28,7 @@ import java.util.function.Consumer;
 
 import org.davidmoten.kool.exceptions.CompositeException;
 import org.davidmoten.kool.exceptions.UncheckedException;
+import org.davidmoten.kool.function.Predicates;
 import org.junit.Assert;
 import org.junit.Test;
 

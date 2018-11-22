@@ -7,11 +7,11 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Comparator;
 import java.util.List;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.LongStream;
 
+import org.davidmoten.kool.function.Function;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.State;
@@ -64,7 +64,7 @@ public class Benchmarks {
                 .flatMap(x -> Stream.of(x).min(Comparator.naturalOrder())) //
                 .map(Function.identity()) //
                 .reduce((x, y) -> x + y) //
-                .get() //
+                .get()
                 .get();
     }
 
@@ -72,7 +72,7 @@ public class Benchmarks {
     public long flatMapMinMapReduceJavaStreams() {
         return LongStream.range(1, 1000) //
                 .boxed().flatMap(x -> java.util.stream.Stream.of(LongStream.of(x, x + 1, x + 4).min().getAsLong())) //
-                .map(Function.identity()) //
+                .map(java.util.function.Function.identity()) //
                 .reduce((x, y) -> x + y) //
                 .get();
     }

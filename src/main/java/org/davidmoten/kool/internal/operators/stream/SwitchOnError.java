@@ -1,10 +1,9 @@
 package org.davidmoten.kool.internal.operators.stream;
 
-import java.util.function.Function;
-
 import org.davidmoten.kool.Stream;
 import org.davidmoten.kool.StreamIterable;
 import org.davidmoten.kool.StreamIterator;
+import org.davidmoten.kool.function.Function;
 
 import com.github.davidmoten.guavamini.Preconditions;
 
@@ -32,7 +31,7 @@ public final class SwitchOnError<T> implements Stream<T> {
                     return source.iteratorChecked();
                 } catch (RuntimeException | Error e) {
                     switched = true;
-                    return Preconditions.checkNotNull(((Stream<T>) function.apply(e)).iterator());
+                    return Preconditions.checkNotNull(((Stream<T>) function.applyUnchecked(e)).iterator());
                 }
             }
 
@@ -47,7 +46,7 @@ public final class SwitchOnError<T> implements Stream<T> {
                     } catch (RuntimeException | Error e) {
                         switched = true;
                         it.dispose();
-                        it = Preconditions.checkNotNull((StreamIterator<T>) function.apply(e));
+                        it = Preconditions.checkNotNull((StreamIterator<T>) function.applyUnchecked(e));
                         return it.hasNext();
                     }
                 }
@@ -64,7 +63,7 @@ public final class SwitchOnError<T> implements Stream<T> {
                     } catch (RuntimeException | Error e) {
                         switched = true;
                         it.dispose();
-                        it = Preconditions.checkNotNull((StreamIterator<T>) function.apply(e));
+                        it = Preconditions.checkNotNull((StreamIterator<T>) function.applyUnchecked(e));
                         return it.next();
                     }
                 }

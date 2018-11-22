@@ -1,10 +1,10 @@
 package org.davidmoten.kool.internal.operators.stream;
 
 import java.util.NoSuchElementException;
-import java.util.function.Predicate;
 
 import org.davidmoten.kool.Stream;
 import org.davidmoten.kool.StreamIterator;
+import org.davidmoten.kool.function.Predicate;
 
 public final class TakeWithPredicate<T> implements Stream<T> {
 
@@ -48,7 +48,7 @@ public final class TakeWithPredicate<T> implements Stream<T> {
                 if (value == null && it != null) {
                     if (it.hasNext()) {
                         T v = it.nextChecked();
-                        boolean test = predicate.test(v);
+                        boolean test = predicate.testUnchecked(v);
                         final boolean ok;
                         if (until) {
                             ok = !test;

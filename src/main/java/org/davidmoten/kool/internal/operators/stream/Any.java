@@ -1,10 +1,9 @@
 package org.davidmoten.kool.internal.operators.stream;
 
-import java.util.function.Predicate;
-
 import org.davidmoten.kool.Single;
 import org.davidmoten.kool.Stream;
 import org.davidmoten.kool.StreamIterator;
+import org.davidmoten.kool.function.Predicate;
 
 import com.github.davidmoten.guavamini.Preconditions;
 
@@ -25,7 +24,7 @@ public final class Any<T> implements Single<Boolean> {
         StreamIterator<T> it = stream.iteratorChecked();
         try {
             while (it.hasNext()) {
-                if (predicate.test(it.nextChecked())) {
+                if (predicate.testUnchecked(it.nextChecked())) {
                     return true;
                 }
             }

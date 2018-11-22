@@ -1,11 +1,11 @@
 package org.davidmoten.kool.internal.operators.stream;
 
-import java.util.function.Predicate;
-
 import org.davidmoten.kool.Stream;
 import org.davidmoten.kool.StreamIterable;
 import org.davidmoten.kool.StreamIterator;
+import org.davidmoten.kool.function.Predicate;
 import org.davidmoten.kool.internal.util.BaseStreamIterator;
+import org.davidmoten.kool.internal.util.Exceptions;
 
 public final class Filter<T> implements Stream<T> {
 
@@ -31,9 +31,14 @@ public final class Filter<T> implements Stream<T> {
                         break;
                     } else {
                         T t = it.nextChecked();
-                        if (predicate.test(t)) {
-                            next = t;
-                            break;
+                        try {
+                            if (predicate.test(t)) {
+                                next = t;
+                                break;
+                            }
+                        } catch (Exception e) {
+                            Exceptions.rethrow(e);
+                            return;
                         }
                     }
                 }

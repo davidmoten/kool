@@ -1,10 +1,10 @@
 package org.davidmoten.kool.internal.operators.stream;
 
 import java.util.NoSuchElementException;
-import java.util.function.Predicate;
 
 import org.davidmoten.kool.Stream;
 import org.davidmoten.kool.StreamIterator;
+import org.davidmoten.kool.function.Predicate;
 
 public final class SkipUntil<T> implements Stream<T> {
 
@@ -42,7 +42,7 @@ public final class SkipUntil<T> implements Stream<T> {
                     } else {
                         while ((next == null || !nextPredicateValue) && it.hasNext()) {
                             next = it.nextChecked();
-                            nextPredicateValue = predicate.test(next);
+                            nextPredicateValue = predicate.testUnchecked(next);
                             if (negate)
                                 nextPredicateValue = !nextPredicateValue;
                         }

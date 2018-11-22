@@ -1,9 +1,8 @@
 package org.davidmoten.kool.internal.operators.stream;
 
-import java.util.function.BiFunction;
-
 import org.davidmoten.kool.Stream;
 import org.davidmoten.kool.StreamIterator;
+import org.davidmoten.kool.function.BiFunction;
 
 public class Zip<R, S, T> implements Stream<S> {
 
@@ -39,7 +38,7 @@ public class Zip<R, S, T> implements Stream<S> {
 
             @Override
             public S next() {
-                return combiner.apply(a.nextChecked(), b.nextChecked());
+                return combiner.applyUnchecked(a.nextChecked(), b.nextChecked());
             }
 
             @Override

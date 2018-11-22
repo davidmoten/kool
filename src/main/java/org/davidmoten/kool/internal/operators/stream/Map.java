@@ -1,10 +1,10 @@
 package org.davidmoten.kool.internal.operators.stream;
 
-import java.util.function.Function;
-
 import org.davidmoten.kool.Stream;
 import org.davidmoten.kool.StreamIterable;
 import org.davidmoten.kool.StreamIterator;
+import org.davidmoten.kool.function.Function;
+import org.davidmoten.kool.internal.util.Exceptions;
 
 public final class Map<T, R> implements Stream<R> {
 
@@ -30,7 +30,11 @@ public final class Map<T, R> implements Stream<R> {
 
             @Override
             public R next() {
-                return function.apply(it.nextChecked());
+                try {
+                    return function.apply(it.nextChecked());
+                } catch (Exception e) {
+                    return Exceptions.rethrow(e);
+                }
             }
 
             @Override

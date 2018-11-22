@@ -3,7 +3,8 @@ package org.davidmoten.kool;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Predicate;
+
+import org.davidmoten.kool.function.Predicate;
 
 public final class Tester<T> {
 
@@ -67,7 +68,7 @@ public final class Tester<T> {
     public Tester<T> assertError(Predicate<? super Throwable> predicate) {
         if (error == null) {
             throw new AssertionError("no error thrown");
-        } else if (!predicate.test(error)) {
+        } else if (!predicate.testUnchecked(error)) {
             error.printStackTrace();
             throw new AssertionError("error " + error.getClass() + " failed predicate");
         }

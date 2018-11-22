@@ -1,6 +1,4 @@
-package org.davidmoten.kool;
-
-import java.util.function.Predicate;
+package org.davidmoten.kool.function;
 
 public final class Predicates {
 

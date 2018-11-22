@@ -21,15 +21,16 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Callable;
-import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
-import java.util.function.BiPredicate;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
+
 import java.util.stream.StreamSupport;
 
+import org.davidmoten.kool.function.BiConsumer;
+import org.davidmoten.kool.function.BiFunction;
+import org.davidmoten.kool.function.BiPredicate;
+import org.davidmoten.kool.function.Consumer;
+import org.davidmoten.kool.function.Function;
+import org.davidmoten.kool.function.Predicate;
+import org.davidmoten.kool.function.Predicates;
 import org.davidmoten.kool.internal.operators.stream.All;
 import org.davidmoten.kool.internal.operators.stream.Any;
 import org.davidmoten.kool.internal.operators.stream.Buffer;
@@ -408,7 +409,7 @@ public interface Stream<T> extends StreamIterable<T> {
         return reduceWithInitialValue(() -> initialValue, reducer);
     }
 
-    public default <R> Single<R> reduceWithInitialValue(Supplier<R> initialValueFactory,
+    public default <R> Single<R> reduceWithInitialValue(Callable<R> initialValueFactory,
             BiFunction<? super R, ? super T, ? extends R> reducer) {
         return new ReduceWithInitialValueSupplier<R, T>(initialValueFactory, reducer, this);
     }
@@ -506,8 +507,7 @@ public interface Stream<T> extends StreamIterable<T> {
         count().get();
     }
 
-    @Override
-    public default void forEach(Consumer<? super T> consumer) {
+    public default void forEach2(Consumer<? super T> consumer) {
         doOnNext(consumer).count().get();
     }
 
@@ -607,7 +607,7 @@ public interface Stream<T> extends StreamIterable<T> {
         return new SwitchOnError<T>(function, this);
     }
 
-    public default Stream<T> switchOnEmpty(Supplier<? extends Stream<T>> factory) {
+    public default Stream<T> switchOnEmpty(Callable<? extends Stream<T>> factory) {
         return new SwitchOnEmpty<T>(this, factory);
     }
 
@@ -755,7 +755,7 @@ public interface Stream<T> extends StreamIterable<T> {
     }
 
     public default Stream<T> distinctUntilChanged() {
-        return distinctUntilChanged(Functions.identity());
+        return distinctUntilChanged(Function.identity());
     }
 
     public default <K> Stream<T> distinct(Function<? super T, K> keySelector) {
@@ -775,7 +775,7 @@ public interface Stream<T> extends StreamIterable<T> {
     }
 
     public default <R> R to(Function<? super Stream<T>, R> mapper) {
-        return mapper.apply(this);
+        return mapper.applyUnchecked(this);
     }
 
     public default Stream<T> printStackTrace() {

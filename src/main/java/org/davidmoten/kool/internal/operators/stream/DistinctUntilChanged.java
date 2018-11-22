@@ -1,9 +1,8 @@
 package org.davidmoten.kool.internal.operators.stream;
 
-import java.util.function.Function;
-
 import org.davidmoten.kool.Stream;
 import org.davidmoten.kool.StreamIterator;
+import org.davidmoten.kool.function.Function;
 import org.davidmoten.kool.internal.util.BaseStreamIterator;
 
 import com.github.davidmoten.guavamini.Preconditions;
@@ -28,7 +27,7 @@ public final class DistinctUntilChanged<T, K> implements Stream<T> {
             public void load() {
                 while (it.hasNext()) {
                     T v = it.nextChecked();
-                    K k = Preconditions.checkNotNull(keySelector.apply(v));
+                    K k = Preconditions.checkNotNull(keySelector.applyUnchecked(v));
                     if (!k.equals(key)) {
                         key = k;
                         next = v;

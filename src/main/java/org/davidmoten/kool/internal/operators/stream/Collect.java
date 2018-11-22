@@ -1,11 +1,11 @@
 package org.davidmoten.kool.internal.operators.stream;
 
 import java.util.concurrent.Callable;
-import java.util.function.BiConsumer;
 
 import org.davidmoten.kool.Single;
 import org.davidmoten.kool.Stream;
 import org.davidmoten.kool.StreamIterator;
+import org.davidmoten.kool.function.BiConsumer;
 import org.davidmoten.kool.internal.util.Exceptions;
 
 public final class Collect<T, R> implements Single<R> {
@@ -29,8 +29,8 @@ public final class Collect<T, R> implements Single<R> {
                 collector.accept(c, it.nextChecked());
             }
             return c;
-        } catch (Exception e) {
-           return Exceptions.rethrow(e);
+        } catch (Throwable e) {
+            return Exceptions.rethrow(e);
         } finally {
             it.dispose();
         }

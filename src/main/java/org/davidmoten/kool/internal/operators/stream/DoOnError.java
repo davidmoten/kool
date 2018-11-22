@@ -1,9 +1,8 @@
 package org.davidmoten.kool.internal.operators.stream;
 
-import java.util.function.Consumer;
-
 import org.davidmoten.kool.Stream;
 import org.davidmoten.kool.StreamIterator;
+import org.davidmoten.kool.function.Consumer;
 
 public final class DoOnError<T> implements Stream<T> {
 
@@ -26,7 +25,7 @@ public final class DoOnError<T> implements Stream<T> {
                 try {
                     return it.hasNext();
                 } catch (RuntimeException | Error t) {
-                    consumer.accept(t);
+                    
                     throw t;
                 }
             }
@@ -36,7 +35,7 @@ public final class DoOnError<T> implements Stream<T> {
                 try {
                     return it.nextChecked();
                 } catch (RuntimeException | Error t) {
-                    consumer.accept(t);
+                    consumer.acceptUnchecked(t);
                     throw t;
                 }
             }
@@ -45,7 +44,7 @@ public final class DoOnError<T> implements Stream<T> {
                 try {
                     return source.iteratorChecked();
                 } catch (RuntimeException | Error t) {
-                    consumer.accept(t);
+                    consumer.acceptUnchecked(t);
                     throw t;
                 }
             }

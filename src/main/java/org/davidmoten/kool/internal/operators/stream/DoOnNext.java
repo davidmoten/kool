@@ -1,10 +1,10 @@
 package org.davidmoten.kool.internal.operators.stream;
 
-import java.util.function.Consumer;
-
 import org.davidmoten.kool.Stream;
 import org.davidmoten.kool.StreamIterable;
 import org.davidmoten.kool.StreamIterator;
+import org.davidmoten.kool.function.Consumer;
+import org.davidmoten.kool.internal.util.Exceptions;
 
 public final class DoOnNext<T> implements Stream<T> {
 
@@ -30,7 +30,7 @@ public final class DoOnNext<T> implements Stream<T> {
             @Override
             public T next() {
                 T t = it.nextChecked();
-                consumer.accept(t);
+                consumer.acceptUnchecked(t);
                 return t;
             }
 

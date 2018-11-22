@@ -1,10 +1,9 @@
 package org.davidmoten.kool.internal.operators.stream;
 
-import java.util.function.Consumer;
-
 import org.davidmoten.kool.Plugins;
 import org.davidmoten.kool.Stream;
 import org.davidmoten.kool.StreamIterator;
+import org.davidmoten.kool.function.Consumer;
 
 public final class IgnoreDisposalError<T> implements Stream<T> {
 

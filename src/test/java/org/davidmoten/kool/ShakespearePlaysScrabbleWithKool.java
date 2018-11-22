@@ -18,7 +18,6 @@
 
 package org.davidmoten.kool;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -27,9 +26,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Function;
-import java.util.function.Predicate;
 
+import org.davidmoten.kool.function.Function;
+import org.davidmoten.kool.function.Predicate;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Fork;
@@ -114,7 +113,7 @@ public class ShakespearePlaysScrabbleWithKool extends ShakespearePlaysScrabble {
         // Stream to be maxed
         Function<String, Stream<Integer>> toBeMaxed = word -> Stream //
                 .of(first3.apply(word), last3.apply(word)) //
-                .flatMap(Functions.identity());
+                .flatMap(Function.identity());
 
         // Bonus for double letter
         Function<String, Integer> bonusForDoubleLetter = word -> toBeMaxed //
@@ -138,7 +137,7 @@ public class ShakespearePlaysScrabbleWithKool extends ShakespearePlaysScrabble {
 
         // best key / value pairs
         List<Entry<Integer, List<String>>> finalList = buildHistoOnScore //
-                .apply(score3) //
+                .applyUnchecked(score3) //
                 .flatMap(map -> Stream.from(map.entrySet())) //
                 .take(3) //
                 .toList();
