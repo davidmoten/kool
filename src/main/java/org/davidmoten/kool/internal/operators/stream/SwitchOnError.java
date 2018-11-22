@@ -32,8 +32,8 @@ public final class SwitchOnError<T> implements Stream<T> {
                     return source.iteratorChecked();
                 } catch (RuntimeException | Error e) {
                     switched = true;
-                    return Preconditions
-                            .checkNotNull(((Stream<T>) function.applyUnchecked(e)).iterator());
+                    return Preconditions.checkNotNull(
+                            ((Stream<T>) function.applyUnchecked(e)).iteratorChecked());
                 }
             }
 
@@ -48,8 +48,8 @@ public final class SwitchOnError<T> implements Stream<T> {
                     } catch (Throwable e) {
                         switched = true;
                         it.dispose();
-                        it = Preconditions
-                                .checkNotNull((StreamIterator<T>) function.applyUnchecked(e));
+                        it = Preconditions.checkNotNull(
+                                (StreamIterator<T>) function.applyUnchecked(e).iteratorChecked());
                         return it.hasNext();
                     }
                 }
@@ -66,8 +66,8 @@ public final class SwitchOnError<T> implements Stream<T> {
                     } catch (Throwable e) {
                         switched = true;
                         it.dispose();
-                        it = Preconditions
-                                .checkNotNull((StreamIterator<T>) function.applyUnchecked(e));
+                        it = Preconditions.checkNotNull(
+                                (StreamIterator<T>) function.applyUnchecked(e).iteratorChecked());
                         return it.next();
                     }
                 }

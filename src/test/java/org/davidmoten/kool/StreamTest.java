@@ -338,7 +338,9 @@ public final class StreamTest {
 
                 };
             }
-        }).switchOnError(e -> Stream.of(4, 5)).test().assertValuesOnly(4, 5);
+        }).switchOnError(e -> Stream.of(4, 5)) //
+                .test() //
+                .assertValuesOnly(4, 5);
     }
 
     @Test
@@ -357,6 +359,52 @@ public final class StreamTest {
                     @Override
                     public Integer next() {
                         return 1;
+                    }
+
+                };
+            }
+        }).switchOnError(e -> null).test().assertError(NullPointerException.class);
+    }
+
+    @Test
+    public void testSwitchOnErrorNextThrows() {
+        Stream.from(new Iterable<Integer>() {
+
+            @Override
+            public Iterator<Integer> iterator() {
+                return new Iterator<Integer>() {
+
+                    @Override
+                    public boolean hasNext() {
+                        return true;
+                    }
+
+                    @Override
+                    public Integer next() {
+                        throw new RuntimeException("boo");
+                    }
+
+                };
+            }
+        }).switchOnError(e -> Stream.of(4, 5)).test().assertValuesOnly(4, 5);
+    }
+
+    @Test
+    public void testSwitchOnErrorNextThrowsAltIsNull() {
+        Stream.from(new Iterable<Integer>() {
+
+            @Override
+            public Iterator<Integer> iterator() {
+                return new Iterator<Integer>() {
+
+                    @Override
+                    public boolean hasNext() {
+                        return true;
+                    }
+
+                    @Override
+                    public Integer next() {
+                        throw new RuntimeException("boo");
                     }
 
                 };
