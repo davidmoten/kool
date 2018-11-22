@@ -5,6 +5,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -152,15 +153,35 @@ public final class MaybeTest {
     public void testDefer() {
         Maybe.defer(() -> Maybe.of(1)).test().assertValue(1);
     }
-    
+
     @Test
     public void testFromOptional() {
         Maybe.fromOptional(Optional.of(1)).test().assertValue(1);
     }
-    
+
     @Test
     public void testFromOptionalEmpty() {
         Maybe.fromOptional(Optional.empty()).test().assertNoValue();
+    }
+
+    @Test
+    public void testMaybeIterator() {
+        StreamIterator<Integer> it = Maybe.of(1).iterator();
+        assertTrue(it.hasNext());
+        assertEquals(1, (int) it.next());
+        assertFalse(it.hasNext());
+    }
+
+    @Test
+    public void testMaybeEmptyIterator() {
+        StreamIterator<Integer> it = Maybe.<Integer>empty().iterator();
+        assertFalse(it.hasNext());
+    }
+
+    @Test(expected = NoSuchElementException.class)
+    public void testMaybeEmptyIteratorThrowsNoSuchElementException() {
+        StreamIterator<Integer> it = Maybe.<Integer>empty().iterator();
+        it.next();
     }
 
 }

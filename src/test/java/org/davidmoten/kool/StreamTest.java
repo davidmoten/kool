@@ -917,9 +917,9 @@ public final class StreamTest {
         Stream.of(1).maybe().test().assertValue(1);
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void testToMaybeFromTwo() {
-        Stream.of(1, 2).maybe().test().assertValue(1);
+        Stream.of(1, 2).maybe().test().assertError(IllegalStateException.class);
     }
 
     @Test

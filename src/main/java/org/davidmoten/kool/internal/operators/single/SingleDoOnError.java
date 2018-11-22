@@ -4,10 +4,10 @@ import java.util.function.Consumer;
 
 import org.davidmoten.kool.Single;
 
-public class SingleDoOnError<T> implements Single<T> {
+public final class SingleDoOnError<T> implements Single<T> {
 
-    private Consumer<? super Throwable> consumer;
-    private Single<T> single;
+    private final Consumer<? super Throwable> consumer;
+    private final Single<T> single;
 
     public SingleDoOnError(Consumer<? super Throwable> consumer, Single<T> single) {
         this.consumer = consumer;

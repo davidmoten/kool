@@ -31,26 +31,29 @@ public final class MaybeTester<T> {
         }
     }
 
-    public void assertNoError() {
+    public MaybeTester<T> assertNoError() {
         if (error != null) {
             throw new AssertionError("no error expected but one was found", error);
         }
+        return this;
     }
 
-    public void assertError(Class<? extends Throwable> cls) {
+    public MaybeTester<T> assertError(Class<? extends Throwable> cls) {
         if (error == null) {
             throw new AssertionError("error expected of type " + cls + " but no error was found");
         } else if (!cls.isInstance(error)) {
             throw new AssertionError("error expected of type " + cls + " but was of type " + error.getClass());
         }
+        return this;
     }
 
-    public void assertErrorMessage(String message) {
+    public MaybeTester<T> assertErrorMessage(String message) {
         if (error == null) {
             throw new AssertionError("error expected but no error was found");
         } else if (!message.equals(error.getMessage())) {
             throw new AssertionError("error expected with msg " + message + " but message was: " + error.getMessage());
         }
+        return this;
     }
 
 }
