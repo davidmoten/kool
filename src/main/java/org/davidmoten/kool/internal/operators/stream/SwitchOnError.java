@@ -12,7 +12,8 @@ public final class SwitchOnError<T> implements Stream<T> {
     private final Function<? super Throwable, ? extends StreamIterable<? extends T>> function;
     private final Stream<T> source;
 
-    public SwitchOnError(Function<? super Throwable, ? extends StreamIterable<? extends T>> function,
+    public SwitchOnError(
+            Function<? super Throwable, ? extends StreamIterable<? extends T>> function,
             Stream<T> source) {
         this.function = function;
         this.source = source;
@@ -31,7 +32,8 @@ public final class SwitchOnError<T> implements Stream<T> {
                     return source.iteratorChecked();
                 } catch (RuntimeException | Error e) {
                     switched = true;
-                    return Preconditions.checkNotNull(((Stream<T>) function.applyUnchecked(e)).iterator());
+                    return Preconditions
+                            .checkNotNull(((Stream<T>) function.applyUnchecked(e)).iterator());
                 }
             }
 
@@ -43,10 +45,11 @@ public final class SwitchOnError<T> implements Stream<T> {
                 } else {
                     try {
                         return it.hasNext();
-                    } catch (RuntimeException | Error e) {
+                    } catch (Throwable e) {
                         switched = true;
                         it.dispose();
-                        it = Preconditions.checkNotNull((StreamIterator<T>) function.applyUnchecked(e));
+                        it = Preconditions
+                                .checkNotNull((StreamIterator<T>) function.applyUnchecked(e));
                         return it.hasNext();
                     }
                 }
@@ -60,10 +63,11 @@ public final class SwitchOnError<T> implements Stream<T> {
                 } else {
                     try {
                         return it.nextChecked();
-                    } catch (RuntimeException | Error e) {
+                    } catch (Throwable e) {
                         switched = true;
                         it.dispose();
-                        it = Preconditions.checkNotNull((StreamIterator<T>) function.applyUnchecked(e));
+                        it = Preconditions
+                                .checkNotNull((StreamIterator<T>) function.applyUnchecked(e));
                         return it.next();
                     }
                 }
