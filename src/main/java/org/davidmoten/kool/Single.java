@@ -74,4 +74,8 @@ public interface Single<T> extends StreamIterable<T> {
         return mapper.apply(this);
     }
 
+    default void forEach() {
+        get();
+    }
+
 }
