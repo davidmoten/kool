@@ -8,11 +8,11 @@ import org.davidmoten.kool.function.Consumer;
 public final class IgnoreDisposalError<T> implements Stream<T> {
 
     private final Stream<T> stream;
-    private final Consumer<? super Throwable> action;
+    private final Consumer<? super Throwable> consumer;
 
-    public IgnoreDisposalError(Stream<T> stream, Consumer<? super Throwable> action) {
+    public IgnoreDisposalError(Stream<T> stream, Consumer<? super Throwable> consumer) {
         this.stream = stream;
-        this.action = action;
+        this.consumer = consumer;
     }
 
     @Override
@@ -37,9 +37,9 @@ public final class IgnoreDisposalError<T> implements Stream<T> {
                     try {
                         it.dispose();
                     } catch (Throwable e) {
-                        if (action != null) {
+                        if (consumer != null) {
                             try {
-                                action.accept(e);
+                                consumer.accept(e);
                             } catch (Throwable e2) {
                                 Plugins.onError(e2);
                             }

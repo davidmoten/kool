@@ -14,7 +14,14 @@ public final class Tester<T> {
     public Tester(Stream<T> stream) {
         list = new ArrayList<T>();
         try {
-            stream.forEach(list::add);
+            StreamIterator<T> it = stream.iterator();
+            try {
+                while (it.hasNext()) {
+                    list.add(it.nextChecked());
+                }
+            } finally {
+                it.dispose();
+            }
             this.error = null;
         } catch (Throwable e) {
             this.error = e;
@@ -64,7 +71,7 @@ public final class Tester<T> {
         }
         return this;
     }
-    
+
     public Tester<T> assertError(Predicate<? super Throwable> predicate) {
         if (error == null) {
             throw new AssertionError("no error thrown");
