@@ -1,10 +1,9 @@
 package org.davidmoten.kool.internal.operators.stream;
 
-import java.util.NoSuchElementException;
-
 import org.davidmoten.kool.Stream;
 import org.davidmoten.kool.StreamIterator;
 import org.davidmoten.kool.function.Predicate;
+import org.davidmoten.kool.internal.util.BaseStreamIterator;
 
 public final class TakeWithPredicate<T> implements Stream<T> {
 
@@ -20,32 +19,11 @@ public final class TakeWithPredicate<T> implements Stream<T> {
 
     @Override
     public StreamIterator<T> iterator() {
-        return new StreamIterator<T>() {
-
-            StreamIterator<T> it = source.iteratorChecked();
-
-            T value;
+        return new BaseStreamIterator<T, T>(source) {
 
             @Override
-            public boolean hasNext() {
-                loadNext();
-                return value != null;
-            }
-
-            @Override
-            public T next() {
-                loadNext();
-                if (value != null) {
-                    T t = value;
-                    value = null;
-                    return t;
-                } else {
-                    throw new NoSuchElementException();
-                }
-            }
-
-            private void loadNext() {
-                if (value == null && it != null) {
+            public void load() {
+                if (next == null && it != null) {
                     if (it.hasNext()) {
                         T v = it.nextChecked();
                         boolean test = predicate.testUnchecked(v);
@@ -56,7 +34,7 @@ public final class TakeWithPredicate<T> implements Stream<T> {
                             ok = test;
                         }
                         if (ok) {
-                            value = v;
+                            next = v;
                         } else {
                             it.dispose();
                             it = null;
@@ -65,14 +43,6 @@ public final class TakeWithPredicate<T> implements Stream<T> {
                         it.dispose();
                         it = null;
                     }
-                }
-            }
-
-            @Override
-            public void dispose() {
-                if (it != null) {
-                    it.dispose();
-                    it = null;
                 }
             }
 
