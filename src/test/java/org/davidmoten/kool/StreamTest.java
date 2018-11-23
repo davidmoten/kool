@@ -1378,12 +1378,12 @@ public final class StreamTest {
     }
 
     @Test
-    public void testDelay() {
+    public void testDelayStart() {
         long[] time = new long[1];
         long t = System.currentTimeMillis();
         Stream //
                 .of(1) //
-                .delay(200, TimeUnit.MILLISECONDS) //
+                .delayStart(200, TimeUnit.MILLISECONDS) //
                 .doOnNext(x -> time[0] = System.currentTimeMillis()) //
                 .test() //
                 .assertValuesOnly(1);

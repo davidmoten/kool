@@ -814,7 +814,7 @@ public interface Stream<T> extends StreamIterable<T> {
         return new DoOnStart<T>(this, action);
     }
     
-    public default Stream<T> delay(long duration, TimeUnit unit) {
+    public default Stream<T> delayStart(long duration, TimeUnit unit) {
         return doOnStart(() -> unit.sleep(duration));
     }
 
