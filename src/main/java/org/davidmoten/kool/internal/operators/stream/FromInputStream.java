@@ -26,59 +26,55 @@ public final class FromInputStream implements Stream<ByteBuffer> {
 
     @Override
     public StreamIterator<ByteBuffer> iterator() {
-        try {
-            return new StreamIterator<ByteBuffer>() {
+        return new StreamIterator<ByteBuffer>() {
 
-                ByteBuffer next;
+            ByteBuffer next;
 
-                @Override
-                public boolean hasNext() {
-                    load();
-                    return next != null;
+            @Override
+            public boolean hasNext() {
+                load();
+                return next != null;
+            }
+
+            @Override
+            public ByteBuffer next() {
+                load();
+                ByteBuffer v = next;
+                if (v == null) {
+                    throw new NoSuchElementException();
                 }
+                next = null;
+                return v;
+            }
 
-                @Override
-                public ByteBuffer next() {
-                    load();
-                    ByteBuffer v = next;
-                    if (v == null) {
-                        throw new NoSuchElementException();
-                    }
+            @Override
+            public void dispose() {
+                if (is != null) {
+                    is = null;
                     next = null;
-                    return v;
                 }
+            }
 
-                @Override
-                public void dispose() {
-                    if (is != null) {
+            private void load() {
+                if (is != null && next == null) {
+                    byte[] b = new byte[bufferSize];
+                    int n;
+                    try {
+                        n = is.read(b);
+                    } catch (IOException e) {
+                        is = null;
+                        throw new UncheckedIOException(e);
+                    }
+                    if (n == -1) {
                         is = null;
                         next = null;
+                    } else {
+                        next = ByteBuffer.wrap(b, 0, n);
                     }
                 }
+            }
 
-                private void load() {
-                    if (is != null && next == null) {
-                        byte[] b = new byte[bufferSize];
-                        int n;
-                        try {
-                            n = is.read(b);
-                        } catch (IOException e) {
-                            is = null;
-                            throw new UncheckedIOException(e);
-                        }
-                        if (n == -1) {
-                            is = null;
-                            next = null;
-                        } else {
-                            next = ByteBuffer.wrap(b, 0, n);
-                        }
-                    }
-                }
-
-            };
-        } catch (Exception e) {
-            return Exceptions.rethrow(e);
-        }
+        };
     }
 
 }
