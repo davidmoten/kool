@@ -34,18 +34,9 @@ public final class ReduceNoInitialValue<T> implements Maybe<T> {
         } else {
             return Optional.empty();
         }
-        T v;
-        try {
-            v = reducer.apply(a, b);
-        } catch (Exception e) {
-            return Exceptions.rethrow(e);
-        }
+        T v = reducer.applyUnchecked(a, b);
         while (it.hasNext()) {
-            try {
-                v = Preconditions.checkNotNull(reducer.apply(v, it.nextChecked()));
-            } catch (Exception e) {
-                return Exceptions.rethrow(e);
-            }
+            v = Preconditions.checkNotNull(reducer.applyUnchecked(v, it.nextChecked()));
         }
         return Optional.of(v);
     }

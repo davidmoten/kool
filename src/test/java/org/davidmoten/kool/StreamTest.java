@@ -1335,4 +1335,14 @@ public final class StreamTest {
                 .test() //
                 .assertError(UncheckedIOException.class);
     }
+    
+    @Test
+    public void testReduceEmpty() {
+        Stream.<Integer>empty().reduce((x, y) -> x + y).test().assertNoValue();
+    } 
+    
+    @Test
+    public void testReduceOneValue() {
+        Stream.of(1).reduce((x, y) -> x + y).test().assertNoValue();
+    }
 }
