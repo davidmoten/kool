@@ -11,6 +11,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.io.StringReader;
 import java.io.UncheckedIOException;
@@ -1288,13 +1289,17 @@ public final class StreamTest {
 
     @Test
     public void testByteBuffersInputStreamThrows() {
-        Stream.byteBuffers(new InputStream() {
+        Stream.byteBuffers(throwingInputStream()).test().assertError(UncheckedIOException.class);
+    }
+
+    private static InputStream throwingInputStream() {
+        return new InputStream() {
 
             @Override
             public int read() throws IOException {
                 throw new IOException("hello");
             }
-        }).test().assertError(UncheckedIOException.class);
+        };
     }
 
     @Test
@@ -1304,5 +1309,30 @@ public final class StreamTest {
         assertTrue(it.hasNext());
         it.next();
         assertFalse(it.hasNext());
+    }
+
+    @Test
+    public void testLinesBufferedReaderEmpty() {
+        Stream.lines(new BufferedReader(new StringReader(""))).test().assertNoValuesOnly();
+    }
+
+    @Test(expected = NoSuchElementException.class)
+    public void testLinesReadBeyondEnd() {
+        StreamIterator<String> it = Stream.lines(new BufferedReader(new StringReader(""))).iterator();
+        it.next();
+    }
+
+    @Test
+    public void testLinesDisposeBeforeHasNext() {
+        StreamIterator<String> it = Stream.lines(new BufferedReader(new StringReader("abc"))).iterator();
+        it.dispose();
+        assertFalse(it.hasNext());
+    }
+
+    @Test
+    public void testLinesReaderThrowss() {
+        Stream.lines(new BufferedReader(new InputStreamReader(throwingInputStream()))) //
+                .test() //
+                .assertError(UncheckedIOException.class);
     }
 }

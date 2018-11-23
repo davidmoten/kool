@@ -7,7 +7,6 @@ import java.util.NoSuchElementException;
 
 import org.davidmoten.kool.Stream;
 import org.davidmoten.kool.StreamIterator;
-import org.davidmoten.kool.internal.util.Exceptions;
 
 public final class FromBufferedReader implements Stream<String> {
 
@@ -19,55 +18,51 @@ public final class FromBufferedReader implements Stream<String> {
 
     @Override
     public StreamIterator<String> iterator() {
-        try {
-            return new StreamIterator<String>() {
+        return new StreamIterator<String>() {
 
-                String line;
+            String line;
 
-                @Override
-                public boolean hasNext() {
-                    if (line == null) {
-                        if (reader == null) {
-                            return false;
+            @Override
+            public boolean hasNext() {
+                load();
+                return line != null;
+            }
+
+            private void load() {
+                if (line == null && reader!= null) {
+                    try {
+                        boolean hasNext = (line = reader.readLine()) != null;
+                        if (!hasNext) {
+                            // don't close, using will do that
+                            reader = null;
                         }
-                        try {
-                            boolean hasNext = (line = reader.readLine()) != null;
-                            if (!hasNext) {
-                                // don't close, using will do that
-                                reader = null;
-                            }
-                            return hasNext;
-                        } catch (IOException e) {
-                            throw new UncheckedIOException(e);
-                        }
-                    } else {
-                        return true;
+                    } catch (IOException e) {
+                        throw new UncheckedIOException(e);
                     }
-                }
+                }              
+            }
 
-                @Override
-                public String next() {
-                    if (line == null) {
-                        dispose();
-                        throw new NoSuchElementException();
-                    } else {
-                        String s = line;
-                        line = null;
-                        return s;
-                    }
-                }
-
-                @Override
-                public void dispose() {
-                    // don't close reader, using operator would do that
-                    reader = null;
+            @Override
+            public String next() {
+                load();
+                if (line == null) {
+                    dispose();
+                    throw new NoSuchElementException();
+                } else {
+                    String s = line;
                     line = null;
+                    return s;
                 }
+            }
 
-            };
-        } catch (Exception e) {
-            return Exceptions.rethrow(e);
-        }
+            @Override
+            public void dispose() {
+                // don't close reader, using operator would do that
+                reader = null;
+                line = null;
+            }
+
+        };
     }
 
 }
