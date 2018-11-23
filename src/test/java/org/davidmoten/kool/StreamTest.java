@@ -1202,6 +1202,20 @@ public final class StreamTest {
         Stream.of(1, 2, 3).reverse().test().assertValuesOnly(3, 2, 1);
     }
 
+    @Test(expected = NoSuchElementException.class)
+    public void testReverseBeyondLast() {
+        StreamIterator<Integer> it = Stream.of(1).reverse().iterator();
+        assertEquals(1, (int) it.next());
+        it.next();
+    }
+    
+    @Test
+    public void testReverseDisposeEarly() {
+        StreamIterator<Integer> it = Stream.of(1).reverse().iterator();
+        it.dispose();
+        it.dispose();
+    }
+    
     @Test
     public void testGroupByList() {
         Map<Integer, List<Integer>> map = new HashMap<>();
@@ -1335,12 +1349,12 @@ public final class StreamTest {
                 .test() //
                 .assertError(UncheckedIOException.class);
     }
-    
+
     @Test
     public void testReduceEmpty() {
         Stream.<Integer>empty().reduce((x, y) -> x + y).test().assertNoValue();
-    } 
-    
+    }
+
     @Test
     public void testReduceOneValue() {
         Stream.of(1).reduce((x, y) -> x + y).test().assertNoValue();

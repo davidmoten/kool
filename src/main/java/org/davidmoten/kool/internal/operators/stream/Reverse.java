@@ -51,6 +51,7 @@ public final class Reverse<T> implements Stream<T> {
                     while (it.hasNext()) {
                         list.add(it.nextChecked());
                     }
+                    it.dispose();
                     it = null;
                 }
             }
