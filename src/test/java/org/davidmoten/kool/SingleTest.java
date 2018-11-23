@@ -2,6 +2,7 @@ package org.davidmoten.kool;
 
 import static org.junit.Assert.assertTrue;
 
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.junit.Test;
@@ -43,5 +44,16 @@ public class SingleTest {
         Single.fromCallable(() -> {
             throw error;
         }).test().assertError(RuntimeException.class).assertErrorMessage("boo");
+    }
+
+    @Test
+    public void testTimer() {
+        long[] time = new long[1];
+        long t = System.currentTimeMillis();
+        Single.timer(200, TimeUnit.MILLISECONDS) //
+                .doOnValue(v -> time[0] = System.currentTimeMillis()) //
+                .test() //
+                .assertValue(1);
+        assertTrue(time[0] >= t + 200);
     }
 }

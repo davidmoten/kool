@@ -21,9 +21,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Callable;
-
+import java.util.concurrent.TimeUnit;
 import java.util.stream.StreamSupport;
 
+import org.davidmoten.kool.function.Action;
 import org.davidmoten.kool.function.BiConsumer;
 import org.davidmoten.kool.function.BiFunction;
 import org.davidmoten.kool.function.BiPredicate;
@@ -47,6 +48,7 @@ import org.davidmoten.kool.internal.operators.stream.DoOnDispose;
 import org.davidmoten.kool.internal.operators.stream.DoOnEmpty;
 import org.davidmoten.kool.internal.operators.stream.DoOnError;
 import org.davidmoten.kool.internal.operators.stream.DoOnNext;
+import org.davidmoten.kool.internal.operators.stream.DoOnStart;
 import org.davidmoten.kool.internal.operators.stream.Filter;
 import org.davidmoten.kool.internal.operators.stream.First;
 import org.davidmoten.kool.internal.operators.stream.FlatMap;
@@ -376,6 +378,24 @@ public interface Stream<T> extends StreamIterable<T> {
         return new MergeInterleaved<T>(streams);
     }
 
+    /**
+     * Emits the integers 0, 1, 2, .... The first element is emitted immediately (0)
+     * and then the current thread is blocked with {@code Thread.sleep} for the
+     * given duration between further emissions.
+     * 
+     * If you don't want the stream to start with 0 immediately then call
+     * {@code interval(...).skip(1)}.
+     * 
+     * @param duration
+     *            sleep duration
+     * @param unit
+     *            unit of sleep duration
+     * @return stream with interval wait between emissions
+     */
+    public static Stream<Integer> interval(long duration, TimeUnit unit) {
+        return range(1, Integer.MAX_VALUE).doOnNext(x -> unit.sleep(duration)).prepend(0);
+    }
+
     //////////////////
     // Operators
     //////////////////
@@ -559,23 +579,23 @@ public interface Stream<T> extends StreamIterable<T> {
         return new DoOnError<T>(consumer, this);
     }
 
-    public default Stream<T> doOnComplete(Runnable action) {
+    public default Stream<T> doOnComplete(Action action) {
         return new DoOnComplete<T>(action, this);
     }
 
-    public default Stream<T> doOnDispose(Runnable action) {
+    public default Stream<T> doOnDispose(Action action) {
         return doBeforeDispose(action);
     }
 
-    public default Stream<T> doBeforeDispose(Runnable action) {
+    public default Stream<T> doBeforeDispose(Action action) {
         return new DoOnDispose<T>(action, this, true);
     }
 
-    public default Stream<T> doAfterDispose(Runnable action) {
+    public default Stream<T> doAfterDispose(Action action) {
         return new DoOnDispose<T>(action, this, false);
     }
 
-    public default Stream<T> doOnEmpty(Runnable action) {
+    public default Stream<T> doOnEmpty(Action action) {
         return new DoOnEmpty<T>(this, action);
     }
 
@@ -790,9 +810,17 @@ public interface Stream<T> extends StreamIterable<T> {
         return new Reverse<T>(this);
     }
 
+    public default Stream<T> doOnStart(Action action) {
+        return new DoOnStart<T>(this, action);
+    }
+    
+    public default Stream<T> delay(long duration, TimeUnit unit) {
+        return doOnStart(() -> unit.sleep(duration));
+    }
+
     // TODO
     // retryWhen,
-    // mergeInterleaveWith, materialize
+    // dematerialize
     // add Single.flatMapMaybe, Maybe.flatMapSingle, Maybe.flatMapMaybe
 
 }

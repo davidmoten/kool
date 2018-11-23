@@ -4,13 +4,14 @@ import java.util.NoSuchElementException;
 
 import org.davidmoten.kool.Stream;
 import org.davidmoten.kool.StreamIterator;
+import org.davidmoten.kool.function.Action;
 
 public final class DoOnEmpty<T> implements Stream<T> {
 
     private final Stream<T> stream;
-    private final Runnable action;
+    private final Action action;
 
-    public DoOnEmpty(Stream<T> stream, Runnable action) {
+    public DoOnEmpty(Stream<T> stream, Action action) {
         this.stream = stream;
         this.action = action;
     }
@@ -50,7 +51,7 @@ public final class DoOnEmpty<T> implements Stream<T> {
             private void check() {
                 if (!checkedForEmpty) {
                     if (!it.hasNext()) {
-                        action.run();
+                        action.callUnchecked();
                     }
                     checkedForEmpty = true;
                 }

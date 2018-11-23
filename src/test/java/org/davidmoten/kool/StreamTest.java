@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
@@ -1208,14 +1209,14 @@ public final class StreamTest {
         assertEquals(1, (int) it.next());
         it.next();
     }
-    
+
     @Test
     public void testReverseDisposeEarly() {
         StreamIterator<Integer> it = Stream.of(1).reverse().iterator();
         it.dispose();
         it.dispose();
     }
-    
+
     @Test
     public void testGroupByList() {
         Map<Integer, List<Integer>> map = new HashMap<>();
@@ -1358,5 +1359,34 @@ public final class StreamTest {
     @Test
     public void testReduceOneValue() {
         Stream.of(1).reduce((x, y) -> x + y).test().assertNoValue();
+    }
+
+    @Test
+    public void testInterval() {
+        List<Long> times = new ArrayList<>();
+        long t = System.currentTimeMillis();
+        Stream.interval(100, TimeUnit.MILLISECONDS) //
+                .doOnNext(x -> times.add(System.currentTimeMillis())) //
+                .take(3) //
+                .test() //
+                .assertValuesOnly(0, 1, 2);
+        assertEquals(3, times.size());
+        assertTrue(times.get(0) < t + 100);
+        assertTrue(times.get(1) >= t + 100);
+        assertTrue(times.get(2) >= t + 200);
+        assertTrue(times.get(2) < t + 500);
+    }
+
+    @Test
+    public void testDelay() {
+        long[] time = new long[1];
+        long t = System.currentTimeMillis();
+        Stream //
+                .of(1) //
+                .delay(200, TimeUnit.MILLISECONDS) //
+                .doOnNext(x -> time[0] = System.currentTimeMillis()) //
+                .test() //
+                .assertValuesOnly(1);
+        assertTrue(time[0] >= t + 200);
     }
 }

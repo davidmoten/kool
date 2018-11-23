@@ -2,13 +2,14 @@ package org.davidmoten.kool.internal.operators.stream;
 
 import org.davidmoten.kool.Stream;
 import org.davidmoten.kool.StreamIterator;
+import org.davidmoten.kool.function.Action;
 
 public final class DoOnComplete<T> implements Stream<T> {
 
-    private final Runnable action;
+    private final Action action;
     private final Stream<T> source;
 
-    public DoOnComplete(Runnable action, Stream<T> source) {
+    public DoOnComplete(Action action, Stream<T> source) {
         this.action = action;
         this.source = source;
     }
@@ -25,8 +26,7 @@ public final class DoOnComplete<T> implements Stream<T> {
                 boolean r = it.hasNext();
                 if (!r && !actionRun) {
                     actionRun = true;
-                    action.run();
-                    // TODO make standard?
+                    action.callUnchecked();
                     it.dispose();
                 }
                 return r;

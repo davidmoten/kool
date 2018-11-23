@@ -1,6 +1,7 @@
 package org.davidmoten.kool;
 
 import java.util.concurrent.Callable;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -15,9 +16,9 @@ import org.davidmoten.kool.internal.operators.single.SingleOf;
 import org.davidmoten.kool.internal.operators.single.SingleToStream;
 
 public interface Single<T> extends StreamIterable<T> {
-    
+
     T get();
-    
+
     //////////////////
     // Factories
     //////////////////
@@ -29,19 +30,26 @@ public interface Single<T> extends StreamIterable<T> {
     public static <T> Single<T> fromCallable(Callable<? extends T> callable) {
         return new SingleFromCallable<T>(callable);
     }
-    
+
     public static <T> Single<T> error(Callable<? extends Throwable> callable) {
         return new SingleError<T>(callable);
     }
-    
+
     public static <T> Single<T> error(Throwable error) {
         return error(() -> error);
+    }
+
+    public static Single<Integer> timer(long duration, TimeUnit unit) {
+        return fromCallable(() -> {
+            unit.sleep(duration);
+            return 1;
+        });
     }
 
     //////////////////
     // Operators
     //////////////////
-    
+
     public default <R> Single<R> map(Function<? super T, ? extends R> mapper) {
         return new Map<T, R>(mapper, this);
     }
@@ -49,7 +57,7 @@ public interface Single<T> extends StreamIterable<T> {
     public default <R> Stream<R> flatMap(Function<? super T, ? extends StreamIterable<? extends R>> mapper) {
         return new SingleFlatMap<T, R>(this, mapper);
     }
-    
+
     public default Single<T> doOnValue(Consumer<? super T> consumer) {
         return new SingleDoOnValue<T>(consumer, this);
     }
@@ -69,8 +77,8 @@ public interface Single<T> extends StreamIterable<T> {
     default StreamIterator<T> iterator() {
         return new SingleIterator<T>(this);
     }
-    
-    public default <R> R to(Function<? super Single<T>, R> mapper){
+
+    public default <R> R to(Function<? super Single<T>, R> mapper) {
         return mapper.apply(this);
     }
 
