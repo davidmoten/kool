@@ -51,12 +51,7 @@ public final class FlatMap<T, R> implements Stream<R> {
                 while (true) {
                     if (b == null) {
                         if (a.hasNext()) {
-                            try {
-                                b = function.apply(a.nextChecked()).iteratorChecked();
-                            } catch (Exception e) {
-                                Exceptions.rethrow(e);
-                                return;
-                            }
+                            b = function.applyUnchecked(a.nextChecked()).iteratorChecked();
                         } else {
                             return;
                         }

@@ -30,11 +30,7 @@ public final class Map<T, R> implements Stream<R> {
 
             @Override
             public R next() {
-                try {
-                    return function.apply(it.nextChecked());
-                } catch (Exception e) {
-                    return Exceptions.rethrow(e);
-                }
+                return function.applyUnchecked(it.nextChecked());
             }
 
             @Override
