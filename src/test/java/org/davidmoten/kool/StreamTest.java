@@ -1397,7 +1397,7 @@ public final class StreamTest {
         assertEquals(2, (int) it.next());
         it.next();
     }
-    
+
     @Test
     public void testNotificationEquals() {
         assertEquals(Notification.of(1), Notification.of(1));
@@ -1407,14 +1407,33 @@ public final class StreamTest {
     public void testNotificationErrorEquals() {
         RuntimeException error = new RuntimeException("boo");
         assertEquals(Notification.of(error), Notification.of(error));
-    }   
-    
-        @Test
-        public void testMaterialize() {
-            RuntimeException error = new RuntimeException("boo");
+    }
+
+    @Test
+    public void testNotificationGetters() {
+        Notification<Integer> n = Notification.of(1);
+        assertEquals(1, (int) n.value());
+        assertTrue(n.hasValue());
+        assertFalse(n.isError());
+        assertFalse(n.isComplete());
+    }
+
+    @Test
+    public void testNotificationErrorGetters() {
+        RuntimeException ex = new RuntimeException("boo");
+        Notification<Integer> n = Notification.error(ex);
+        assertFalse(n.hasValue());
+        assertTrue(n.isError());
+        assertFalse(n.isComplete());
+        assertEquals("boo", n.error().getMessage());
+    }
+
+    @Test
+    public void testMaterialize() {
+        RuntimeException error = new RuntimeException("boo");
         Stream.of(1).concatWith(Stream.<Integer>error(error)) //
-        .materialize() //
-        .test() //
+                .materialize() //
+                .test() //
                 .assertValues(Notification.of(1), Notification.error(error));
     }
 }
