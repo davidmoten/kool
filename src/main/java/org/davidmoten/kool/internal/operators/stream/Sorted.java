@@ -57,7 +57,7 @@ public final class Sorted<T> implements Stream<T> {
 
             private void calculate() {
                 if (list == INITIALIZED) {
-                    list = source.toList();
+                    list = source.toList().get();
                     Collections.sort(list, comparator);
                 }
             }
