@@ -6,7 +6,6 @@ import org.davidmoten.kool.Maybe;
 import org.davidmoten.kool.StreamIterable;
 import org.davidmoten.kool.StreamIterator;
 import org.davidmoten.kool.function.BiFunction;
-import org.davidmoten.kool.internal.util.Exceptions;
 
 import com.github.davidmoten.guavamini.Preconditions;
 

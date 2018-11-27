@@ -4,7 +4,6 @@ import org.davidmoten.kool.Stream;
 import org.davidmoten.kool.StreamIterable;
 import org.davidmoten.kool.StreamIterator;
 import org.davidmoten.kool.function.Consumer;
-import org.davidmoten.kool.internal.util.Exceptions;
 
 public final class DoOnNext<T> implements Stream<T> {
 

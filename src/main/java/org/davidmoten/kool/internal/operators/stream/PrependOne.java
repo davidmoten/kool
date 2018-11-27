@@ -4,8 +4,6 @@ import org.davidmoten.kool.Stream;
 import org.davidmoten.kool.StreamIterable;
 import org.davidmoten.kool.StreamIterator;
 
-import com.github.davidmoten.guavamini.Preconditions;
-
 public final class PrependOne<T> implements Stream<T> {
 
     private final T value;

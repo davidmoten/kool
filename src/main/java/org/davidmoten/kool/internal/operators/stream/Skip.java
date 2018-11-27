@@ -3,8 +3,6 @@ package org.davidmoten.kool.internal.operators.stream;
 import org.davidmoten.kool.Stream;
 import org.davidmoten.kool.StreamIterator;
 
-import com.github.davidmoten.guavamini.Preconditions;
-
 public final class Skip<T> implements Stream<T> {
 
     private final int count;

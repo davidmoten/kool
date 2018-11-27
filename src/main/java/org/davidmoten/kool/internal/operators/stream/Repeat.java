@@ -5,8 +5,6 @@ import java.util.NoSuchElementException;
 import org.davidmoten.kool.Stream;
 import org.davidmoten.kool.StreamIterator;
 
-import com.github.davidmoten.guavamini.Preconditions;
-
 public final class Repeat<T> implements Stream<T> {
 
     private final long count;

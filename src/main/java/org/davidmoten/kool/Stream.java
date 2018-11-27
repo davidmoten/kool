@@ -41,6 +41,7 @@ import org.davidmoten.kool.internal.operators.stream.Collect;
 import org.davidmoten.kool.internal.operators.stream.Concat;
 import org.davidmoten.kool.internal.operators.stream.Count;
 import org.davidmoten.kool.internal.operators.stream.Defer;
+import org.davidmoten.kool.internal.operators.stream.Dematerialize;
 import org.davidmoten.kool.internal.operators.stream.Distinct;
 import org.davidmoten.kool.internal.operators.stream.DistinctUntilChanged;
 import org.davidmoten.kool.internal.operators.stream.DoOnComplete;
@@ -820,6 +821,10 @@ public interface Stream<T> extends StreamIterable<T> {
 
     public default Stream<T> mergeWith(Stream<? extends T> stream) {
         return merge(this, stream);
+    }
+    
+    public default <R> Stream<R> dematerialize() {
+        return new Dematerialize<T, R>(this);
     }
     
     // TODO

@@ -1493,4 +1493,39 @@ public final class StreamTest {
         Stream.of(1, 2).forEach(x -> list.add(x));
         assertEquals(Lists.newArrayList(1, 2), list);
     }
+
+    @Test
+    public void testDematerializeEmpty() {
+        Stream.empty().dematerialize().test().assertError(NoSuchElementException.class);
+    }
+
+    @Test
+    public void testDematerializeNonNotification() {
+        Stream.of(1).dematerialize().test().assertError(ClassCastException.class);
+    }
+
+    @Test
+    public void testDematerializeRealNotifications() {
+        Stream.of(Notification.of(1), Notification.of(2), Notification.complete()).dematerialize().test()
+                .assertValuesOnly(1, 2);
+    }
+
+    @Test
+    public void testDematerializeRealNotificationsAndError() {
+        RuntimeException error = new RuntimeException("boo");
+        Stream.of(Notification.of(1), Notification.of(2), Notification.error(error)) //
+                .dematerialize() //
+                .test() //
+                .assertValues(1, 2) //
+                .assertError(e -> e == error);
+    }
+
+    @Test
+    public void testDematerializeRealNotificationsNoTerminalEvent() {
+        Stream.of(Notification.of(1), Notification.of(2)) //
+                .dematerialize() //
+                .test() //
+                .assertValues(1, 2) //
+                .assertError(NoSuchElementException.class);
+    }
 }
