@@ -2,6 +2,7 @@ package org.davidmoten.kool;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -1429,11 +1430,67 @@ public final class StreamTest {
     }
 
     @Test
+    public void testNotificationHashcode() {
+        assertEquals(962, Notification.of(1).hashCode());
+    }
+
+    @Test
+    public void testNotificationEquals1() {
+        assertEquals(Notification.of(1), Notification.of(1));
+        assertNotEquals(Notification.of(1), Notification.of(2));
+        Notification<Integer> n = Notification.of(1);
+        assertTrue(n.equals(n));
+        assertFalse(n.equals(null));
+    }
+
+    @Test
+    public void testNotificationEquals2() {
+        RuntimeException error = new RuntimeException("boo");
+        Notification<Integer> n = Notification.error(error);
+        assertNotEquals(n, Notification.of(1));
+        assertNotEquals(Notification.of(1), n);
+        assertEquals(n, n);
+        assertEquals(n, Notification.error(error));
+    }
+
+    @Test
+    public void testNotificationEquals3() {
+        RuntimeException error = new RuntimeException("boo");
+        Notification<Integer> n = Notification.error(error);
+        assertEquals(n, n);
+        assertNotEquals(n, Notification.error(new IOException()));
+    }
+
+    @Test
+    public void testNotificationEqualsAnotherClass() {
+        assertNotEquals(Notification.of(1), new Object());
+    }
+
+    @Test
+    public void testMaterializeWithoutError() {
+        Stream.of(1).materialize().test().assertValuesOnly(Notification.of(1), Notification.complete());
+    }
+
+    @Test
+    public void testNotificationComplete() {
+        Notification<Object> n = Notification.complete();
+        assertTrue(n.isComplete());
+        assertFalse(n.isError());
+    }
+
+    @Test
     public void testMaterialize() {
         RuntimeException error = new RuntimeException("boo");
         Stream.of(1).concatWith(Stream.<Integer>error(error)) //
                 .materialize() //
                 .test() //
                 .assertValues(Notification.of(1), Notification.error(error));
+    }
+
+    @Test
+    public void forEachConsumer() {
+        List<Integer> list = new ArrayList<>();
+        Stream.of(1, 2).forEach(x -> list.add(x));
+        assertEquals(Lists.newArrayList(1, 2), list);
     }
 }

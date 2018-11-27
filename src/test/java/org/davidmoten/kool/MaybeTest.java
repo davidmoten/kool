@@ -183,5 +183,15 @@ public final class MaybeTest {
         StreamIterator<Integer> it = Maybe.<Integer>empty().iterator();
         it.next();
     }
+    
+    @Test
+    public void testMaybeOfNull() {
+        Maybe.ofNullable(null).test().assertNoValue();
+    }
+    
+    @Test
+    public void testMaybeOfNonNull() {
+        Maybe.ofNullable(1).test().assertValue(1);
+    }
 
 }

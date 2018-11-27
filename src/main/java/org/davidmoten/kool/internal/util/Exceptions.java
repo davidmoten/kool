@@ -19,13 +19,11 @@ public final class Exceptions {
     }
 
     public static <T> T rethrow(Callable<? extends Throwable> callable) {
-        Throwable error;
         try {
-            error = Preconditions.checkNotNull(callable.call());
+            return Exceptions.rethrow(Preconditions.checkNotNull(callable.call()));
         } catch (Throwable e) {
             return Exceptions.rethrow(e);
         }
-        return Exceptions.rethrow(error);
     }
 
 }
