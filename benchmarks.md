@@ -1,4 +1,4 @@
-Benchmarks run on 22 Nov 2018 with d6815b5 
+Benchmarks run on 28 Nov 2018 with v0.1 
 ```
 Benchmark                                                                                     Mode   Cnt        Score        Error  Units
 Benchmarks.flatMapMinMapReduceJavaStreams                                                    thrpt    10     6098.031 ±     63.536  ops/s

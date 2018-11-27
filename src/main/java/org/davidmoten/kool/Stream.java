@@ -500,20 +500,20 @@ public interface Stream<T> extends StreamIterable<T> {
         return new ToSingle<T>(this);
     }
 
-    public default List<T> toList() {
+    public default Single<List<T>> toList() {
         return toList(DEFAULT_BUFFER_SIZE);
     }
 
-    public default Set<T> toSet() {
+    public default Single<Set<T>> toSet() {
         return toSet(DEFAULT_BUFFER_SIZE);
     }
 
-    public default Set<T> toSet(int sizeHint) {
-        return Iterables.addAll(new HashSet<T>(sizeHint), this);
+    public default Single<Set<T>> toSet(int sizeHint) {
+        return collect(() -> new HashSet<T>(sizeHint), (set, x) -> set.add(x));
     }
 
-    public default List<T> toList(int sizeHint) {
-        return Iterables.addAll(new ArrayList<T>(sizeHint), this);
+    public default Single<List<T>> toList(int sizeHint) {
+        return collect(() -> new ArrayList<T>(sizeHint), (list, x) -> list.add(x));
     }
 
     public default Stream<T> filter(Predicate<? super T> function) {
@@ -814,7 +814,7 @@ public interface Stream<T> extends StreamIterable<T> {
     public default Stream<T> doOnStart(Action action) {
         return new DoOnStart<T>(this, action);
     }
-    
+
     public default Stream<T> delayStart(long duration, TimeUnit unit) {
         return doOnStart(() -> unit.sleep(duration));
     }
@@ -822,11 +822,11 @@ public interface Stream<T> extends StreamIterable<T> {
     public default Stream<T> mergeWith(Stream<? extends T> stream) {
         return merge(this, stream);
     }
-    
+
     public default <R> Stream<R> dematerialize() {
         return new Dematerialize<T, R>(this);
     }
-    
+
     // TODO
     // retryWhen,
     // add Maybe.flatMapMaybe

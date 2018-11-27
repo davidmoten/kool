@@ -36,7 +36,7 @@ public class Benchmarks {
 
     @Benchmark
     public int mapToListKool() {
-        return Stream.of(1, 2, 3, 4, 5, 6, 7, 8).map(x -> x + 1).toList().size();
+        return Stream.of(1, 2, 3, 4, 5, 6, 7, 8).map(x -> x + 1).toList().get().size();
     }
 
     @Benchmark
@@ -53,7 +53,7 @@ public class Benchmarks {
     public List<String> readFileKool() throws IOException {
         return Stream.lines(new File("src/test/resources/test2.txt")) //
                 .filter(x -> x.length() % 2 == 0) //
-                .toList();
+                .toList().get();
     }
 
     @Benchmark

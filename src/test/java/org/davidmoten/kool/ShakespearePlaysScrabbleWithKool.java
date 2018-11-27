@@ -68,17 +68,21 @@ public class ShakespearePlaysScrabbleWithKool extends ShakespearePlaysScrabble {
                                 (int) entry.getValue().get(), //
                                 scrabbleAvailableLetters[entry.getKey() - 'a']);
 
-        Function<String, Stream<Integer>> toIntegerStream = string -> Stream.from(toIterable(string.chars().boxed()));
+        Function<String, Stream<Integer>> toIntegerStream = string -> Stream.chars(string);
 
         // Histogram of the letters in a given word
-        Function<String, Map<Integer, LongWrapper>> histoOfLetters = word -> toIntegerStream.apply(word) //
-                .collect(() -> new HashMap<>(), (Map<Integer, LongWrapper> map, Integer value) -> {
-                    LongWrapper newValue = map.get(value);
-                    if (newValue == null) {
-                        newValue = () -> 0L;
-                    }
-                    map.put(value, newValue.incAndSet());
-                }).get();
+        Function<String, Map<Integer, LongWrapper>> histoOfLetters = word -> toIntegerStream //
+                .apply(word) //
+                .collect( //
+                        () -> new HashMap<>(), //
+                        (Map<Integer, LongWrapper> map, Integer value) -> {
+                            LongWrapper newValue = map.get(value);
+                            if (newValue == null) {
+                                newValue = () -> 0L;
+                            }
+                            map.put(value, newValue.incAndSet());
+                        })
+                .get();
 
         // number of blanks for a given letter
         Function<Entry<Integer, LongWrapper>, Stream<Long>> blank = //
@@ -112,7 +116,9 @@ public class ShakespearePlaysScrabbleWithKool extends ShakespearePlaysScrabble {
 
         // Stream to be maxed
         Function<String, Stream<Integer>> toBeMaxed = word -> Stream //
-                .of(first3.apply(word), last3.apply(word)) //
+                .of( //
+                        first3.apply(word), //
+                        last3.apply(word)) //
                 .flatMap(Function.identity());
 
         // Bonus for double letter
@@ -127,33 +133,24 @@ public class ShakespearePlaysScrabbleWithKool extends ShakespearePlaysScrabble {
         Function<String, Integer> score3 = word -> 2 * (score2.apply(word) + bonusForDoubleLetter.apply(word))
                 + (word.length() == 7 ? 50 : 0);
 
-        Function<Function<String, Integer>, Single<TreeMap<Integer, List<String>>>> buildHistoOnScore = score -> Stream
-                .from(shakespeareWords) //
-                .filter(scrabbleWords::contains) //
-                .filter(checkBlanks) //
-                .groupByList( //
-                        () -> new TreeMap<Integer, List<String>>(Comparator.reverseOrder()), //
-                        word -> score.apply(word));
+        Function<Function<String, Integer>, Single<TreeMap<Integer, List<String>>>> buildHistoOnScore = //
+                score -> //
+                Stream.from(shakespeareWords) //
+                        .filter(scrabbleWords::contains) //
+                        .filter(checkBlanks) //
+                        .groupByList( //
+                                () -> new TreeMap<Integer, List<String>>(Comparator.reverseOrder()), //
+                                word -> score.apply(word));
 
         // best key / value pairs
         List<Entry<Integer, List<String>>> finalList = buildHistoOnScore //
                 .applyUnchecked(score3) //
                 .flatMap(map -> Stream.from(map.entrySet())) //
                 .take(3) //
-                .toList();
+                .toList() //
+                .get();
 
         return finalList;
-    }
-
-    private static <T> Iterable<T> toIterable(java.util.stream.Stream<T> stream) {
-        return new Iterable<T>() {
-
-            @Override
-            public Iterator<T> iterator() {
-                return stream.iterator();
-            }
-
-        };
     }
 
     public static void main(String[] args) throws Exception {
