@@ -1389,4 +1389,12 @@ public final class StreamTest {
                 .assertValuesOnly(1);
         assertTrue(time[0] >= t + 200);
     }
+    
+    @Test(expected=NoSuchElementException.class)
+    public void testMergeBeyondNext() {
+        StreamIterator<Integer> it = Stream.of(1).mergeWith(Stream.of(2)).iterator();
+        assertEquals(1, (int) it.next());
+        assertEquals(2, (int) it.next());
+        it.next();
+    }
 }

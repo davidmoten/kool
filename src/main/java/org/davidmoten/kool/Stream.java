@@ -818,6 +818,10 @@ public interface Stream<T> extends StreamIterable<T> {
         return doOnStart(() -> unit.sleep(duration));
     }
 
+    public default Stream<T> mergeWith(Stream<? extends T> stream) {
+        return merge(this, stream);
+    }
+
     // TODO
     // retryWhen,
     // dematerialize
