@@ -56,4 +56,9 @@ public class SingleTest {
                 .assertValue(1);
         assertTrue(time[0] >= t + 200);
     }
+
+    @Test
+    public void testSingleFlatMapMaybe() {
+        Single.of(1).flatMapMaybe(x -> Maybe.of(2)).test().assertValue(2);
+    }
 }

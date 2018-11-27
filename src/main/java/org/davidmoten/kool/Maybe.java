@@ -11,6 +11,7 @@ import org.davidmoten.kool.internal.operators.maybe.MaybeDoOnError;
 import org.davidmoten.kool.internal.operators.maybe.MaybeDoOnValue;
 import org.davidmoten.kool.internal.operators.maybe.MaybeError;
 import org.davidmoten.kool.internal.operators.maybe.MaybeFlatMap;
+import org.davidmoten.kool.internal.operators.maybe.MaybeFlatMapMaybe;
 import org.davidmoten.kool.internal.operators.maybe.MaybeFromCallable;
 import org.davidmoten.kool.internal.operators.maybe.MaybeIsPresent;
 import org.davidmoten.kool.internal.operators.maybe.MaybeIterator;
@@ -91,7 +92,7 @@ public interface Maybe<T> extends StreamIterable<T> {
     public default <R> Stream<R> flatMap(Function<? super T, ? extends StreamIterable<? extends R>> mapper) {
         return new MaybeFlatMap<T, R>(this, mapper);
     }
-
+    
     public default Maybe<T> doOnValue(Consumer<? super T> consumer) {
         return new MaybeDoOnValue<T>(consumer, this);
     }
@@ -130,6 +131,10 @@ public interface Maybe<T> extends StreamIterable<T> {
 
     default Maybe<T> switchOnError(Function<? super Throwable, ? extends Maybe<? extends T>> function) {
         return new MaybeSwitchOnError<T>(this, function);
+    }
+
+    public default <R> Maybe<R> flatMapMaybe(Function<? super T, ? extends Maybe<? extends R>> mapper) {
+        return new MaybeFlatMapMaybe<T, R>(this, mapper);
     }
 
 }

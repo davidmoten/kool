@@ -10,6 +10,7 @@ import org.davidmoten.kool.internal.operators.single.SingleDoOnError;
 import org.davidmoten.kool.internal.operators.single.SingleDoOnValue;
 import org.davidmoten.kool.internal.operators.single.SingleError;
 import org.davidmoten.kool.internal.operators.single.SingleFlatMap;
+import org.davidmoten.kool.internal.operators.single.SingleFlatMapMaybe;
 import org.davidmoten.kool.internal.operators.single.SingleFromCallable;
 import org.davidmoten.kool.internal.operators.single.SingleIterator;
 import org.davidmoten.kool.internal.operators.single.SingleOf;
@@ -56,6 +57,10 @@ public interface Single<T> extends StreamIterable<T> {
 
     public default <R> Stream<R> flatMap(Function<? super T, ? extends StreamIterable<? extends R>> mapper) {
         return new SingleFlatMap<T, R>(this, mapper);
+    }
+    
+    public default <R> Maybe<R> flatMapMaybe(Function<? super T, ? extends Maybe<? extends R>> mapper){
+        return new SingleFlatMapMaybe<T, R> (this, mapper);
     }
 
     public default Single<T> doOnValue(Consumer<? super T> consumer) {

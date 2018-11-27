@@ -829,7 +829,6 @@ public interface Stream<T> extends StreamIterable<T> {
     
     // TODO
     // retryWhen,
-    // dematerialize
-    // add Single.flatMapMaybe, Maybe.flatMapSingle, Maybe.flatMapMaybe
+    // add Maybe.flatMapMaybe
 
 }

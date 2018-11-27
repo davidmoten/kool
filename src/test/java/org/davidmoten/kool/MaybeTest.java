@@ -46,6 +46,11 @@ public final class MaybeTest {
                 .test() //
                 .assertNoValues();
     }
+    
+    @Test
+    public void testMaybeFlatMapMaybe() {
+        Maybe.of(1).flatMapMaybe(x -> Maybe.of(x + 1)).test().assertValue(2);
+    }
 
     @Test
     public void testMaybeMap() {
