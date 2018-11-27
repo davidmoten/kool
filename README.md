@@ -15,7 +15,7 @@ Alternative to `java.util.stream.Stream`:
 * does not support streams of nulls (use `Optional` or `Maybe`)
 * maybe a tad faster on *Shakespeare Plays Scrabble* benchmark
 
-Status: *pre-alpha* (in development)
+Status: *available on Maven Central* 
 
 Maven site reports are [here](https://davidmoten.github.io/kool) including [javadoc](https://davidmoten.github.io/kool/apidocs/index.html).
 
