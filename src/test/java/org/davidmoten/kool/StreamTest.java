@@ -1165,7 +1165,7 @@ public final class StreamTest {
 
     @Test
     public void testToSet() {
-        assertEquals(Sets.newHashSet(1, 2), Stream.of(1, 2).toSet());
+        assertEquals(Sets.newHashSet(1, 2), Stream.of(1, 2).toSet().get());
     }
 
     @Test
