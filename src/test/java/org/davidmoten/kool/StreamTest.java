@@ -1389,12 +1389,32 @@ public final class StreamTest {
                 .assertValuesOnly(1);
         assertTrue(time[0] >= t + 200);
     }
-    
-    @Test(expected=NoSuchElementException.class)
+
+    @Test(expected = NoSuchElementException.class)
     public void testMergeBeyondNext() {
         StreamIterator<Integer> it = Stream.of(1).mergeWith(Stream.of(2)).iterator();
         assertEquals(1, (int) it.next());
         assertEquals(2, (int) it.next());
         it.next();
+    }
+    
+    @Test
+    public void testNotificationEquals() {
+        assertEquals(Notification.of(1), Notification.of(1));
+    }
+
+    @Test
+    public void testNotificationErrorEquals() {
+        RuntimeException error = new RuntimeException("boo");
+        assertEquals(Notification.of(error), Notification.of(error));
+    }   
+    
+        @Test
+        public void testMaterialize() {
+            RuntimeException error = new RuntimeException("boo");
+        Stream.of(1).concatWith(Stream.<Integer>error(error)) //
+        .materialize() //
+        .test() //
+                .assertValues(Notification.of(1), Notification.error(error));
     }
 }

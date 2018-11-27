@@ -821,7 +821,7 @@ public interface Stream<T> extends StreamIterable<T> {
     public default Stream<T> mergeWith(Stream<? extends T> stream) {
         return merge(this, stream);
     }
-
+    
     // TODO
     // retryWhen,
     // dematerialize
