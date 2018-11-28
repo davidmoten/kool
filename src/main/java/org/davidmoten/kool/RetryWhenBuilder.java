@@ -3,6 +3,7 @@ package org.davidmoten.kool;
 import java.util.concurrent.TimeUnit;
 
 import org.davidmoten.kool.function.Function;
+import org.davidmoten.kool.function.Predicate;
 import org.davidmoten.kool.internal.operators.stream.RetryWhen;
 import org.davidmoten.kool.internal.util.Exceptions;
 
@@ -11,7 +12,7 @@ public final class RetryWhenBuilder<T> {
     private final Stream<T> stream;
     private Stream<Long> delays;
     private int maxRetries;
-    private Class<? extends Throwable> retryWhenInstanceOf;
+    private Predicate<? super Throwable> predicate;
 
     public RetryWhenBuilder(Stream<T> stream) {
         this.stream = stream;
@@ -32,8 +33,8 @@ public final class RetryWhenBuilder<T> {
         return this;
     }
 
-    public RetryWhenBuilder<T> retryWhenInstanceOf(Class<? extends Throwable> cls) {
-        this.retryWhenInstanceOf = cls;
+    public RetryWhenBuilder<T> isTrue(Predicate<? super Throwable> predicate) {
+        this.predicate = predicate;
         return this;
     }
 
@@ -48,8 +49,8 @@ public final class RetryWhenBuilder<T> {
                         return Exceptions.rethrow(e);
                     }
                 }
-                if (retryWhenInstanceOf != null) {
-                    if (!retryWhenInstanceOf.isAssignableFrom(e.getClass())) {
+                if (predicate != null) {
+                    if (!predicate.test(e)) {
                         return Exceptions.rethrow(e);
                     }
                 }

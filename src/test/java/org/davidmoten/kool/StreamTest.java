@@ -1594,4 +1594,36 @@ public final class StreamTest {
         assertEquals(maxRetries + 1, count.get());
         assertTrue(System.currentTimeMillis() - t >= maxRetries*delayMs);
     }
+    
+    @Test
+    public void testRetryWhenPredicateTrue() {
+        AtomicInteger count = new AtomicInteger();
+        int maxRetries = 3;
+        Stream.error(() -> new RuntimeException("boo")) //
+                .doOnStart(count::incrementAndGet) //
+                .retryWhen() //
+                .isTrue(e -> true) //
+                .maxRetries(maxRetries)
+                .build() //
+                .test() //
+                .assertNoValues() //
+                .assertError(x -> x.getMessage().equals("boo"));
+        assertEquals(maxRetries + 1, count.get());
+    }
+    
+    @Test
+    public void testRetryWhenPredicateFalse() {
+        AtomicInteger count = new AtomicInteger();
+        int maxRetries = 3;
+        Stream.error(() -> new RuntimeException("boo")) //
+                .doOnStart(count::incrementAndGet) //
+                .retryWhen() //
+                .isTrue(e -> false) //
+                .maxRetries(maxRetries)
+                .build() //
+                .test() //
+                .assertNoValues() //
+                .assertError(x -> x.getMessage().equals("boo"));
+        assertEquals(1, count.get());
+    }
 }
