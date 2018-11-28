@@ -115,7 +115,7 @@ JMH is used for benchmarks.
 The Shakespeare Plays Scrabble benchmark uses the following factories and operators: `of`, `from`, `chars`, `map`, `flatMap`, `collect`, `reduce`, `take`, `filter`.
 
 ## Checklist for new operators
-* use `it.nextChecked()` instead of `it.next()` 
+* use `it.nextNullChecked()` instead of `it.next()` and `stream.iteratorNullChecked()` instead of `stream.iterator()`
 * wrap calls to function parameters passed to operator with `Preconditions.checkNotNull` where appropriate
 * dispose upstream iterables as soon as no longer required (but only if a call to dispose from downstream does not ensue immediately)
 * set upstream iterable reference to null (to help gc) when no longer required
