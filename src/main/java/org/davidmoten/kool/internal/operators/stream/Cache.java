@@ -24,7 +24,7 @@ public final class Cache<T> implements Stream<T> {
         } else {
             return new StreamIterator<T>() {
 
-                StreamIterator<T> it = stream.iteratorChecked();
+                StreamIterator<T> it = stream.iteratorNullChecked();
 
                 @Override
                 public boolean hasNext() {
@@ -41,7 +41,7 @@ public final class Cache<T> implements Stream<T> {
 
                 @Override
                 public T next() {
-                    T v = it.nextChecked();
+                    T v = it.nextNullChecked();
                     list.add(v);
                     return v;
                 }

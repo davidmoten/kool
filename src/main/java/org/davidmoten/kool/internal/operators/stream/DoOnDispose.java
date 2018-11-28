@@ -20,7 +20,7 @@ public final class DoOnDispose<T> implements Stream<T> {
     public StreamIterator<T> iterator() {
         return new StreamIterator<T>() {
 
-            StreamIterator<T> it = source.iteratorChecked();
+            StreamIterator<T> it = source.iteratorNullChecked();
 
             @Override
             public boolean hasNext() {
@@ -29,7 +29,7 @@ public final class DoOnDispose<T> implements Stream<T> {
 
             @Override
             public T next() {
-                return it.nextChecked();
+                return it.nextNullChecked();
             }
 
             @Override

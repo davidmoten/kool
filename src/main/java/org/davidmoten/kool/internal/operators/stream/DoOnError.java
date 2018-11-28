@@ -33,7 +33,7 @@ public final class DoOnError<T> implements Stream<T> {
             @Override
             public T next() {
                 try {
-                    return it.nextChecked();
+                    return it.nextNullChecked();
                 } catch (RuntimeException | Error t) {
                     consumer.acceptUnchecked(t);
                     throw t;
@@ -42,7 +42,7 @@ public final class DoOnError<T> implements Stream<T> {
 
             private StreamIterator<T> getIterator() {
                 try {
-                    return source.iteratorChecked();
+                    return source.iteratorNullChecked();
                 } catch (RuntimeException | Error t) {
                     consumer.acceptUnchecked(t);
                     throw t;

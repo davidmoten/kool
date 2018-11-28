@@ -21,7 +21,7 @@ public final class FlatMap<T, R> implements Stream<R> {
     public StreamIterator<R> iterator() {
         return new StreamIterator<R>() {
 
-            final StreamIterator<T> a = source.iteratorChecked();
+            final StreamIterator<T> a = source.iteratorNullChecked();
             StreamIterator<? extends R> b;
             R r;
 
@@ -50,13 +50,13 @@ public final class FlatMap<T, R> implements Stream<R> {
                 while (true) {
                     if (b == null) {
                         if (a.hasNext()) {
-                            b = function.applyUnchecked(a.nextChecked()).iteratorChecked();
+                            b = function.applyUnchecked(a.nextNullChecked()).iteratorNullChecked();
                         } else {
                             return;
                         }
                     }
                     if (b.hasNext()) {
-                        r = b.nextChecked();
+                        r = b.nextNullChecked();
                         return;
                     } else {
                         b.dispose();

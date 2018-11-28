@@ -23,7 +23,7 @@ public class Buffer<T> implements Stream<java.util.List<T>> {
     public StreamIterator<List<T>> iterator() {
         return new StreamIterator<List<T>>() {
 
-            StreamIterator<T> it = stream.iteratorChecked();
+            StreamIterator<T> it = stream.iteratorNullChecked();
             List<T> buffer = new ArrayList<>(size);
 
             @Override
@@ -52,7 +52,7 @@ public class Buffer<T> implements Stream<java.util.List<T>> {
 
             private void loadNext() {
                 while (buffer.size() < size && it.hasNext()) {
-                    buffer.add(it.nextChecked());
+                    buffer.add(it.nextNullChecked());
                 }
             }
         };

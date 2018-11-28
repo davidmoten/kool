@@ -16,10 +16,10 @@ public class ToSingle<T> implements Single<T> {
 
     @Override
     public T get() {
-        StreamIterator<T> it = stream.iteratorChecked();
+        StreamIterator<T> it = stream.iteratorNullChecked();
         try {
             if (it.hasNext()) {
-                T v = it.nextChecked();
+                T v = it.nextNullChecked();
                 if (it.hasNext()) {
                     throw new IllegalArgumentException("stream must only have one element but has more");
                 } else {

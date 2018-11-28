@@ -29,11 +29,11 @@ public final class SwitchOnError<T> implements Stream<T> {
             @SuppressWarnings("unchecked")
             private StreamIterator<T> getIterator() {
                 try {
-                    return source.iteratorChecked();
+                    return source.iteratorNullChecked();
                 } catch (RuntimeException | Error e) {
                     switched = true;
                     return Preconditions.checkNotNull(
-                            ((Stream<T>) function.applyUnchecked(e)).iteratorChecked());
+                            ((Stream<T>) function.applyUnchecked(e)).iteratorNullChecked());
                 }
             }
 
@@ -49,7 +49,7 @@ public final class SwitchOnError<T> implements Stream<T> {
                         switched = true;
                         it.dispose();
                         it = Preconditions.checkNotNull(
-                                (StreamIterator<T>) function.applyUnchecked(e).iteratorChecked());
+                                (StreamIterator<T>) function.applyUnchecked(e).iteratorNullChecked());
                         return it.hasNext();
                     }
                 }
@@ -59,15 +59,15 @@ public final class SwitchOnError<T> implements Stream<T> {
             @Override
             public T next() {
                 if (switched) {
-                    return it.nextChecked();
+                    return it.nextNullChecked();
                 } else {
                     try {
-                        return it.nextChecked();
+                        return it.nextNullChecked();
                     } catch (Throwable e) {
                         switched = true;
                         it.dispose();
                         it = Preconditions.checkNotNull(
-                                (StreamIterator<T>) function.applyUnchecked(e).iteratorChecked());
+                                (StreamIterator<T>) function.applyUnchecked(e).iteratorNullChecked());
                         return it.next();
                     }
                 }

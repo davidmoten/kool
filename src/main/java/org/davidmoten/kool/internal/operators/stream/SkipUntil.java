@@ -22,7 +22,7 @@ public final class SkipUntil<T> implements Stream<T> {
     public StreamIterator<T> iterator() {
         return new StreamIterator<T>() {
 
-            StreamIterator<T> it = stream.iteratorChecked();
+            StreamIterator<T> it = stream.iteratorNullChecked();
             T next;
             boolean nextPredicateValue;
             boolean foundFirst;
@@ -37,11 +37,11 @@ public final class SkipUntil<T> implements Stream<T> {
                 if (it != null) {
                     if (foundFirst) {
                         if (next == null && it.hasNext()) {
-                            next = it.nextChecked();
+                            next = it.nextNullChecked();
                         }
                     } else {
                         while ((next == null || !nextPredicateValue) && it.hasNext()) {
-                            next = it.nextChecked();
+                            next = it.nextNullChecked();
                             nextPredicateValue = predicate.testChecked(next);
                             if (negate)
                                 nextPredicateValue = !nextPredicateValue;

@@ -20,7 +20,7 @@ public final class Map<T, R> implements Stream<R> {
     public StreamIterator<R> iterator() {
         return new StreamIterator<R>() {
 
-            StreamIterator<T> it = source.iteratorChecked();
+            StreamIterator<T> it = source.iteratorNullChecked();
 
             @Override
             public boolean hasNext() {
@@ -29,7 +29,7 @@ public final class Map<T, R> implements Stream<R> {
 
             @Override
             public R next() {
-                return function.applyUnchecked(it.nextChecked());
+                return function.applyUnchecked(it.nextNullChecked());
             }
 
             @Override

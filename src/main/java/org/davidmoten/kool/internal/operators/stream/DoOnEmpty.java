@@ -20,7 +20,7 @@ public final class DoOnEmpty<T> implements Stream<T> {
     public StreamIterator<T> iterator() {
         return new StreamIterator<T>() {
 
-            StreamIterator<T> it = stream.iteratorChecked();
+            StreamIterator<T> it = stream.iteratorNullChecked();
             boolean checkedForEmpty;
 
             @Override
@@ -35,7 +35,7 @@ public final class DoOnEmpty<T> implements Stream<T> {
                 if (it == null) {
                     throw new NoSuchElementException();
                 } else {
-                    return it.nextChecked();
+                    return it.nextNullChecked();
                 }
             }
 

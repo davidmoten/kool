@@ -19,7 +19,7 @@ public final class IgnoreDisposalError<T> implements Stream<T> {
     public StreamIterator<T> iterator() {
         return new StreamIterator<T>() {
 
-            StreamIterator<T> it = stream.iteratorChecked();
+            StreamIterator<T> it = stream.iteratorNullChecked();
 
             @Override
             public boolean hasNext() {
@@ -28,7 +28,7 @@ public final class IgnoreDisposalError<T> implements Stream<T> {
 
             @Override
             public T next() {
-                return it.nextChecked();
+                return it.nextNullChecked();
             }
 
             @Override

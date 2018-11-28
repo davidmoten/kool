@@ -21,10 +21,10 @@ public final class Any<T> implements Single<Boolean> {
 
     @Override
     public Boolean get() {
-        StreamIterator<T> it = stream.iteratorChecked();
+        StreamIterator<T> it = stream.iteratorNullChecked();
         try {
             while (it.hasNext()) {
-                if (predicate.testChecked(it.nextChecked())) {
+                if (predicate.testChecked(it.nextNullChecked())) {
                     return true;
                 }
             }

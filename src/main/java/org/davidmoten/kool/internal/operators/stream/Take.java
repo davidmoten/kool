@@ -22,7 +22,7 @@ public final class Take<T> implements Stream<T> {
     public StreamIterator<T> iterator() {
         return new StreamIterator<T>() {
 
-            final StreamIterator<T> it = source.iteratorChecked();
+            final StreamIterator<T> it = source.iteratorNullChecked();
             int count;
 
             @Override

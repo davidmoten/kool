@@ -37,7 +37,7 @@ public final class Distinct<T, K> implements Stream<T> {
             public void load() {
                 // it != null and next == null
                 while (it.hasNext()) {
-                    T v = it.nextChecked();
+                    T v = it.nextNullChecked();
                     K k = Preconditions.checkNotNull(keySelector.applyUnchecked(v));
                     if (!set.contains(k)) {
                         set.add(k);

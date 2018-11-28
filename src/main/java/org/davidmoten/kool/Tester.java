@@ -17,7 +17,7 @@ public final class Tester<T> {
             StreamIterator<T> it = stream.iterator();
             try {
                 while (it.hasNext()) {
-                    list.add(it.nextChecked());
+                    list.add(it.nextNullChecked());
                 }
             } finally {
                 it.dispose();

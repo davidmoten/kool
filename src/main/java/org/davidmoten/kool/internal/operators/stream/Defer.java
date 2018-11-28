@@ -18,7 +18,7 @@ public final class Defer<T> implements Stream<T> {
     @Override
     public StreamIterator<T> iterator() {
         try {
-            return (StreamIterator<T>) provider.call().iteratorChecked();
+            return (StreamIterator<T>) provider.call().iteratorNullChecked();
         } catch (Exception e) {
             return Exceptions.rethrow(e);
         }

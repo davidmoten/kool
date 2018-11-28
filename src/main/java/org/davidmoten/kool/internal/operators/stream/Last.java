@@ -16,11 +16,11 @@ public final class Last<T> implements Maybe<T> {
 
     @Override
     public Optional<T> get() {
-        StreamIterator<T> it = source.iteratorChecked();
+        StreamIterator<T> it = source.iteratorNullChecked();
         try {
             T t = null;
             while (it.hasNext()) {
-                t = it.nextChecked();
+                t = it.nextNullChecked();
             }
             return Optional.ofNullable(t);
         } finally {

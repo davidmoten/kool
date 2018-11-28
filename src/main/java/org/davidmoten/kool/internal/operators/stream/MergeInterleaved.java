@@ -74,7 +74,7 @@ public final class MergeInterleaved<T> implements Stream<T> {
                     while (true) {
                         StreamIterator<? extends T> it = list.get(index);
                         if (it.hasNext()) {
-                            next = it.nextChecked();
+                            next = it.nextNullChecked();
                             index = (index + 1) % list.size();
                             break;
                         } else {
@@ -111,7 +111,7 @@ public final class MergeInterleaved<T> implements Stream<T> {
     static <T> List<StreamIterator<? extends T>> getIterators(Stream<? extends T>[] streams) {
         List<StreamIterator<? extends T>> list = Lists.newArrayList();
         for (Stream<? extends T> stream : streams) {
-            list.add(stream.iteratorChecked());
+            list.add(stream.iteratorNullChecked());
         }
         return list;
     }

@@ -1,7 +1,10 @@
-package org.davidmoten.kool;
+package org.davidmoten.kool.internal.operators.stream;
 
 import java.util.NoSuchElementException;
 
+import org.davidmoten.kool.Single;
+import org.davidmoten.kool.Stream;
+import org.davidmoten.kool.StreamIterator;
 import org.davidmoten.kool.function.Function;
 
 public final class RetryWhen<T> implements Stream<T> {
@@ -17,8 +20,9 @@ public final class RetryWhen<T> implements Stream<T> {
     @Override
     public StreamIterator<T> iterator() {
         return new StreamIterator<T>() {
-            StreamIterator<T> it = stream.iteratorChecked();
+            StreamIterator<T> it;
             T next;
+            boolean finished;
 
             @Override
             public boolean hasNext() {
@@ -39,11 +43,16 @@ public final class RetryWhen<T> implements Stream<T> {
             }
 
             public void load() {
-                if (it != null && next == null) {
+                if (!finished && next == null) {
                     while (true) {
                         try {
+                            if (it == null) {
+                                it = stream.iteratorNullChecked();
+                            }
                             if (it.hasNext()) {
-                                next = it.nextChecked();
+                                next = it.nextNullChecked();
+                            } else {
+                                finished = true;
                             }
                             break;
                         } catch (Throwable e) {
@@ -54,7 +63,6 @@ public final class RetryWhen<T> implements Stream<T> {
                             } catch (Throwable t) {
                                 function.applyUnchecked(e).get();
                             }
-                            it = stream.iteratorChecked();
                         }
                     }
                 }

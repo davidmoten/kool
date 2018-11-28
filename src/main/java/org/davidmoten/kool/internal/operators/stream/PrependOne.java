@@ -17,7 +17,7 @@ public final class PrependOne<T> implements Stream<T> {
     @Override
     public StreamIterator<T> iterator() {
         return new StreamIterator<T>() {
-            final StreamIterator<T> it = source.iteratorChecked();
+            final StreamIterator<T> it = source.iteratorNullChecked();
             T value = PrependOne.this.value;
 
             @Override
@@ -36,7 +36,7 @@ public final class PrependOne<T> implements Stream<T> {
                     value = null;
                     return t;
                 } else {
-                    return it.nextChecked();
+                    return it.nextNullChecked();
                 }
             }
 

@@ -26,7 +26,7 @@ public final class BufferWithPredicate<T> implements Stream<List<T>> {
     @Override
     public StreamIterator<List<T>> iterator() {
         return new StreamIterator<List<T>>() {
-            StreamIterator<T> it = source.iteratorChecked();
+            StreamIterator<T> it = source.iteratorNullChecked();
             List<T> buffer = new ArrayList<>();
             List<T> nextBuffer = new ArrayList<>();
             boolean ready;
@@ -58,7 +58,7 @@ public final class BufferWithPredicate<T> implements Stream<List<T>> {
 
             private void loadNext() {
                 while (!ready && it.hasNext()) {
-                    T t = it.nextChecked();
+                    T t = it.nextNullChecked();
                     boolean b = condition.testUnchecked(buffer, t);
                     if (!until) {
                         // while

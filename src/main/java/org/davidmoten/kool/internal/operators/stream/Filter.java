@@ -30,7 +30,7 @@ public final class Filter<T> implements Stream<T> {
                     } else if (!it.hasNext()) {
                         break;
                     } else {
-                        T t = it.nextChecked();
+                        T t = it.nextNullChecked();
                         try {
                             if (predicate.test(t)) {
                                 next = t;

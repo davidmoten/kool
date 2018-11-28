@@ -35,7 +35,7 @@ public class SingleFlatMap<T, R> implements Stream<R> {
             @Override
             public R next() {
                 load();
-                return it.nextChecked();
+                return it.nextNullChecked();
             }
 
             @Override

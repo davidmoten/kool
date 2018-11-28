@@ -19,7 +19,7 @@ public final class DoOnNext<T> implements Stream<T> {
     public StreamIterator<T> iterator() {
         return new StreamIterator<T>() {
 
-            final StreamIterator<T> it = source.iteratorChecked();
+            final StreamIterator<T> it = source.iteratorNullChecked();
 
             @Override
             public boolean hasNext() {
@@ -28,7 +28,7 @@ public final class DoOnNext<T> implements Stream<T> {
 
             @Override
             public T next() {
-                T t = it.nextChecked();
+                T t = it.nextNullChecked();
                 consumer.acceptUnchecked(t);
                 return t;
             }

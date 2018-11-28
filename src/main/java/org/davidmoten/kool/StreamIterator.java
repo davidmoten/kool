@@ -11,7 +11,7 @@ public interface StreamIterator<T> extends Iterator<T> {
      */
     void dispose();
 
-    default T nextChecked() {
+    default T nextNullChecked() {
         return Preconditions.checkNotNull(next(), "StreamIterator cannot emit null");
     }
 

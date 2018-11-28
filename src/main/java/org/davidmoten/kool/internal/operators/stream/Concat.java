@@ -20,7 +20,7 @@ public final class Concat<T> implements Stream<T> {
     public StreamIterator<T> iterator() {
         return new StreamIterator<T>() {
 
-            StreamIterator<? extends T> a = source1.iteratorChecked();
+            StreamIterator<? extends T> a = source1.iteratorNullChecked();
             StreamIterator<? extends T> b = null;
 
             @Override
@@ -42,9 +42,9 @@ public final class Concat<T> implements Stream<T> {
             @Override
             public T next() {
                 if (a != null && a.hasNext()) {
-                    return a.nextChecked();
+                    return a.nextNullChecked();
                 } else if (b().hasNext()) {
-                    return b().nextChecked();
+                    return b().nextNullChecked();
                 } else {
                     dispose();
                     throw new NoSuchElementException();
@@ -53,7 +53,7 @@ public final class Concat<T> implements Stream<T> {
 
             private StreamIterator<? extends T> b() {
                 if (b == null) {
-                    b = source2.iteratorChecked();
+                    b = source2.iteratorNullChecked();
                 }
                 return b;
             }

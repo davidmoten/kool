@@ -28,7 +28,7 @@ public final class Using<R, T> implements Stream<T> {
 
                 R resource = resourceFactory.call();
                 @SuppressWarnings("unchecked")
-                StreamIterator<T> it = (StreamIterator<T>) streamFactory.apply(resource).iteratorChecked();
+                StreamIterator<T> it = (StreamIterator<T>) streamFactory.apply(resource).iteratorNullChecked();
 
                 @Override
                 public boolean hasNext() {
@@ -37,7 +37,7 @@ public final class Using<R, T> implements Stream<T> {
 
                 @Override
                 public T next() {
-                    return it.nextChecked();
+                    return it.nextNullChecked();
                 }
 
                 @Override

@@ -19,7 +19,7 @@ public final class Split implements Stream<String> {
     public StreamIterator<String> iterator() {
         return new StreamIterator<String>() {
 
-            StreamIterator<?> it = source.iteratorChecked();
+            StreamIterator<?> it = source.iteratorNullChecked();
             StringBuilder b = new StringBuilder();
             String next;
             int startFrom;
@@ -59,7 +59,7 @@ public final class Split implements Stream<String> {
                         }
                     }
                     while (it.hasNext()) {
-                        String s = it.nextChecked().toString();
+                        String s = it.nextNullChecked().toString();
                         b.append(s);
                         int i = b.indexOf(delimiter, startFrom);
                         if (i != -1) {

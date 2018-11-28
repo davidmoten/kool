@@ -15,7 +15,7 @@ public abstract class BaseStreamIterator<R, T> implements StreamIterator<T> {
     }
 
     public StreamIterator<R> init(StreamIterable<R> stream) {
-        return stream.iteratorChecked();
+        return stream.iteratorNullChecked();
     }
 
     @Override

@@ -18,7 +18,7 @@ public final class Reverse<T> implements Stream<T> {
     public StreamIterator<T> iterator() {
         return new StreamIterator<T>() {
 
-            StreamIterator<T> it = stream.iteratorChecked();
+            StreamIterator<T> it = stream.iteratorNullChecked();
             final LinkedList<T> list = new LinkedList<>();
 
             @Override
@@ -49,7 +49,7 @@ public final class Reverse<T> implements Stream<T> {
             private void load() {
                 if (it != null) {
                     while (it.hasNext()) {
-                        list.add(it.nextChecked());
+                        list.add(it.nextNullChecked());
                     }
                     it.dispose();
                     it = null;

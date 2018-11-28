@@ -21,11 +21,11 @@ public class Max<T> implements Maybe<T> {
 
     @Override
     public Optional<T> get() {
-        StreamIterator<T> it = stream.iteratorChecked();
+        StreamIterator<T> it = stream.iteratorNullChecked();
         try {
             T max = null;
             while (it.hasNext()) {
-                T v = it.nextChecked();
+                T v = it.nextNullChecked();
                 if (max == null) {
                     max = v;
                 } else {

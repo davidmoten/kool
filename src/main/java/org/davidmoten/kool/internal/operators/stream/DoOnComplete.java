@@ -18,7 +18,7 @@ public final class DoOnComplete<T> implements Stream<T> {
     public StreamIterator<T> iterator() {
         return new StreamIterator<T>() {
 
-            final StreamIterator<T> it = source.iteratorChecked();
+            final StreamIterator<T> it = source.iteratorNullChecked();
             boolean actionRun = false;
 
             @Override
@@ -34,7 +34,7 @@ public final class DoOnComplete<T> implements Stream<T> {
 
             @Override
             public T next() {
-                return it.nextChecked();
+                return it.nextNullChecked();
             }
 
             @Override

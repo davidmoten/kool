@@ -19,7 +19,7 @@ public final class Transform<T, R> implements Stream<R> {
     @SuppressWarnings("unchecked")
     @Override
     public StreamIterator<R> iterator() {
-        return Preconditions.checkNotNull((StreamIterator<R>) transformer.applyUnchecked(source).iteratorChecked());
+        return Preconditions.checkNotNull((StreamIterator<R>) transformer.applyUnchecked(source).iteratorNullChecked());
     }
 
 }

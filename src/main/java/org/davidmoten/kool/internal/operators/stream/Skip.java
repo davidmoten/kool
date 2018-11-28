@@ -17,7 +17,7 @@ public final class Skip<T> implements Stream<T> {
     public StreamIterator<T> iterator() {
         return new StreamIterator<T>() {
 
-            StreamIterator<T> it = source.iteratorChecked();
+            StreamIterator<T> it = source.iteratorNullChecked();
             int n = count;
 
             @Override
@@ -29,7 +29,7 @@ public final class Skip<T> implements Stream<T> {
             @Override
             public T next() {
                 skip();
-                return it.nextChecked();
+                return it.nextNullChecked();
             }
 
             @Override
@@ -39,7 +39,7 @@ public final class Skip<T> implements Stream<T> {
 
             private void skip() {
                 while (n > 0 && it.hasNext()) {
-                    it.nextChecked();
+                    it.nextNullChecked();
                     n--;
                 }
             }

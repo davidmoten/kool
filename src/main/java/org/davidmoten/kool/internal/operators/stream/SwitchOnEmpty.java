@@ -35,7 +35,7 @@ public final class SwitchOnEmpty<T> implements Stream<T> {
             @Override
             public T next() {
                 check();
-                return it.nextChecked();
+                return it.nextNullChecked();
             }
 
             @Override

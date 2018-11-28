@@ -19,7 +19,7 @@ public final class Repeat<T> implements Stream<T> {
     public StreamIterator<T> iterator() {
         return new StreamIterator<T>() {
 
-            StreamIterator<T> it = source.iteratorChecked();
+            StreamIterator<T> it = source.iteratorNullChecked();
             long i = 0;
 
             @Override
@@ -32,7 +32,7 @@ public final class Repeat<T> implements Stream<T> {
                     if (i == count) {
                         return false;
                     }
-                    it = source.iteratorChecked();
+                    it = source.iteratorNullChecked();
                 }
                 return true;
             }
@@ -42,7 +42,7 @@ public final class Repeat<T> implements Stream<T> {
                 if (it == null) {
                     throw new NoSuchElementException();
                 } else {
-                    return it.nextChecked();
+                    return it.nextNullChecked();
                 }
             }
 

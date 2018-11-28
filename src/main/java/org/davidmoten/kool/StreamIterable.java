@@ -7,7 +7,7 @@ public interface StreamIterable<T> extends Iterable<T> {
     @Override
     StreamIterator<T> iterator();
 
-    default StreamIterator<T> iteratorChecked() {
+    default StreamIterator<T> iteratorNullChecked() {
         return Preconditions.checkNotNull(iterator(), "iterator() cannot return null");
     }
 

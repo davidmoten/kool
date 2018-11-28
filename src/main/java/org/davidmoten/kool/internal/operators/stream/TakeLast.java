@@ -18,7 +18,7 @@ public final class TakeLast<T> implements Stream<T> {
     public StreamIterator<T> iterator() {
         return new StreamIterator<T>() {
 
-            StreamIterator<T> it = stream.iteratorChecked();
+            StreamIterator<T> it = stream.iteratorNullChecked();
             EvictingQueue<T> queue = new EvictingQueue<T>(n);
             
             @Override
@@ -45,7 +45,7 @@ public final class TakeLast<T> implements Stream<T> {
             private void load() {
                 if (it != null) {
                     while (it.hasNext()) {
-                        queue.add(it.nextChecked());
+                        queue.add(it.nextNullChecked());
                     }
                     it = null;
                 }

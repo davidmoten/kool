@@ -22,11 +22,11 @@ public final class Collect<T, R> implements Single<R> {
 
     @Override
     public R get() {
-        StreamIterator<T> it = source.iteratorChecked();
+        StreamIterator<T> it = source.iteratorNullChecked();
         try {
             R c = factory.call();
             while (it.hasNext()) {
-                collector.accept(c, it.nextChecked());
+                collector.accept(c, it.nextNullChecked());
             }
             return c;
         } catch (Throwable e) {

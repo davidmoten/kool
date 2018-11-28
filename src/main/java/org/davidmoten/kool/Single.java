@@ -91,4 +91,8 @@ public interface Single<T> extends StreamIterable<T> {
         get();
     }
 
+    default Stream<T> repeat() {
+        return toStream().repeat();
+    }
+
 }

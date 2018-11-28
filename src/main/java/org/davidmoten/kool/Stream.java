@@ -75,6 +75,7 @@ import org.davidmoten.kool.internal.operators.stream.ReduceNoInitialValue;
 import org.davidmoten.kool.internal.operators.stream.ReduceWithInitialValueSupplier;
 import org.davidmoten.kool.internal.operators.stream.Repeat;
 import org.davidmoten.kool.internal.operators.stream.RepeatElement;
+import org.davidmoten.kool.internal.operators.stream.RetryWhen;
 import org.davidmoten.kool.internal.operators.stream.Reverse;
 import org.davidmoten.kool.internal.operators.stream.Skip;
 import org.davidmoten.kool.internal.operators.stream.SkipUntil;
@@ -829,6 +830,10 @@ public interface Stream<T> extends StreamIterable<T> {
 
     public default Stream<T> retryWhen(Function<? super Throwable, ? extends Single<?>> function) {
         return new RetryWhen<T>(this, function);
+    }
+
+    public default RetryWhenBuilder<T> retryWhen() {
+        return new RetryWhenBuilder<T>(this);
     }
 
     // TODO

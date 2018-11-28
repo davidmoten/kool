@@ -16,10 +16,10 @@ public final class First<T> implements Maybe<T> {
 
     @Override
     public Optional<T> get() {
-        StreamIterator<T> it = stream.iteratorChecked();
+        StreamIterator<T> it = stream.iteratorNullChecked();
         try {
             if (it.hasNext()) {
-                return Optional.of(it.nextChecked());
+                return Optional.of(it.nextNullChecked());
             } else {
                 return Optional.empty();
             }

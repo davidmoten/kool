@@ -20,8 +20,8 @@ public class Zip<R, S, T> implements Stream<S> {
     public StreamIterator<S> iterator() {
         return new StreamIterator<S>() {
 
-            StreamIterator<T> a = source1.iteratorChecked();
-            StreamIterator<? extends R> b = source2.iteratorChecked();
+            StreamIterator<T> a = source1.iteratorNullChecked();
+            StreamIterator<? extends R> b = source2.iteratorNullChecked();
 
             @Override
             public boolean hasNext() {
@@ -38,7 +38,7 @@ public class Zip<R, S, T> implements Stream<S> {
 
             @Override
             public S next() {
-                return combiner.applyUnchecked(a.nextChecked(), b.nextChecked());
+                return combiner.applyUnchecked(a.nextNullChecked(), b.nextNullChecked());
             }
 
             @Override

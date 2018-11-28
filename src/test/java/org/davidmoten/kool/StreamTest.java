@@ -1530,7 +1530,7 @@ public final class StreamTest {
     }
 
     @Test
-    public void testRetryWhen() {
+    public void testRetryWhenTwoRetriesAndSucceeds() {
         AtomicInteger count = new AtomicInteger();
         Stream.<Integer>defer(() -> {
             if (count.incrementAndGet() <= 2) {
@@ -1538,12 +1538,60 @@ public final class StreamTest {
             } else {
                 return Stream.of(1);
             }
-        })
-        .doOnStart(() -> System.out.println("starting")) //
-        .doOnError(System.out::println) //
-        .retryWhen(err -> Single //
-                .timer(100, TimeUnit.MILLISECONDS)) //
+        }) //
+                .retryWhen(err -> Single //
+                        .timer(1, TimeUnit.MILLISECONDS)) //
                 .test() //
                 .assertValues(1);
+    }
+
+    @Test
+    public void testRetryWhenAlwaysFailsAndSucceedsWithBuilder() {
+        AtomicInteger count = new AtomicInteger();
+        Stream.error(() -> new RuntimeException("boo")) //
+                .doOnStart(() -> count.incrementAndGet()) //
+                .retryWhen() //
+                .maxRetries(3) //
+                .build() //
+                .test() //
+                .assertNoValues() //
+                .assertError(x -> x.getMessage().equals("boo"));
+        assertEquals(4, count.get());
+    }
+
+    @Test
+    public void testRetryWhenDelays() {
+        long t = System.currentTimeMillis();
+        AtomicInteger count = new AtomicInteger();
+        Stream.error(() -> new RuntimeException("boo")) //
+                .doOnStart(count::incrementAndGet) //
+                .retryWhen() //
+                .delays(Stream.of(30L, 30L), TimeUnit.MILLISECONDS) //
+                .build() //
+                .test() //
+                .assertNoValues() //
+                .assertError(x -> x.getMessage().equals("boo"));
+        assertEquals(3, count.get());
+        // check retry delay happened
+        assertTrue(System.currentTimeMillis() - t >= 60);
+    }
+
+    @Test
+    public void testRetryWhenDelay() {
+        long t = System.currentTimeMillis();
+        AtomicInteger count = new AtomicInteger();
+        int delayMs = 30;
+        int maxRetries = 3;
+        Stream.error(() -> new RuntimeException("boo")) //
+                .doOnStart(count::incrementAndGet) //
+                .retryWhen() //
+                .delay(delayMs, TimeUnit.MILLISECONDS) //
+                .maxRetries(maxRetries) //
+                .build() //
+                .test() //
+                .assertNoValues() //
+                .assertError(x -> x.getMessage().equals("boo"));
+        assertEquals(maxRetries + 1, count.get());
+        assertTrue(System.currentTimeMillis() - t >= maxRetries*delayMs);
     }
 }

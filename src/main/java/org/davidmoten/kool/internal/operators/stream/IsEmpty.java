@@ -14,7 +14,7 @@ public final class IsEmpty implements Single<Boolean> {
 
     @Override
     public Boolean get() {
-        StreamIterator<?> it = source.iteratorChecked();
+        StreamIterator<?> it = source.iteratorNullChecked();
         try {
             return !it.hasNext();
         } finally {

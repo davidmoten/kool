@@ -23,7 +23,7 @@ public final class Materialize<T> implements Stream<org.davidmoten.kool.Notifica
             @Override
             public StreamIterator<T> init(StreamIterable<T> stream) {
                 try {
-                    return stream.iteratorChecked();
+                    return stream.iteratorNullChecked();
                 } catch (Throwable e) {
                     emittedTerminal = true;
                     dispose();
@@ -38,7 +38,7 @@ public final class Materialize<T> implements Stream<org.davidmoten.kool.Notifica
                 if (!emittedTerminal) {
                     try {
                         if (it.hasNext()) {
-                            next = Notification.of(it.nextChecked());
+                            next = Notification.of(it.nextNullChecked());
                         } else {
                             emittedTerminal = true;
                             dispose();

@@ -16,12 +16,12 @@ public class ToMaybe<T> implements Maybe<T> {
 
     @Override
     public Optional<T> get() {
-        StreamIterator<T> it = stream.iteratorChecked();
+        StreamIterator<T> it = stream.iteratorNullChecked();
         try {
             if (!it.hasNext()) {
                 return Optional.empty();
             } else {
-                T v = it.nextChecked();
+                T v = it.nextNullChecked();
                 if (it.hasNext()) {
                     throw new IllegalStateException("stream has more than one element so cannot convert to Maybe");
                 } else {
