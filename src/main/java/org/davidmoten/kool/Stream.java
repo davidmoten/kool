@@ -75,6 +75,7 @@ import org.davidmoten.kool.internal.operators.stream.ReduceNoInitialValue;
 import org.davidmoten.kool.internal.operators.stream.ReduceWithInitialValueSupplier;
 import org.davidmoten.kool.internal.operators.stream.Repeat;
 import org.davidmoten.kool.internal.operators.stream.RepeatElement;
+import org.davidmoten.kool.internal.operators.stream.RepeatLast;
 import org.davidmoten.kool.internal.operators.stream.RetryWhen;
 import org.davidmoten.kool.internal.operators.stream.Reverse;
 import org.davidmoten.kool.internal.operators.stream.Skip;
@@ -834,6 +835,19 @@ public interface Stream<T> extends StreamIterable<T> {
 
     public default RetryWhenBuilder<T> retryWhen() {
         return new RetryWhenBuilder<T>(this);
+    }
+
+    public default Stream<T> repeatLast(long count) {
+        Preconditions.checkArgument(count >=0);
+        if (count == 0) {
+            return this;
+        } else {
+            return new RepeatLast<T>(this, count);
+        }
+    }
+    
+    public default Stream<T> repeatLast() {
+        return repeatLast(Long.MAX_VALUE);
     }
 
     // TODO

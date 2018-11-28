@@ -1592,9 +1592,9 @@ public final class StreamTest {
                 .assertNoValues() //
                 .assertError(x -> x.getMessage().equals("boo"));
         assertEquals(maxRetries + 1, count.get());
-        assertTrue(System.currentTimeMillis() - t >= maxRetries*delayMs);
+        assertTrue(System.currentTimeMillis() - t >= maxRetries * delayMs);
     }
-    
+
     @Test
     public void testRetryWhenPredicateTrue() {
         AtomicInteger count = new AtomicInteger();
@@ -1603,14 +1603,13 @@ public final class StreamTest {
                 .doOnStart(count::incrementAndGet) //
                 .retryWhen() //
                 .isTrue(e -> true) //
-                .maxRetries(maxRetries)
-                .build() //
+                .maxRetries(maxRetries).build() //
                 .test() //
                 .assertNoValues() //
                 .assertError(x -> x.getMessage().equals("boo"));
         assertEquals(maxRetries + 1, count.get());
     }
-    
+
     @Test
     public void testRetryWhenPredicateFalse() {
         AtomicInteger count = new AtomicInteger();
@@ -1619,11 +1618,30 @@ public final class StreamTest {
                 .doOnStart(count::incrementAndGet) //
                 .retryWhen() //
                 .isTrue(e -> false) //
-                .maxRetries(maxRetries)
-                .build() //
+                .maxRetries(maxRetries).build() //
                 .test() //
                 .assertNoValues() //
                 .assertError(x -> x.getMessage().equals("boo"));
         assertEquals(1, count.get());
+    }
+
+    @Test
+    public void testRepeatLastEmpty() {
+        Stream.empty().repeatLast().test().assertNoValuesOnly();
+    }
+
+    @Test
+    public void testRepeatLastOne() {
+        Stream.of(1).repeatLast().take(4).test().assertValuesOnly(1, 1, 1, 1);
+    }
+
+    @Test
+    public void testRepeatLastOneWithNumRepeats() {
+        Stream.of(1).repeatLast(3).test().assertValuesOnly(1, 1, 1, 1);
+    }
+
+    @Test
+    public void testRepeatLastTwoWithNumRepeats() {
+        Stream.of(1, 2).repeatLast(3).test().assertValuesOnly(1, 2, 2, 2, 2);
     }
 }

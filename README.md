@@ -69,6 +69,38 @@ Indexed[index=10, value=55]
 ## Time-based operators
 This library has a number of time-based operators. For example `Single.timer("a", 1, TimeUnit.SECONDS).get()` emits `a` one second after starting. Use of time-based operators is not optimal for production code because the current thread is blocked (by a `Thread.sleep`). If you are happy to wear a bit of extra complexity but win on efficiency then use `RxJava` for this scenario.
 
+## RetryWhen
+The `retryWhen` operator differs subtly from the RxJava implementation in that when no more retries will occur the last error is emitted (thrown, possibly wrapped to make unchecked). The operator has a helpful builder for common scenarios:
+
+### Limit retries
+```java
+stream
+  .retryWhen()
+  .maxRetries(10)
+  .build()
+  .forEach();
+```
+### Set delay between retries
+```java
+stream
+  .retryWhen()
+  .maxRetries(6)
+  .delay(5, TimeUnit.SECONDS)
+  .build()
+  .forEach();
+```
+
+### Set variable delay between retries
+Let's do capped exponential back-off:
+```java
+stream
+  .retryWhen()
+  .maxRetries(6)
+  .delay(Stream.of(1L, 2L, 4L, 8L, 16L, 30L).repeatLast(), TimeUnit.SECONDS)
+  .build()
+  .forEach();
+```
+
 ## Benchmarks
 JMH is used for benchmarks. 
 
