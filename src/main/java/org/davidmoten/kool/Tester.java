@@ -75,7 +75,7 @@ public final class Tester<T> {
     public Tester<T> assertError(Predicate<? super Throwable> predicate) {
         if (error == null) {
             throw new AssertionError("no error thrown");
-        } else if (!predicate.testUnchecked(error)) {
+        } else if (!predicate.testChecked(error)) {
             error.printStackTrace();
             throw new AssertionError("error " + error.getClass() + " failed predicate");
         }

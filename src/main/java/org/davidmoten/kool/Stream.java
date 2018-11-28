@@ -827,6 +827,10 @@ public interface Stream<T> extends StreamIterable<T> {
         return new Dematerialize<T, R>(this);
     }
 
+    public default Stream<T> retryWhen(Function<? super Throwable, ? extends Single<?>> function) {
+        return new RetryWhen<T>(this, function);
+    }
+
     // TODO
     // retryWhen,
     // add Maybe.flatMapMaybe

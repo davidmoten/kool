@@ -24,7 +24,7 @@ public final class Any<T> implements Single<Boolean> {
         StreamIterator<T> it = stream.iteratorChecked();
         try {
             while (it.hasNext()) {
-                if (predicate.testUnchecked(it.nextChecked())) {
+                if (predicate.testChecked(it.nextChecked())) {
                     return true;
                 }
             }

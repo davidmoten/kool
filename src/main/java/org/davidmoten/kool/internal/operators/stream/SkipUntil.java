@@ -42,7 +42,7 @@ public final class SkipUntil<T> implements Stream<T> {
                     } else {
                         while ((next == null || !nextPredicateValue) && it.hasNext()) {
                             next = it.nextChecked();
-                            nextPredicateValue = predicate.testUnchecked(next);
+                            nextPredicateValue = predicate.testChecked(next);
                             if (negate)
                                 nextPredicateValue = !nextPredicateValue;
                         }

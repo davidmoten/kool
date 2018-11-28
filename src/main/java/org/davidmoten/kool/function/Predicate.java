@@ -7,7 +7,7 @@ public interface Predicate<T> {
 
     boolean test(T t) throws Exception;
     
-    default boolean testUnchecked(T t) {
+    default boolean testChecked(T t) {
         try {
             return test(t);
         } catch (Exception e) {

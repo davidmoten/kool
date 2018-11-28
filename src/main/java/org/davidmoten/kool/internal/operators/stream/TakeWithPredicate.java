@@ -26,7 +26,7 @@ public final class TakeWithPredicate<T> implements Stream<T> {
                 if (next == null && it != null) {
                     if (it.hasNext()) {
                         T v = it.nextChecked();
-                        boolean test = predicate.testUnchecked(v);
+                        boolean test = predicate.testChecked(v);
                         final boolean ok;
                         if (until) {
                             ok = !test;

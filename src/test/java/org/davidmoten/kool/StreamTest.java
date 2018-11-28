@@ -1528,4 +1528,22 @@ public final class StreamTest {
                 .assertValues(1, 2) //
                 .assertError(NoSuchElementException.class);
     }
+
+    @Test
+    public void testRetryWhen() {
+        AtomicInteger count = new AtomicInteger();
+        Stream.<Integer>defer(() -> {
+            if (count.incrementAndGet() <= 2) {
+                throw new RuntimeException("boo");
+            } else {
+                return Stream.of(1);
+            }
+        })
+        .doOnStart(() -> System.out.println("starting")) //
+        .doOnError(System.out::println) //
+        .retryWhen(err -> Single //
+                .timer(100, TimeUnit.MILLISECONDS)) //
+                .test() //
+                .assertValues(1);
+    }
 }
