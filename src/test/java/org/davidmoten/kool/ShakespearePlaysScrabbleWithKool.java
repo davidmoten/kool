@@ -20,7 +20,6 @@ package org.davidmoten.kool;
 
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -115,22 +114,21 @@ public class ShakespearePlaysScrabbleWithKool extends ShakespearePlaysScrabble {
         Function<String, Stream<Integer>> last3 = word -> Stream.chars(word).skip(3);
 
         // Stream to be maxed
-        Function<String, Stream<Integer>> toBeMaxed = word -> Stream //
-                .of( //
-                        first3.apply(word), //
-                        last3.apply(word)) //
-                .flatMap(Function.identity());
+        Function<String, Stream<Integer>> toBeMaxed = word -> first3 //
+                .apply(word) //
+                .concatWith(last3.apply(word));
 
         // Bonus for double letter
         Function<String, Integer> bonusForDoubleLetter = word -> toBeMaxed //
                 .apply(word) //
                 .map(scoreOfALetter) //
-                .reduce(Integer::max).get() //
-                .orElse(0);
+                .reduce(0, Integer::max).get();
 
         // score of the word put on the board
         // score of the word put on the board
-        Function<String, Integer> score3 = word -> 2 * (score2.apply(word) + bonusForDoubleLetter.apply(word))
+        Function<String, Integer> score3 = word -> //
+        2 * (score2.apply(word) //
+                + bonusForDoubleLetter.apply(word)) //
                 + (word.length() == 7 ? 50 : 0);
 
         Function<Function<String, Integer>, Single<TreeMap<Integer, List<String>>>> buildHistoOnScore = //
@@ -139,7 +137,8 @@ public class ShakespearePlaysScrabbleWithKool extends ShakespearePlaysScrabble {
                         .filter(scrabbleWords::contains) //
                         .filter(checkBlanks) //
                         .groupByList( //
-                                () -> new TreeMap<Integer, List<String>>(Comparator.reverseOrder()), //
+                                () -> new TreeMap<Integer, //
+                                        List<String>>(Comparator.reverseOrder()), //
                                 word -> score.apply(word));
 
         // best key / value pairs
