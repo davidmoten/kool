@@ -16,6 +16,8 @@ import org.davidmoten.kool.internal.operators.single.SingleIterator;
 import org.davidmoten.kool.internal.operators.single.SingleOf;
 import org.davidmoten.kool.internal.operators.single.SingleToStream;
 
+import com.github.davidmoten.guavamini.Preconditions;
+
 public interface Single<T> extends StreamIterable<T> {
 
     T get();
@@ -41,9 +43,16 @@ public interface Single<T> extends StreamIterable<T> {
     }
 
     public static Single<Integer> timer(long duration, TimeUnit unit) {
+        return timer(1, duration, unit);
+    }
+
+    public static <T> Single<T> timer(T t, long duration, TimeUnit unit) {
+        Preconditions.checkNotNull(t);
+        Preconditions.checkNotNull(unit);
+        Preconditions.checkArgument(duration >= 0);
         return fromCallable(() -> {
             unit.sleep(duration);
-            return 1;
+            return t;
         });
     }
 
@@ -58,9 +67,9 @@ public interface Single<T> extends StreamIterable<T> {
     public default <R> Stream<R> flatMap(Function<? super T, ? extends StreamIterable<? extends R>> mapper) {
         return new SingleFlatMap<T, R>(this, mapper);
     }
-    
-    public default <R> Maybe<R> flatMapMaybe(Function<? super T, ? extends Maybe<? extends R>> mapper){
-        return new SingleFlatMapMaybe<T, R> (this, mapper);
+
+    public default <R> Maybe<R> flatMapMaybe(Function<? super T, ? extends Maybe<? extends R>> mapper) {
+        return new SingleFlatMapMaybe<T, R>(this, mapper);
     }
 
     public default Single<T> doOnValue(Consumer<? super T> consumer) {

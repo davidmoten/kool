@@ -66,10 +66,13 @@ Indexed[index=9, value=45]
 Indexed[index=10, value=55]
 ```
 
+## Time-based operators
+This library has a number of time-based operators. For example `Single.timer("a", 1, TimeUnit.SECONDS).get()` emits `a` one second after starting. Use of time-based operators is not optimal for production code because the current thread is blocked (by a `Thread.sleep`). If you are happy to wear a bit of extra complexity but win on efficiency then use `RxJava` for this scenario.
+
 ## Benchmarks
 JMH is used for benchmarks. 
 
-The Shakespear Plays Scrabble benchmark uses the following factories and operators: `of`, `from`, `chars`, `map`, `flatMap`, `collect`, `reduce`, `take`, `filter`.
+The Shakespeare Plays Scrabble benchmark uses the following factories and operators: `of`, `from`, `chars`, `map`, `flatMap`, `collect`, `reduce`, `take`, `filter`.
 
 ## Checklist for new operators
 * use `it.nextChecked()` instead of `it.next()` 
