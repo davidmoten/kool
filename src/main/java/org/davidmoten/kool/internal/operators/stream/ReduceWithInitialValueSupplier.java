@@ -13,11 +13,11 @@ import com.github.davidmoten.guavamini.Preconditions;
 
 public final class ReduceWithInitialValueSupplier<R, T> implements Single<R> {
 
-    private final Callable<R> initialValue;
+    private final Callable<? extends R> initialValue;
     private final BiFunction<? super R, ? super T, ? extends R> reducer;
     private final StreamIterable<T> source;
 
-    public ReduceWithInitialValueSupplier(Callable<R> initialValue,
+    public ReduceWithInitialValueSupplier(Callable<? extends R> initialValue,
             BiFunction<? super R, ? super T, ? extends R> reducer, StreamIterable<T> source) {
         this.initialValue = initialValue;
         this.reducer = reducer;

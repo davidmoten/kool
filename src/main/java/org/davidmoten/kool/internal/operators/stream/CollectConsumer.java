@@ -5,16 +5,16 @@ import java.util.concurrent.Callable;
 import org.davidmoten.kool.Single;
 import org.davidmoten.kool.Stream;
 import org.davidmoten.kool.StreamIterator;
-import org.davidmoten.kool.function.BiFunction;
+import org.davidmoten.kool.function.BiConsumer;
 import org.davidmoten.kool.internal.util.Exceptions;
 
-public final class Collect<T, R> implements Single<R> {
+public final class CollectConsumer<T, R> implements Single<R> {
 
     private final Callable<? extends R> factory;
-    private final BiFunction<? super R, ? super T, ? extends R> collector;
+    private final BiConsumer<? super R, ? super T> collector;
     private final Stream<T> source;
 
-    public Collect(Callable<? extends R> factory, BiFunction<? super R, ? super T, ? extends R> collector,
+    public CollectConsumer(Callable<? extends R> factory, BiConsumer<? super R, ? super T> collector,
             Stream<T> source) {
         this.factory = factory;
         this.collector = collector;
@@ -27,7 +27,7 @@ public final class Collect<T, R> implements Single<R> {
         try {
             R c = factory.call();
             while (it.hasNext()) {
-                c = collector.apply(c, it.nextNullChecked());
+                collector.accept(c, it.nextNullChecked());
             }
             return c;
         } catch (Throwable e) {

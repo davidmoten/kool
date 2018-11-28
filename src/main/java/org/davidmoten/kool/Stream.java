@@ -38,6 +38,7 @@ import org.davidmoten.kool.internal.operators.stream.Buffer;
 import org.davidmoten.kool.internal.operators.stream.BufferWithPredicate;
 import org.davidmoten.kool.internal.operators.stream.Cache;
 import org.davidmoten.kool.internal.operators.stream.Collect;
+import org.davidmoten.kool.internal.operators.stream.CollectConsumer;
 import org.davidmoten.kool.internal.operators.stream.Concat;
 import org.davidmoten.kool.internal.operators.stream.Count;
 import org.davidmoten.kool.internal.operators.stream.Defer;
@@ -429,16 +430,24 @@ public interface Stream<T> extends StreamIterable<T> {
     }
 
     public default <R> Single<R> reduce(R initialValue, BiFunction<? super R, ? super T, ? extends R> reducer) {
-        return reduceWithInitialValue(() -> initialValue, reducer);
+        return reduceWithFactory(() -> initialValue, reducer);
     }
 
-    public default <R> Single<R> reduceWithInitialValue(Callable<R> initialValueFactory,
+    public default <R> Single<R> reduceWithFactory(Callable<? extends R> initialValueFactory,
             BiFunction<? super R, ? super T, ? extends R> reducer) {
         return new ReduceWithInitialValueSupplier<R, T>(initialValueFactory, reducer, this);
     }
+    
+    public default <R> Single<R> reduce(Collector<T, R> collector) {
+        return reduceWithFactory(collector, collector);
+    }
 
     public default <R> Single<R> collect(Callable<? extends R> factory, BiConsumer<? super R, ? super T> collector) {
-        return new Collect<T, R>(factory, collector, this);
+        return new CollectConsumer<T, R>(factory, collector, this);
+    }
+
+    public default <R> Single<R> collect(Collector<T, R> collector) {
+        return reduceWithFactory(collector, collector);
     }
 
     public default <M extends java.util.Map<K, D>, K, V, D extends Collection<V>> Single<M> groupBy( //
@@ -511,11 +520,11 @@ public interface Stream<T> extends StreamIterable<T> {
     }
 
     public default Single<Set<T>> toSet(int sizeHint) {
-        return collect(() -> new HashSet<T>(sizeHint), (set, x) -> set.add(x));
+        return collect(() -> new HashSet<T>(sizeHint), (BiConsumer<Set<T>, T>) (set, x) -> set.add(x));
     }
 
     public default Single<List<T>> toList(int sizeHint) {
-        return collect(() -> new ArrayList<T>(sizeHint), (list, x) -> list.add(x));
+        return collect(() -> new ArrayList<T>(sizeHint), (BiConsumer<List<T>, T>) (list, x) -> list.add(x));
     }
 
     public default Stream<T> filter(Predicate<? super T> function) {
@@ -644,7 +653,8 @@ public interface Stream<T> extends StreamIterable<T> {
 
     public default <K, V> Single<java.util.Map<K, V>> toMap(Function<? super T, ? extends K> keyFunction,
             Function<? super T, ? extends V> valueFunction) {
-        return collect(HashMap::new, (m, item) -> m.put(keyFunction.apply(item), valueFunction.apply(item)));
+        return collect(HashMap::new, (BiConsumer<java.util.Map<K, V>, T>) (m, item) -> m.put(keyFunction.apply(item),
+                valueFunction.apply(item)));
     }
 
     public default Single<String> join(String delimiter) {
@@ -838,14 +848,14 @@ public interface Stream<T> extends StreamIterable<T> {
     }
 
     public default Stream<T> repeatLast(long count) {
-        Preconditions.checkArgument(count >=0);
+        Preconditions.checkArgument(count >= 0);
         if (count == 0) {
             return this;
         } else {
             return new RepeatLast<T>(this, count);
         }
     }
-    
+
     public default Stream<T> repeatLast() {
         return repeatLast(Long.MAX_VALUE);
     }

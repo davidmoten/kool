@@ -1644,4 +1644,5 @@ public final class StreamTest {
     public void testRepeatLastTwoWithNumRepeats() {
         Stream.of(1, 2).repeatLast(3).test().assertValuesOnly(1, 2, 2, 2, 2);
     }
+    
 }
