@@ -14,6 +14,7 @@ Alternative to `java.util.stream.Stream`:
 * models 0..1 and 1 element streams explicitly with **`Maybe`** and **`Single`**.
 * does not support streams of nulls (use `Optional` or `Maybe`)
 * maybe a tad faster on *Shakespeare Plays Scrabble* benchmark
+* has time-based operators
 
 Status: *available on Maven Central* 
 
@@ -67,7 +68,15 @@ Indexed[index=10, value=55]
 ```
 
 ## Time-based operators
-This library has a number of time-based operators. For example `Single.timer("a", 1, TimeUnit.SECONDS).get()` emits `a` one second after starting. Use of time-based operators is not optimal for production code because the current thread is blocked (by a `Thread.sleep`). If you are happy to wear a bit of extra complexity but win on efficiency then use `RxJava` for this scenario.
+This library has a number of time-based operators. For example `Single.timer("a", 1, TimeUnit.SECONDS).get()` emits `a` one second after starting. 
+
+Use of time-based operators is not optimal for production code because the current thread is blocked (by a `Thread.sleep`). If you are happy to wear a bit of extra complexity but win on efficiency then use `RxJava` for this scenario.
+
+The time-based operators are:
+* `Single.timer`
+* `Stream.interval`
+* `Stream.retryWhen`
+* `Stream.delayStart`
 
 ## RetryWhen
 The `retryWhen` operator differs subtly from the RxJava implementation in that when no more retries will occur the last error is emitted (thrown, possibly wrapped to make unchecked). The operator has a helpful builder for common scenarios:
