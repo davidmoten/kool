@@ -38,7 +38,7 @@ import org.davidmoten.kool.internal.operators.stream.Buffer;
 import org.davidmoten.kool.internal.operators.stream.BufferWithPredicate;
 import org.davidmoten.kool.internal.operators.stream.Cache;
 import org.davidmoten.kool.internal.operators.stream.Collect;
-import org.davidmoten.kool.internal.operators.stream.CollectConsumer;
+import org.davidmoten.kool.internal.operators.stream.Collect;
 import org.davidmoten.kool.internal.operators.stream.Concat;
 import org.davidmoten.kool.internal.operators.stream.Count;
 import org.davidmoten.kool.internal.operators.stream.Defer;
@@ -443,7 +443,7 @@ public interface Stream<T> extends StreamIterable<T> {
     }
 
     public default <R> Single<R> collect(Callable<? extends R> factory, BiConsumer<? super R, ? super T> collector) {
-        return new CollectConsumer<T, R>(factory, collector, this);
+        return new Collect<T, R>(factory, collector, this);
     }
 
     public default <R> Single<R> collect(Collector<T, R> collector) {
