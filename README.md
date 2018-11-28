@@ -95,8 +95,7 @@ Let's do capped exponential back-off:
 ```java
 stream
   .retryWhen()
-  .maxRetries(6)
-  .delay(Stream.of(1L, 2L, 4L, 8L, 16L, 30L).repeatLast(), TimeUnit.SECONDS)
+  .delays(Stream.of(1L, 2L, 4L, 8L, 16L, 30L).repeatLast(), TimeUnit.SECONDS)
   .build()
   .forEach();
 ```
