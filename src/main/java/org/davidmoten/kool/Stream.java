@@ -38,7 +38,6 @@ import org.davidmoten.kool.internal.operators.stream.Buffer;
 import org.davidmoten.kool.internal.operators.stream.BufferWithPredicate;
 import org.davidmoten.kool.internal.operators.stream.Cache;
 import org.davidmoten.kool.internal.operators.stream.Collect;
-import org.davidmoten.kool.internal.operators.stream.Collect;
 import org.davidmoten.kool.internal.operators.stream.Concat;
 import org.davidmoten.kool.internal.operators.stream.Count;
 import org.davidmoten.kool.internal.operators.stream.Defer;
@@ -437,9 +436,21 @@ public interface Stream<T> extends StreamIterable<T> {
             BiFunction<? super R, ? super T, ? extends R> reducer) {
         return new ReduceWithInitialValueSupplier<R, T>(initialValueFactory, reducer, this);
     }
-    
+
     public default <R> Single<R> reduce(Collector<T, R> collector) {
         return reduceWithFactory(collector, collector);
+    }
+
+    public default <R> Single<Integer> sumInt(Function<? super T, Integer> mapper) {
+        return reduce(0, (x, y) -> x + mapper.apply(y));
+    }
+
+    public default <R> Single<Long> sumLong(Function<? super T, Long> mapper) {
+        return reduce(0L, (x, y) -> x + mapper.apply(y));
+    }
+
+    public default <R> Single<Double> sumDouble(Function<? super T, Double> mapper) {
+        return reduce(0.0, (x, y) -> x + mapper.apply(y));
     }
 
     public default <R> Single<R> collect(Callable<? extends R> factory, BiConsumer<? super R, ? super T> collector) {
@@ -448,6 +459,23 @@ public interface Stream<T> extends StreamIterable<T> {
 
     public default <R> Single<R> collect(Collector<T, R> collector) {
         return reduceWithFactory(collector, collector);
+    }
+
+    public default <A, R> Single<R> collect(java.util.stream.Collector<T, A, R> collector) {
+        return collect(new Collector<T, A>() {
+
+            @Override
+            public A call() throws Exception {
+                return collector.supplier().get();
+            }
+
+            @Override
+            public A apply(A a, T t) throws Exception {
+                collector.accumulator().accept(a, t);
+                return a;
+            }
+
+        }).map(collector.finisher());
     }
 
     public default <M extends java.util.Map<K, D>, K, V, D extends Collection<V>> Single<M> groupBy( //

@@ -30,9 +30,11 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 import org.davidmoten.kool.exceptions.CompositeException;
 import org.davidmoten.kool.exceptions.UncheckedException;
+import org.davidmoten.kool.function.Function;
 import org.davidmoten.kool.function.Predicates;
 import org.junit.Assert;
 import org.junit.Test;
@@ -1643,6 +1645,26 @@ public final class StreamTest {
     @Test
     public void testRepeatLastTwoWithNumRepeats() {
         Stream.of(1, 2).repeatLast(3).test().assertValuesOnly(1, 2, 2, 2, 2);
+    }
+
+    @Test
+    public void testCollector() {
+        Stream.of(4, 5).collect(Collectors.counting()).test().assertValue(2L);
+    }
+
+    @Test
+    public void testSumInt() {
+        Stream.of(1, 2, 3).sumInt(Function.identity()).test().assertValue(6);
+    }
+
+    @Test
+    public void testSumLong() {
+        Stream.of(1L, 2L, 3L).sumLong(Function.identity()).test().assertValue(6L);
+    }
+    
+    @Test
+    public void testSumDouble() {
+        Stream.of(1.0, 2.0, 3.0).sumDouble(Function.identity()).test().assertValue(6.0);
     }
     
 }
