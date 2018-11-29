@@ -117,8 +117,7 @@ public abstract class ShakespearePlaysScrabbleWithStreams extends ShakespearePla
 
         // Stream to be maxed
         Function<String, IntStream> toBeMaxed =
-            word -> Stream.of(first3.apply(word), last3.apply(word))
-                          .flatMapToInt(Function.identity());
+            word -> IntStream.concat(first3.apply(word), last3.apply(word));
 
         // Bonus for double letter
         ToIntFunction<String> bonusForDoubleLetter =
