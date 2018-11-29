@@ -13,7 +13,7 @@ Alternative to `java.util.stream.Stream`:
 * is designed for synchronous use only
 * models 0..1 and 1 element streams explicitly with **`Maybe`** and **`Single`**.
 * does not support streams of nulls (use `Optional` or `Maybe`)
-* 20% faster on *Shakespeare Plays Scrabble* [benchmark](benchmarks.md)
+* 30% faster on *Shakespeare Plays Scrabble* [benchmark](benchmarks.md)
 * has time-based operators
 
 Status: *available on Maven Central* 

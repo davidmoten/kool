@@ -1,29 +1,30 @@
-Benchmarks run on 29 Nov 2018 with master 
+Benchmarks run on 29 Nov 2018 with commit a05a2f2 
 ```
-Benchmarks.flatMapMinMapReduceJavaStreams                                                    thrpt    10     6924.045 ±    198.943  ops/s
-Benchmarks.flatMapMinMapReduceKool                                                           thrpt    10    17408.157 ±   1133.835  ops/s
-Benchmarks.mapToListJava                                                                     thrpt    10  6533316.797 ± 518485.870  ops/s
-Benchmarks.mapToListKool                                                                     thrpt    10  8072965.053 ±  28400.164  ops/s
-Benchmarks.rangeOneTo100CountJava                                                            thrpt    10  2612210.100 ±  49420.806  ops/s
-Benchmarks.rangeOneTo100CountKool                                                            thrpt    10  5597065.708 ±  41683.973  ops/s
-Benchmarks.readFileJava                                                                      thrpt    10     9303.867 ±    155.266  ops/s
-Benchmarks.readFileKool                                                                      thrpt    10     8605.161 ±     60.339  ops/s
-ShakespearePlaysScrabbleWithKool.measureThroughput                                          sample  1524       32.904 ±      0.246  ms/op
-ShakespearePlaysScrabbleWithKool.measureThroughput:measureThroughput·p0.00                  sample             30.736               ms/op
-ShakespearePlaysScrabbleWithKool.measureThroughput:measureThroughput·p0.50                  sample             32.080               ms/op
-ShakespearePlaysScrabbleWithKool.measureThroughput:measureThroughput·p0.90                  sample             34.865               ms/op
-ShakespearePlaysScrabbleWithKool.measureThroughput:measureThroughput·p0.95                  sample             36.766               ms/op
-ShakespearePlaysScrabbleWithKool.measureThroughput:measureThroughput·p0.99                  sample             47.841               ms/op
-ShakespearePlaysScrabbleWithKool.measureThroughput:measureThroughput·p0.999                 sample             61.394               ms/op
-ShakespearePlaysScrabbleWithKool.measureThroughput:measureThroughput·p0.9999                sample             63.046               ms/op
-ShakespearePlaysScrabbleWithKool.measureThroughput:measureThroughput·p1.00                  sample             63.046               ms/op
-ShakespearePlaysScrabbleWithNonParallelStreams.measureThroughput                            sample  1240       40.486 ±      0.409  ms/op
-ShakespearePlaysScrabbleWithNonParallelStreams.measureThroughput:measureThroughput·p0.00    sample             37.421               ms/op
-ShakespearePlaysScrabbleWithNonParallelStreams.measureThroughput:measureThroughput·p0.50    sample             39.125               ms/op
-ShakespearePlaysScrabbleWithNonParallelStreams.measureThroughput:measureThroughput·p0.90    sample             44.165               ms/op
-ShakespearePlaysScrabbleWithNonParallelStreams.measureThroughput:measureThroughput·p0.95    sample             49.342               ms/op
-ShakespearePlaysScrabbleWithNonParallelStreams.measureThroughput:measureThroughput·p0.99    sample             61.287               ms/op
-ShakespearePlaysScrabbleWithNonParallelStreams.measureThroughput:measureThroughput·p0.999   sample             77.568               ms/op
-ShakespearePlaysScrabbleWithNonParallelStreams.measureThroughput:measureThroughput·p0.9999  sample             77.726               ms/op
-ShakespearePlaysScrabbleWithNonParallelStreams.measureThroughput:measureThroughput·p1.00    sample             77.726               ms/op
+Benchmark                                                                                     Mode   Cnt        Score        Error  Units
+Benchmarks.flatMapMinMapReduceJavaStreams                                                    thrpt    10     6183.416 ±    139.495  ops/s
+Benchmarks.flatMapMinMapReduceKool                                                           thrpt    10    20576.853 ±    530.743  ops/s
+Benchmarks.mapToListJava                                                                     thrpt    10  6725291.729 ± 225749.294  ops/s
+Benchmarks.mapToListKool                                                                     thrpt    10  7959925.128 ± 155955.805  ops/s
+Benchmarks.rangeOneTo100CountJava                                                            thrpt    10  2599460.010 ±  37246.335  ops/s
+Benchmarks.rangeOneTo100CountKool                                                            thrpt    10  5711771.754 ±  35779.804  ops/s
+Benchmarks.readFileJava                                                                      thrpt    10     9552.657 ±     95.257  ops/s
+Benchmarks.readFileKool                                                                      thrpt    10     8740.712 ±    162.297  ops/s
+ShakespearePlaysScrabbleWithKool.measureThroughput                                          sample  1869       26.816 ±      0.119  ms/op
+ShakespearePlaysScrabbleWithKool.measureThroughput:measureThroughput·p0.00                  sample             25.526               ms/op
+ShakespearePlaysScrabbleWithKool.measureThroughput:measureThroughput·p0.50                  sample             26.411               ms/op
+ShakespearePlaysScrabbleWithKool.measureThroughput:measureThroughput·p0.90                  sample             27.886               ms/op
+ShakespearePlaysScrabbleWithKool.measureThroughput:measureThroughput·p0.95                  sample             28.574               ms/op
+ShakespearePlaysScrabbleWithKool.measureThroughput:measureThroughput·p0.99                  sample             33.364               ms/op
+ShakespearePlaysScrabbleWithKool.measureThroughput:measureThroughput·p0.999                 sample             45.286               ms/op
+ShakespearePlaysScrabbleWithKool.measureThroughput:measureThroughput·p0.9999                sample             61.080               ms/op
+ShakespearePlaysScrabbleWithKool.measureThroughput:measureThroughput·p1.00                  sample             61.080               ms/op
+ShakespearePlaysScrabbleWithNonParallelStreams.measureThroughput                            sample  1267       39.563 ±      0.176  ms/op
+ShakespearePlaysScrabbleWithNonParallelStreams.measureThroughput:measureThroughput·p0.00    sample             37.945               ms/op
+ShakespearePlaysScrabbleWithNonParallelStreams.measureThroughput:measureThroughput·p0.50    sample             39.191               ms/op
+ShakespearePlaysScrabbleWithNonParallelStreams.measureThroughput:measureThroughput·p0.90    sample             40.567               ms/op
+ShakespearePlaysScrabbleWithNonParallelStreams.measureThroughput:measureThroughput·p0.95    sample             41.550               ms/op
+ShakespearePlaysScrabbleWithNonParallelStreams.measureThroughput:measureThroughput·p0.99    sample             49.760               ms/op
+ShakespearePlaysScrabbleWithNonParallelStreams.measureThroughput:measureThroughput·p0.999   sample             61.561               ms/op
+ShakespearePlaysScrabbleWithNonParallelStreams.measureThroughput:measureThroughput·p0.9999  sample             62.194               ms/op
+ShakespearePlaysScrabbleWithNonParallelStreams.measureThroughput:measureThroughput·p1.00    sample             62.194               ms/op
 ```
