@@ -58,10 +58,8 @@ public class Benchmarks {
 
     @Benchmark
     public long flatMapMinMapReduceKool() {
-        return Stream.range(1, 1000) //
-                // .flatMap(x -> Stream.of(x, x + 1, x + 4) //
-                // .min(Comparator.naturalOrder())) //
-                .flatMap(x -> Stream.of(x).min(Comparator.naturalOrder())) //
+        return Stream.rangeLong(1, 1000) //
+                .flatMap(x -> Stream.of(x, x + 1, x + 4).min(Comparator.naturalOrder())) //
                 .map(Function.identity()) //
                 .reduce((x, y) -> x + y) //
                 .get()
@@ -71,7 +69,8 @@ public class Benchmarks {
     @Benchmark
     public long flatMapMinMapReduceJavaStreams() {
         return LongStream.range(1, 1000) //
-                .boxed().flatMap(x -> java.util.stream.Stream.of(LongStream.of(x, x + 1, x + 4).min().getAsLong())) //
+                .boxed() //
+                .flatMap(x -> java.util.stream.Stream.of(LongStream.of(x, x + 1, x + 4).min().getAsLong())) //
                 .map(java.util.function.Function.identity()) //
                 .reduce((x, y) -> x + y) //
                 .get();
