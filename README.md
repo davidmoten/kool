@@ -108,6 +108,8 @@ stream
   .build()
   .forEach();
 ```
+### Origin of the name
+Functional programming -> Funk -> Kool and the Gang -> Kool!
 
 ## Benchmarks
 JMH is used for benchmarks. 
