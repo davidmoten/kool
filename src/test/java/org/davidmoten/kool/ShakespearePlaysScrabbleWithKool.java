@@ -60,7 +60,7 @@ public class ShakespearePlaysScrabbleWithKool extends ShakespearePlaysScrabble {
         Function<Integer, Integer> scoreOfALetter = letter -> letterScores[letter - 'a'];
 
         // score of the same letters in a word
-        Function<Entry<Integer, LongWrapper>, Integer> letterScore = //
+        Function<Entry<Integer, MutableLong>, Integer> letterScore = //
                 entry -> //
                 letterScores[entry.getKey() - 'a'] * //
                         Integer.min( //
@@ -70,21 +70,22 @@ public class ShakespearePlaysScrabbleWithKool extends ShakespearePlaysScrabble {
         Function<String, Stream<Integer>> toIntegerStream = string -> Stream.chars(string);
 
         // Histogram of the letters in a given word
-        Function<String, Map<Integer, LongWrapper>> histoOfLetters = word -> toIntegerStream //
+        Function<String, Map<Integer, MutableLong>> histoOfLetters = word -> toIntegerStream //
                 .apply(word) //
                 .collect( //
                         () -> new HashMap<>(), //
-                        (Map<Integer, LongWrapper> map, Integer value) -> {
-                            LongWrapper newValue = map.get(value);
+                        (Map<Integer, MutableLong> map, Integer value) -> {
+                            MutableLong newValue = map.get(value);
                             if (newValue == null) {
-                                newValue = () -> 0L;
+                                map.put(value, new MutableLong(1));
+                            } else {
+                                newValue.incAndSet();
                             }
-                            map.put(value, newValue.incAndSet());
                         })
                 .get();
 
         // number of blanks for a given letter
-        Function<Entry<Integer, LongWrapper>, Stream<Long>> blank = //
+        Function<Entry<Integer, MutableLong>, Stream<Long>> blank = //
                 entry -> //
                 Stream.of( //
                         Long.max( //

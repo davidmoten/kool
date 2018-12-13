@@ -278,7 +278,10 @@
                                         <argument>org.openjdk.jmh.Main</argument>
                                         <!-- -h for help -->
                                         <!-- <argument>-h</argument> -->
-                                        <!-- <argument>org.davidmoten.kool.ShakespearePlaysScrabbleWithNonParallelStreams</argument> -->
+<!--
+                                        <argument>org.davidmoten.kool.ShakespearePlaysScrabbleWithNonParallelStreams</argument>
+                                        <argument>org.davidmoten.kool.ShakespearePlaysScrabbleWithKool</argument>
+-->
                                         <argument>-f</argument>
                                         <argument>1</argument>
                                         <argument>-i</argument>

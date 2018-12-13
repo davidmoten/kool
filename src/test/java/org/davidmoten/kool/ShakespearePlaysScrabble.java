@@ -34,6 +34,14 @@ public class ShakespearePlaysScrabble {
         long get() {
             return value;
         }
+        
+        MutableLong() {
+            this(0);
+        }
+        
+        MutableLong(long l) {
+            this.value = l;
+        }
 
         MutableLong set(long l) {
             value = l;
