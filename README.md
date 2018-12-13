@@ -129,8 +129,9 @@ Stream
   // if success then log number of bytes
   .doOnValue(n -> System.out.println("bytes read=" + n)) 
   // we choose to suppress exception
-  .switchOnError(e -> Single.of(-1)) 
-  .forEach();
+  .switchOnError(e -> Single.of(-1))
+  // start (go, forEach or start) 
+  .go();
 ```
 output:
 ```

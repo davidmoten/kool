@@ -1672,7 +1672,7 @@ public final class StreamTest {
     public static void main(String[] args) throws MalformedURLException {
         URL url = new URL("https://doesnotexist.zz");
         Stream.using(() -> url.openStream(), in -> Stream.bytes(in))
-                .doOnStart(() -> System.out.println("starting at " + System.currentTimeMillis())) //
+                .doOnStart(() -> System.out.println("connecting at " + System.currentTimeMillis())) //
                 .retryWhen() //
                 .delays(Stream.of(1L, 2L, 4L), TimeUnit.SECONDS) // uses Thread.sleep!
                 .build() //

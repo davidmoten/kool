@@ -578,6 +578,14 @@ public interface Stream<T> extends StreamIterable<T> {
     public default void forEach() {
         count().get();
     }
+    
+    default void go() {
+        forEach();
+    }
+    
+    default void start() {
+        forEach();
+    }
 
     public default void forEach2(Consumer<? super T> consumer) {
         doOnNext(consumer).count().get();

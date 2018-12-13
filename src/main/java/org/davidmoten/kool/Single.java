@@ -104,7 +104,15 @@ public interface Single<T> extends StreamIterable<T> {
     default void forEach() {
         get();
     }
-
+    
+    default void go() {
+        get();
+    }
+    
+    default void start() {
+        get();
+    }
+    
     default Stream<T> repeat() {
         return toStream().repeat();
     }

@@ -128,6 +128,14 @@ public interface Maybe<T> extends StreamIterable<T> {
     public default void forEach() {
         get();
     }
+    
+    public default void start() {
+        get();
+    }
+    
+    public default void go() {
+        get();
+    }
 
     default Maybe<T> switchOnError(Function<? super Throwable, ? extends Maybe<? extends T>> function) {
         return new MaybeSwitchOnError<T>(this, function);
