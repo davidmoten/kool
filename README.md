@@ -148,7 +148,7 @@ Functional programming -> Funk -> Kool and the Gang -> Kool!
 ## Benchmarks
 JMH is used for benchmarks. 
 
-The Shakespeare Plays Scrabble benchmark uses the following factories and operators: `of`, `from`, `chars`, `map`, `flatMap`, `collect`, `reduce`, `take`, `filter`.
+The Shakespeare Plays Scrabble benchmark uses the following factories and operators: `of`, `from`, `chars`, `map`, `flatMap`, `collect`, `reduce`, `take`, `filter`, `concatWith`, `groupByList`, `toList`.
 
 ## Checklist for new operators
 * use `it.nextNullChecked()` instead of `it.next()` and `stream.iteratorNullChecked()` instead of `stream.iterator()`

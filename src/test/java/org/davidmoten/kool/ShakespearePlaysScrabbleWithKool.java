@@ -122,7 +122,8 @@ public class ShakespearePlaysScrabbleWithKool extends ShakespearePlaysScrabble {
         Function<String, Integer> bonusForDoubleLetter = word -> toBeMaxed //
                 .apply(word) //
                 .map(scoreOfALetter) //
-                .reduce(0, Integer::max).get();
+                .reduce(0, Integer::max) //
+                .get();
 
         // score of the word put on the board
         // score of the word put on the board
