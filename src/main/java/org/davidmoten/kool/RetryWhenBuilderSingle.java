@@ -5,39 +5,39 @@ import java.util.concurrent.TimeUnit;
 import org.davidmoten.kool.function.Predicate;
 import org.davidmoten.kool.internal.operators.stream.RetryWhen;
 
-public final class RetryWhenBuilder<T> {
+public final class RetryWhenBuilderSingle<T> {
 
-    private final Stream<T> stream;
+    private final Single<T> single;
     private Stream<Long> delays;
     private int maxRetries;
     private Predicate<? super Throwable> predicate;
 
-    public RetryWhenBuilder(Stream<T> stream) {
-        this.stream = stream;
+    public RetryWhenBuilderSingle(Single<T> single) {
+        this.single = single;
     }
 
-    public RetryWhenBuilder<T> delay(long duration, TimeUnit unit) {
+    public RetryWhenBuilderSingle<T> delay(long duration, TimeUnit unit) {
         this.delays = Single.of(unit.toMillis(duration)).repeat();
         return this;
     }
 
-    public RetryWhenBuilder<T> maxRetries(int maxRetries) {
+    public RetryWhenBuilderSingle<T> maxRetries(int maxRetries) {
         this.maxRetries = maxRetries;
         return this;
     }
 
-    public RetryWhenBuilder<T> delays(Stream<Long> delays, TimeUnit unit) {
+    public RetryWhenBuilderSingle<T> delays(Stream<Long> delays, TimeUnit unit) {
         this.delays = delays.map(x -> unit.toMillis(x));
         return this;
     }
 
-    public RetryWhenBuilder<T> isTrue(Predicate<? super Throwable> predicate) {
+    public RetryWhenBuilderSingle<T> isTrue(Predicate<? super Throwable> predicate) {
         this.predicate = predicate;
         return this;
     }
 
-    public Stream<T> build() {
-        return RetryWhen.build(stream, delays, maxRetries, predicate);
+    public Single<T> build() {
+        return RetryWhen.build(single.toStream(), delays, maxRetries, predicate).single();
     }
 
 }

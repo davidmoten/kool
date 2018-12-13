@@ -5,39 +5,39 @@ import java.util.concurrent.TimeUnit;
 import org.davidmoten.kool.function.Predicate;
 import org.davidmoten.kool.internal.operators.stream.RetryWhen;
 
-public final class RetryWhenBuilder<T> {
+public final class RetryWhenBuilderMaybe<T> {
 
-    private final Stream<T> stream;
+    private final Maybe<T> maybe;
     private Stream<Long> delays;
     private int maxRetries;
     private Predicate<? super Throwable> predicate;
 
-    public RetryWhenBuilder(Stream<T> stream) {
-        this.stream = stream;
+    public RetryWhenBuilderMaybe(Maybe<T> maybe) {
+        this.maybe = maybe;
     }
 
-    public RetryWhenBuilder<T> delay(long duration, TimeUnit unit) {
+    public RetryWhenBuilderMaybe<T> delay(long duration, TimeUnit unit) {
         this.delays = Single.of(unit.toMillis(duration)).repeat();
         return this;
     }
 
-    public RetryWhenBuilder<T> maxRetries(int maxRetries) {
+    public RetryWhenBuilderMaybe<T> maxRetries(int maxRetries) {
         this.maxRetries = maxRetries;
         return this;
     }
 
-    public RetryWhenBuilder<T> delays(Stream<Long> delays, TimeUnit unit) {
+    public RetryWhenBuilderMaybe<T> delays(Stream<Long> delays, TimeUnit unit) {
         this.delays = delays.map(x -> unit.toMillis(x));
         return this;
     }
 
-    public RetryWhenBuilder<T> isTrue(Predicate<? super Throwable> predicate) {
+    public RetryWhenBuilderMaybe<T> isTrue(Predicate<? super Throwable> predicate) {
         this.predicate = predicate;
         return this;
     }
 
-    public Stream<T> build() {
-        return RetryWhen.build(stream, delays, maxRetries, predicate);
+    public Maybe<T> build() {
+        return RetryWhen.build(maybe.toStream(), delays, maxRetries, predicate).maybe();
     }
 
 }

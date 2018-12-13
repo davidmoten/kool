@@ -1673,9 +1673,6 @@ public final class StreamTest {
         URL url = new URL("https://doesnotexist.zz");
         Stream.using(() -> url.openStream(), in -> Stream.bytes(in))
                 .doOnStart(() -> System.out.println("connecting at " + System.currentTimeMillis())) //
-                .retryWhen() //
-                .delays(Stream.of(1L, 2L, 4L), TimeUnit.SECONDS) // uses Thread.sleep!
-                .build() //
                 .reduce(0, (n, bytes)-> n + bytes.length) // count bytes
                 .doOnError(e -> System.out.println(e.getMessage())) //
                 .doOnValue(n -> System.out.println("bytes read=" + n)) //

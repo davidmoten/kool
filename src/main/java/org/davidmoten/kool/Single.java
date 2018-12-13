@@ -16,6 +16,7 @@ import org.davidmoten.kool.internal.operators.single.SingleIterator;
 import org.davidmoten.kool.internal.operators.single.SingleOf;
 import org.davidmoten.kool.internal.operators.single.SingleSwitchOnError;
 import org.davidmoten.kool.internal.operators.single.SingleToStream;
+import org.davidmoten.kool.internal.operators.stream.RetryWhen;
 
 import com.github.davidmoten.guavamini.Preconditions;
 
@@ -117,4 +118,11 @@ public interface Single<T> extends StreamIterable<T> {
         return toStream().repeat();
     }
 
+    default Single<T> retryWhen(Function<? super Throwable, ? extends Single<?>> function) {
+        return toStream().retryWhen(function).single();
+    }
+
+    default RetryWhenBuilderSingle<T> retryWhen() {
+        return new RetryWhenBuilderSingle<T>(this);
+    }
 }

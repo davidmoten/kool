@@ -144,5 +144,13 @@ public interface Maybe<T> extends StreamIterable<T> {
     public default <R> Maybe<R> flatMapMaybe(Function<? super T, ? extends Maybe<? extends R>> mapper) {
         return new MaybeFlatMapMaybe<T, R>(this, mapper);
     }
+    
+    default Maybe<T> retryWhen(Function<? super Throwable, ? extends Single<?>> function) {
+        return toStream().retryWhen(function).maybe();
+    }
+
+    default RetryWhenBuilderMaybe<T> retryWhen() {
+        return new RetryWhenBuilderMaybe<T>(this);
+    }
 
 }
