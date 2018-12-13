@@ -1674,6 +1674,9 @@ public final class StreamTest {
         Stream.using(() -> url.openStream(), in -> Stream.bytes(in))
                 .doOnStart(() -> System.out.println("connecting at " + System.currentTimeMillis())) //
                 .reduce(0, (n, bytes)-> n + bytes.length) // count bytes
+                .retryWhen() //
+                .delays(Stream.of(1L, 2L, 4L), TimeUnit.SECONDS) // uses Thread.sleep!
+                .build() //
                 .doOnError(e -> System.out.println(e.getMessage())) //
                 .doOnValue(n -> System.out.println("bytes read=" + n)) //
                 .switchOnError(e -> Single.of(-1)) //
