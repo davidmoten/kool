@@ -108,6 +108,39 @@ stream
   .build()
   .forEach();
 ```
+
+### RetryWhen example
+Let's count the bytes read from a URL and perform retries:
+
+```java
+URL url = new URL("https://doesnotexist.zz");
+Stream
+  // ensure streams are closed after use or error
+  .using(() -> url.openStream(), in -> Stream.bytes(in))
+  .doOnStart(() -> System.out.println("starting at " + System.currentTimeMillis())) 
+  .retryWhen() 
+  // sleep between retries
+  .delays(Stream.of(1L, 2L, 4L), TimeUnit.SECONDS)
+  .build() 
+  // count bytes read
+  .reduce(0, (n, bytes)-> n + bytes.length) 
+  // if error then log
+  .doOnError(e -> System.out.println(e.getMessage())) 
+  // if success then log number of bytes
+  .doOnValue(n -> System.out.println("bytes read=" + n)) 
+  // we choose to suppress exception
+  .switchOnError(e -> Single.of(-1)) 
+  .forEach();
+```
+output:
+```
+starting at 1544663193348
+starting at 1544663194657
+starting at 1544663196658
+starting at 1544663200659
+java.net.UnknownHostException: doesnotexist.zz
+```
+
 ## Origin of the name
 Functional programming -> Funk -> Kool and the Gang -> Kool!
 

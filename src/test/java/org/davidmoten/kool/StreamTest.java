@@ -1669,17 +1669,17 @@ public final class StreamTest {
         Stream.of(1.0, 2.0, 3.0).sumDouble(Function.identity()).test().assertValue(6.0);
     }
 
-    public static void main(String[] args) {
-        Stream.defer(() -> {
-            URL url = new URL("https://doesnotexist.zz");
-            return Stream.using(() -> url.openStream(), in -> Stream.bytes(in));
-        }) //
-        .doOnStart(() -> System.out.println("starting at " + System.currentTimeMillis())) //
-        .retryWhen() //
-        .delays(Stream.of(1L, 2L, 4L), TimeUnit.SECONDS) //
-        .build() //
-        .count() //
-        .doOnError(e -> System.out.println(e.getMessage())) //
-        .forEach();
+    public static void main(String[] args) throws MalformedURLException {
+        URL url = new URL("https://doesnotexist.zz");
+        Stream.using(() -> url.openStream(), in -> Stream.bytes(in))
+                .doOnStart(() -> System.out.println("starting at " + System.currentTimeMillis())) //
+                .retryWhen() //
+                .delays(Stream.of(1L, 2L, 4L), TimeUnit.SECONDS) // uses Thread.sleep!
+                .build() //
+                .reduce(0, (n, bytes)-> n + bytes.length) // count bytes
+                .doOnError(e -> System.out.println(e.getMessage())) //
+                .doOnValue(n -> System.out.println("bytes read=" + n)) //
+                .switchOnError(e -> Single.of(-1)) //
+                .forEach();
     }
 }
