@@ -61,4 +61,14 @@ public class SingleTest {
     public void testSingleFlatMapMaybe() {
         Single.of(1).flatMapMaybe(x -> Maybe.of(2)).test().assertValue(2);
     }
+    
+    @Test
+    public void testSwitchOnErrorWhenNoError() {
+        Single.of(1).switchOnError(e -> Single.of(2)).test().assertValueOnly(1);
+    }
+    
+    @Test
+    public void testSwitchOnErrorWhenError() {
+        Single.error(new RuntimeException("boo")).switchOnError(e -> Single.of(2)).test().assertValueOnly(2);
+    }
 }
