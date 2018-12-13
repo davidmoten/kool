@@ -1,9 +1,9 @@
 package org.davidmoten.kool.internal.operators.maybe;
 
 import java.util.Optional;
-import java.util.function.Function;
 
 import org.davidmoten.kool.Maybe;
+import org.davidmoten.kool.function.Function;
 
 import com.github.davidmoten.guavamini.Preconditions;
 
@@ -22,7 +22,7 @@ public final class MaybeFlatMapMaybe<T, R> implements Maybe<R> {
     public Optional<R> get() {
         Optional<T> v = maybe.get();
         if (v.isPresent()) {
-            return (Optional<R>) Preconditions.checkNotNull(mapper.apply(v.get()), "mapper cannot return null").get();
+            return (Optional<R>) Preconditions.checkNotNull(mapper.applyUnchecked(v.get()), "mapper cannot return null").get();
         } else {
             return Optional.empty();
         }

@@ -1,10 +1,10 @@
 package org.davidmoten.kool.internal.operators.single;
 
 import java.util.Optional;
-import java.util.function.Function;
 
 import org.davidmoten.kool.Maybe;
 import org.davidmoten.kool.Single;
+import org.davidmoten.kool.function.Function;
 
 import com.github.davidmoten.guavamini.Preconditions;
 
@@ -23,7 +23,7 @@ public final class SingleFlatMapMaybe<T, R> implements Maybe<R> {
     @Override
     public Optional<R> get() {
         T v = single.get();
-        Maybe<? extends R> maybe = Preconditions.checkNotNull(mapper.apply(v), "mapper cannot return null");
+        Maybe<? extends R> maybe = Preconditions.checkNotNull(mapper.applyUnchecked(v), "mapper cannot return null");
         return (Optional<R>) maybe.get();
     }
 

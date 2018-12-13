@@ -2,9 +2,9 @@ package org.davidmoten.kool;
 
 import java.util.Optional;
 import java.util.concurrent.Callable;
-import java.util.function.Consumer;
-import java.util.function.Function;
 
+import org.davidmoten.kool.function.Consumer;
+import org.davidmoten.kool.function.Function;
 import org.davidmoten.kool.internal.operators.maybe.MaybeDefer;
 import org.davidmoten.kool.internal.operators.maybe.MaybeDoOnEmpty;
 import org.davidmoten.kool.internal.operators.maybe.MaybeDoOnError;
@@ -122,7 +122,7 @@ public interface Maybe<T> extends StreamIterable<T> {
     }
 
     public default <R> R to(Function<? super Maybe<T>, R> mapper) {
-        return mapper.apply(this);
+        return mapper.applyUnchecked(this);
     }
 
     public default void forEach() {

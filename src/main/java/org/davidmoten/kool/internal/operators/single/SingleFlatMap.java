@@ -1,11 +1,10 @@
 package org.davidmoten.kool.internal.operators.single;
 
-import java.util.function.Function;
-
 import org.davidmoten.kool.Single;
 import org.davidmoten.kool.Stream;
 import org.davidmoten.kool.StreamIterable;
 import org.davidmoten.kool.StreamIterator;
+import org.davidmoten.kool.function.Function;
 
 import com.github.davidmoten.guavamini.Preconditions;
 
@@ -49,7 +48,7 @@ public class SingleFlatMap<T, R> implements Stream<R> {
                 if (finished) {
                     throw new IllegalStateException("stream finished");
                 } else if (it == null) {
-                    it = Preconditions.checkNotNull(mapper.apply(single.get()).iterator());
+                    it = Preconditions.checkNotNull(mapper.applyUnchecked(single.get()).iterator());
                 }
             }
 

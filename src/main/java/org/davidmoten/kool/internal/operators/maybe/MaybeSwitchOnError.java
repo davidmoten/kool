@@ -1,9 +1,9 @@
 package org.davidmoten.kool.internal.operators.maybe;
 
 import java.util.Optional;
-import java.util.function.Function;
 
 import org.davidmoten.kool.Maybe;
+import org.davidmoten.kool.function.Function;
 
 public final class MaybeSwitchOnError<T> implements Maybe<T> {
 
@@ -21,7 +21,7 @@ public final class MaybeSwitchOnError<T> implements Maybe<T> {
         try {
         return maybe.get();
         } catch (Throwable e) {
-            return (Optional<T>) function.apply(e).get();
+            return (Optional<T>) function.applyUnchecked(e).get();
         }
     }
 

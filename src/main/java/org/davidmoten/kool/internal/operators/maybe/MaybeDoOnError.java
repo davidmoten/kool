@@ -1,9 +1,9 @@
 package org.davidmoten.kool.internal.operators.maybe;
 
 import java.util.Optional;
-import java.util.function.Consumer;
 
 import org.davidmoten.kool.Maybe;
+import org.davidmoten.kool.function.Consumer;
 
 public final class MaybeDoOnError<T> implements Maybe<T> {
 
@@ -20,7 +20,7 @@ public final class MaybeDoOnError<T> implements Maybe<T> {
         try {
             return maybe.get();
         } catch (Throwable e) {
-            consumer.accept(e);
+            consumer.acceptUnchecked(e);
             throw e;
         }
     }

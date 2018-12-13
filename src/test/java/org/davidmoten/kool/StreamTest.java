@@ -16,6 +16,8 @@ import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.io.StringReader;
 import java.io.UncheckedIOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -1661,10 +1663,23 @@ public final class StreamTest {
     public void testSumLong() {
         Stream.of(1L, 2L, 3L).sumLong(Function.identity()).test().assertValue(6L);
     }
-    
+
     @Test
     public void testSumDouble() {
         Stream.of(1.0, 2.0, 3.0).sumDouble(Function.identity()).test().assertValue(6.0);
     }
-    
+
+    public static void main(String[] args) {
+        Stream.defer(() -> {
+            URL url = new URL("https://doesnotexist.zz");
+            return Stream.using(() -> url.openStream(), in -> Stream.bytes(in));
+        }) //
+        .doOnStart(() -> System.out.println("starting at " + System.currentTimeMillis())) //
+        .retryWhen() //
+        .delays(Stream.of(1L, 2L, 4L), TimeUnit.SECONDS) //
+        .build() //
+        .count() //
+        .doOnError(e -> System.out.println(e.getMessage())) //
+        .forEach();
+    }
 }

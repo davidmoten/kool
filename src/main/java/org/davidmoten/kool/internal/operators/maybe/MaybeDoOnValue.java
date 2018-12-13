@@ -1,9 +1,9 @@
 package org.davidmoten.kool.internal.operators.maybe;
 
 import java.util.Optional;
-import java.util.function.Consumer;
 
 import org.davidmoten.kool.Maybe;
+import org.davidmoten.kool.function.Consumer;
 
 public final class MaybeDoOnValue<T> implements Maybe<T> {
 
@@ -19,7 +19,7 @@ public final class MaybeDoOnValue<T> implements Maybe<T> {
     public Optional<T> get() {
         Optional<T> v = maybe.get();
         if (v.isPresent()) {
-            consumer.accept(v.get());
+            consumer.acceptUnchecked(v.get());
         } 
         return v;
     }

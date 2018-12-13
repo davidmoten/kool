@@ -2,12 +2,12 @@ package org.davidmoten.kool.internal.operators.maybe;
 
 import java.util.NoSuchElementException;
 import java.util.Optional;
-import java.util.function.Function;
 
 import org.davidmoten.kool.Maybe;
 import org.davidmoten.kool.Stream;
 import org.davidmoten.kool.StreamIterable;
 import org.davidmoten.kool.StreamIterator;
+import org.davidmoten.kool.function.Function;
 import org.davidmoten.kool.internal.util.EmptyStream;
 
 import com.github.davidmoten.guavamini.Preconditions;
@@ -59,7 +59,7 @@ public final class MaybeFlatMap<T, R> implements Stream<R> {
                 if (!finished && it == null) {
                     Optional<T> v = maybe.get();
                     if (v.isPresent()) {
-                        it = mapper.apply(v.get()).iterator();
+                        it = mapper.applyUnchecked(v.get()).iterator();
                     } else {
                         it = (StreamIterator<? extends R>) EmptyStream.INSTANCE.iterator();
                     }

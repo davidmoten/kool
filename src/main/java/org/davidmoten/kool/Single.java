@@ -3,8 +3,8 @@ package org.davidmoten.kool;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
+import org.davidmoten.kool.function.Function;
 import org.davidmoten.kool.internal.operators.single.Map;
 import org.davidmoten.kool.internal.operators.single.SingleDoOnError;
 import org.davidmoten.kool.internal.operators.single.SingleDoOnValue;
@@ -14,6 +14,7 @@ import org.davidmoten.kool.internal.operators.single.SingleFlatMapMaybe;
 import org.davidmoten.kool.internal.operators.single.SingleFromCallable;
 import org.davidmoten.kool.internal.operators.single.SingleIterator;
 import org.davidmoten.kool.internal.operators.single.SingleOf;
+import org.davidmoten.kool.internal.operators.single.SingleSwitchOnError;
 import org.davidmoten.kool.internal.operators.single.SingleToStream;
 
 import com.github.davidmoten.guavamini.Preconditions;
@@ -79,6 +80,10 @@ public interface Single<T> extends StreamIterable<T> {
     public default Single<T> doOnError(Consumer<? super Throwable> consumer) {
         return new SingleDoOnError<T>(consumer, this);
     }
+    
+    public default <R> Single<T> switchOnError(Function<? super Throwable, ? extends Single<? extends T>> function) {
+        return new SingleSwitchOnError<T>(this, function);
+    }
 
     default SingleTester<T> test() {
         return new SingleTester<T>(this);
@@ -93,7 +98,7 @@ public interface Single<T> extends StreamIterable<T> {
     }
 
     public default <R> R to(Function<? super Single<T>, R> mapper) {
-        return mapper.apply(this);
+        return mapper.applyUnchecked(this);
     }
 
     default void forEach() {

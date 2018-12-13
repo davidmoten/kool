@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Supplier;
 import java.util.stream.StreamSupport;
 
 import org.davidmoten.kool.function.Action;
@@ -462,20 +463,31 @@ public interface Stream<T> extends StreamIterable<T> {
     }
 
     public default <A, R> Single<R> collect(java.util.stream.Collector<T, A, R> collector) {
+
+        Supplier<A> supplier = collector.supplier();
+        java.util.function.BiConsumer<A, T> accumulator = collector.accumulator();
+        Function<A, R> finisher = new Function<A, R>() {
+            final java.util.function.Function<A, R> finisher = collector.finisher();
+
+            @Override
+            public R apply(A a) throws Exception {
+                return finisher.apply(a);
+            }
+        };
         return collect(new Collector<T, A>() {
 
             @Override
             public A call() throws Exception {
-                return collector.supplier().get();
+                return supplier.get();
             }
 
             @Override
             public A apply(A a, T t) throws Exception {
-                collector.accumulator().accept(a, t);
+                accumulator.accept(a, t);
                 return a;
             }
 
-        }).map(collector.finisher());
+        }).map(finisher);
     }
 
     public default <M extends java.util.Map<K, D>, K, V, D extends Collection<V>> Single<M> groupBy( //
