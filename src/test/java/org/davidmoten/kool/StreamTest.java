@@ -1683,7 +1683,7 @@ public final class StreamTest {
     public void testFromReaderBuffered() {
         Stream.from(new StringReader("abcdefg"), 3).test().assertValuesOnly("abc", "def", "g");
     }
-
+    
     public static void main(String[] args) throws MalformedURLException {
         URL url = new URL("https://doesnotexist.zz");
         Stream.using(() -> url.openStream(), in -> Stream.bytes(in))
