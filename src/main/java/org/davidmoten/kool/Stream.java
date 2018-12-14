@@ -189,6 +189,18 @@ public interface Stream<T> extends StreamIterable<T> {
         return new FromReader(reader, bufferSize);
     }
 
+    public static Stream<String> from(InputStream in, Charset charset, int bufferSize) {
+        return new FromReader(new InputStreamReader(in, charset), bufferSize);
+    }
+
+    public static Stream<String> from(InputStream in, Charset charset) {
+        return from(in, charset, DEFAULT_BUFFER_SIZE);
+    }
+
+    public static Stream<String> from(InputStream in) {
+        return from(in, StandardCharsets.UTF_8);
+    }
+
     public static <T> Stream<T> fromArray(T[] array, int fromIndex, int toIndex) {
         return new FromArray<T>(array, fromIndex, toIndex);
     }
