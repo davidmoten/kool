@@ -1669,11 +1669,26 @@ public final class StreamTest {
         Stream.of(1.0, 2.0, 3.0).sumDouble(Function.identity()).test().assertValue(6.0);
     }
 
+    @Test
+    public void testFromReader() {
+        Stream.from(new StringReader("")).test().assertValuesOnly();
+    }
+
+    @Test
+    public void testFromReaderOneLetter() {
+        Stream.from(new StringReader("a")).test().assertValuesOnly("a");
+    }
+    
+    @Test
+    public void testFromReaderBuffered() {
+        Stream.from(new StringReader("abcdefg"), 3).test().assertValuesOnly("abc", "def", "g");
+    }
+
     public static void main(String[] args) throws MalformedURLException {
         URL url = new URL("https://doesnotexist.zz");
         Stream.using(() -> url.openStream(), in -> Stream.bytes(in))
                 .doOnStart(() -> System.out.println("connecting at " + System.currentTimeMillis())) //
-                .reduce(0, (n, bytes)-> n + bytes.length) // count bytes
+                .reduce(0, (n, bytes) -> n + bytes.length) // count bytes
                 .retryWhen() //
                 .delays(Stream.of(1L, 2L, 4L), TimeUnit.SECONDS) // uses Thread.sleep!
                 .build() //

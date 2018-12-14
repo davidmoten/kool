@@ -8,6 +8,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Reader;
 import java.io.UncheckedIOException;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
@@ -61,6 +62,7 @@ import org.davidmoten.kool.internal.operators.stream.FromArrayInt;
 import org.davidmoten.kool.internal.operators.stream.FromBufferedReader;
 import org.davidmoten.kool.internal.operators.stream.FromChars;
 import org.davidmoten.kool.internal.operators.stream.FromInputStream;
+import org.davidmoten.kool.internal.operators.stream.FromReader;
 import org.davidmoten.kool.internal.operators.stream.Generate;
 import org.davidmoten.kool.internal.operators.stream.IgnoreDisposalError;
 import org.davidmoten.kool.internal.operators.stream.IsEmpty;
@@ -178,6 +180,14 @@ public interface Stream<T> extends StreamIterable<T> {
     public static <T> Stream<T> from(Iterable<T> iterable) {
         return create(iterable);
     }
+    
+    public static Stream<String> from(Reader reader) {
+        return new FromReader(reader, DEFAULT_BUFFER_SIZE);
+    }
+    
+    public static Stream<String> from(Reader reader, int bufferSize) {
+        return new FromReader(reader, bufferSize);
+    }
 
     public static <T> Stream<T> fromArray(T[] array, int fromIndex, int toIndex) {
         return new FromArray<T>(array, fromIndex, toIndex);
@@ -270,7 +280,7 @@ public interface Stream<T> extends StreamIterable<T> {
     public static Stream<String> linesFromResource(String resource) {
         return linesFromResource(Stream.class, resource, StandardCharsets.UTF_8);
     }
-
+    
     public static Stream<ByteBuffer> byteBuffers(Callable<? extends InputStream> provider, int bufferSize) {
         return using(provider, is -> byteBuffers(is));
     }
@@ -398,6 +408,10 @@ public interface Stream<T> extends StreamIterable<T> {
      */
     public static Stream<Integer> interval(long duration, TimeUnit unit) {
         return range(1, Integer.MAX_VALUE).doOnNext(x -> unit.sleep(duration)).prepend(0);
+    }
+    
+    public static InputStream inputStream(Stream<? extends byte[]> stream) {
+        return StreamUtils.toInputStream(stream);
     }
 
     //////////////////
@@ -907,7 +921,7 @@ public interface Stream<T> extends StreamIterable<T> {
     public default Stream<T> repeatLast() {
         return repeatLast(Long.MAX_VALUE);
     }
-
+    
     // TODO
     // retryWhen,
     // add Maybe.flatMapMaybe
