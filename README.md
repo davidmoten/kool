@@ -7,14 +7,15 @@
 Alternative to `java.util.stream.Stream`:
 
 * is sometimes much faster for synchonronous use ([benchmarks](benchmarks.md))
-* has many **more operators** and is generally less verbose
+* has many **more operators** and is generally **less verbose**
+* operators are **more discoverable**
 * streams are **reusable**
 * **disposes** resources
-* is designed for synchronous use only
-* models 0..1 and 1 element streams explicitly with **`Maybe`** and **`Single`**.
+* is designed for **synchronous use only**
+* models **0..1** and **1** element streams explicitly with **`Maybe`** and **`Single`**.
 * does not support streams of nulls (use `Optional` or `Maybe`)
-* 30% faster on *Shakespeare Plays Scrabble* [benchmark](benchmarks.md)
-* has time-based operators
+* 30% **faster** on *Shakespeare Plays Scrabble* [benchmark](benchmarks.md)
+* has **time-based** operators
 
 Status: *available on Maven Central* 
 
