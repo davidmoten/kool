@@ -478,10 +478,6 @@ public interface Stream<T> extends StreamIterable<T> {
         return new ReduceWithInitialValueSupplier<R, T>(initialValueFactory, reducer, this);
     }
 
-    public default <R> Single<R> reduce(Collector<T, R> collector) {
-        return reduceWithFactory(collector, collector);
-    }
-
     public default <R> Single<Integer> sumInt(Function<? super T, Integer> mapper) {
         return reduce(0, (x, y) -> x + mapper.apply(y));
     }

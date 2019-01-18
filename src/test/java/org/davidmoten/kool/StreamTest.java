@@ -110,7 +110,7 @@ public final class StreamTest {
     public void testReduceWithInitialValue() {
         Stream.of(1, 2, 3, 4).reduce(10, (a, b) -> a + b).test().assertValue(20);
     }
-
+    
     @Test
     public void testFlatMapEmpty() {
         Stream.of(1, 2, 3).flatMap(x -> Stream.<Integer>empty()).isEmpty().test().assertValue(true);
@@ -1674,7 +1674,7 @@ public final class StreamTest {
     public void testCollector() {
         Stream.of(4, 5).collect(Collectors.counting()).test().assertValue(2L);
     }
-
+    
     @Test
     public void testSumInt() {
         Stream.of(1, 2, 3).sumInt(Function.identity()).test().assertValue(6);
