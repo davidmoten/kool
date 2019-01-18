@@ -436,7 +436,7 @@ public interface Stream<T> extends StreamIterable<T> {
     }
 
     public static Stream<String> strings(Stream<? extends byte[]> stream) {
-        return strings(stream, StandardCharsets.UTF_8, DEFAULT_BUFFER_SIZE);
+        return strings(stream, StandardCharsets.UTF_8);
     }
 
     //////////////////

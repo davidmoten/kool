@@ -1706,17 +1706,24 @@ public final class StreamTest {
     }
 
     @Test
-    public void testStrings() {
+    public void testFromInputStream() {
         String s = "hello there how are you";
         InputStream in = new ByteArrayInputStream(s.getBytes(StandardCharsets.UTF_8));
         Stream.from(in).reduce((x, y) -> x + y).test().assertValue(s);
     }
 
     @Test
-    public void testStringsSmallBufferSize() {
+    public void testFromInputStreamSmallBufferSize() {
         String s = "hello there how are you";
         InputStream in = new ByteArrayInputStream(s.getBytes(StandardCharsets.UTF_8));
         Stream.from(in, StandardCharsets.UTF_8, 2).reduce((x, y) -> x + y).test().assertValue(s);
+    }
+    
+    @Test
+    public void testStringsFromBytesStream() {
+        Stream.strings(Stream.of("hello there".getBytes(StandardCharsets.UTF_8))) //
+                .test() //
+                .assertValues("hello there").assertNoError();
     }
 
     public static void main(String[] args) throws MalformedURLException {
