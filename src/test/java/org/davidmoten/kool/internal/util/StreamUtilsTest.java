@@ -1,15 +1,20 @@
 package org.davidmoten.kool.internal.util;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 
 import org.davidmoten.kool.Stream;
 import org.junit.Test;
 
 public final class StreamUtilsTest {
-    
+
     @Test
     public void testToInputStreamEmptyRead() throws IOException {
         InputStream in = StreamUtils.toInputStream(Stream.empty());
@@ -23,6 +28,16 @@ public final class StreamUtilsTest {
         byte[] bytes = new byte[3];
         assertEquals(-1, in.read(bytes));
         assertEquals(-1, in.read(bytes));
+    }
+
+    @Test
+    public void testStreamInputStream() throws IOException {
+        InputStream is = Stream.inputStream(
+                Stream.bytes(() -> new ByteArrayInputStream("hello there".getBytes(StandardCharsets.UTF_8))));
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8))) {
+            assertEquals("hello there", br.readLine());
+            assertNull(br.readLine());
+        }
     }
 
     @Test

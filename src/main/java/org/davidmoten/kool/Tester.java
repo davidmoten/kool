@@ -3,6 +3,7 @@ package org.davidmoten.kool;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import org.davidmoten.kool.function.Predicate;
 
@@ -80,6 +81,10 @@ public final class Tester<T> {
             throw new AssertionError("error " + error.getClass() + " failed predicate");
         }
         return this;
+    }
+
+    public Tester<T> assertErrorMessage(String message) {
+        return assertError(e -> Objects.equals(message, e.getMessage()));
     }
 
 }
