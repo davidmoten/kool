@@ -25,10 +25,6 @@ public final class Indexed<T> {
         return index;
     }
     
-    public Indexed<T> incrementIndex() {
-        return new Indexed<T>(t, index + 1);
-    }
-
     @Override
     public int hashCode() {
         final int prime = 31;

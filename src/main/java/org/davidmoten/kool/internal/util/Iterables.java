@@ -1,12 +1,7 @@
 package org.davidmoten.kool.internal.util;
 
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
-
-import org.davidmoten.kool.Maybe;
-import org.davidmoten.kool.StreamIterable;
-import org.davidmoten.kool.StreamIterator;
 
 public final class Iterables {
 
@@ -72,27 +67,6 @@ public final class Iterables {
             }
 
         };
-    }
-
-    public static <T> Maybe<T> first(Iterator<T> it) {
-        if (it.hasNext()) {
-            return Maybe.of(it.next());
-        } else {
-            return Maybe.empty();
-        }
-    }
-
-    public static <R extends Collection<S>, S, T extends S> R addAll(R collection,
-            StreamIterable<T> iterable) {
-        StreamIterator<T> it = iterable.iterator();
-        try {
-            while (it.hasNext()) {
-                collection.add(it.next());
-            }
-        } finally {
-            it.dispose();
-        }
-        return collection;
     }
 
 }

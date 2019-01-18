@@ -1,9 +1,11 @@
 package org.davidmoten.kool;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.Test;
 
@@ -70,5 +72,24 @@ public class SingleTest {
     @Test
     public void testSwitchOnErrorWhenError() {
         Single.error(new RuntimeException("boo")).switchOnError(e -> Single.of(2)).test().assertValueOnly(2);
+    }
+    
+    @Test
+    public void testTo() {
+        assertEquals(2, (int) Single.of(1).to(x -> 2));
+    }
+    
+    @Test
+    public void testGo() {
+        AtomicBoolean done = new AtomicBoolean();
+        Single.of(1).doOnValue(x -> done.set(true)).go();
+        assertTrue(done.get());
+    }
+    
+    @Test
+    public void testStart() {
+        AtomicBoolean done = new AtomicBoolean();
+        Single.of(1).doOnValue(x -> done.set(true)).start();
+        assertTrue(done.get());
     }
 }
