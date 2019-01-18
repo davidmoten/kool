@@ -1725,6 +1725,12 @@ public final class StreamTest {
                 .test() //
                 .assertValues("hello there").assertNoError();
     }
+    
+    @Test(expected=NoSuchElementException.class)
+    public void testEmptyIteratorGoesTooFar() {
+        StreamIterator<Object> it = Stream.empty().iterator();
+        it.next();
+    }
 
     public static void main(String[] args) throws MalformedURLException {
         URL url = new URL("https://doesnotexist.zz");
