@@ -911,6 +911,10 @@ public interface Stream<T> extends StreamIterable<T> {
     public default Stream<Notification<T>> materialize() {
         return new Materialize<T>(this);
     }
+    
+    public default <R> Stream<R> dematerialize(Function<? super T, Notification<? extends R>> function) {
+        return new Dematerialize<T, R>(this, function);
+    }
 
     public default Stream<T> reverse() {
         return new Reverse<T>(this);
@@ -928,9 +932,7 @@ public interface Stream<T> extends StreamIterable<T> {
         return merge(this, stream);
     }
 
-    public default <R> Stream<R> dematerialize() {
-        return new Dematerialize<T, R>(this);
-    }
+
 
     public default Stream<T> retryWhen(Function<? super Throwable, ? extends Single<?>> function) {
         return new RetryWhen<T>(this, function);

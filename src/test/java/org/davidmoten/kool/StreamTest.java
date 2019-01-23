@@ -110,7 +110,7 @@ public final class StreamTest {
     public void testReduceWithInitialValue() {
         Stream.of(1, 2, 3, 4).reduce(10, (a, b) -> a + b).test().assertValue(20);
     }
-    
+
     @Test
     public void testFlatMapEmpty() {
         Stream.of(1, 2, 3).flatMap(x -> Stream.<Integer>empty()).isEmpty().test().assertValue(true);
@@ -1510,17 +1510,14 @@ public final class StreamTest {
 
     @Test
     public void testDematerializeEmpty() {
-        Stream.empty().dematerialize().test().assertError(NoSuchElementException.class);
-    }
-
-    @Test
-    public void testDematerializeNonNotification() {
-        Stream.of(1).dematerialize().test().assertError(ClassCastException.class);
+        Stream.empty().dematerialize(x -> null).test().assertError(NoSuchElementException.class);
     }
 
     @Test
     public void testDematerializeRealNotifications() {
-        Stream.of(Notification.of(1), Notification.of(2), Notification.complete()).dematerialize().test()
+        Stream.of(Notification.of(1), Notification.of(2), Notification.complete()) //
+                .dematerialize(Function.identity()) //
+                .test() //
                 .assertValuesOnly(1, 2);
     }
 
@@ -1528,7 +1525,7 @@ public final class StreamTest {
     public void testDematerializeRealNotificationsAndError() {
         RuntimeException error = new RuntimeException("boo");
         Stream.of(Notification.of(1), Notification.of(2), Notification.error(error)) //
-                .dematerialize() //
+                .dematerialize(Function.identity()) //
                 .test() //
                 .assertValues(1, 2) //
                 .assertError(e -> e == error);
@@ -1537,7 +1534,7 @@ public final class StreamTest {
     @Test
     public void testDematerializeRealNotificationsNoTerminalEvent() {
         Stream.of(Notification.of(1), Notification.of(2)) //
-                .dematerialize() //
+                .dematerialize(Function.identity()) //
                 .test() //
                 .assertValues(1, 2) //
                 .assertError(NoSuchElementException.class);
@@ -1663,10 +1660,10 @@ public final class StreamTest {
     public void testRepeatLastWithNegativeCount() {
         Stream.of(1, 2).repeatLast(-1);
     }
-    
+
     @Test
     public void testRepeatLastWithCountZero() {
-        Stream<Integer> x = Stream.of(1,2);
+        Stream<Integer> x = Stream.of(1, 2);
         assertTrue(x == x.repeatLast(0));
     }
 
@@ -1674,7 +1671,7 @@ public final class StreamTest {
     public void testCollector() {
         Stream.of(4, 5).collect(Collectors.counting()).test().assertValue(2L);
     }
-    
+
     @Test
     public void testSumInt() {
         Stream.of(1, 2, 3).sumInt(Function.identity()).test().assertValue(6);
@@ -1718,15 +1715,15 @@ public final class StreamTest {
         InputStream in = new ByteArrayInputStream(s.getBytes(StandardCharsets.UTF_8));
         Stream.from(in, StandardCharsets.UTF_8, 2).reduce((x, y) -> x + y).test().assertValue(s);
     }
-    
+
     @Test
     public void testStringsFromBytesStream() {
         Stream.strings(Stream.of("hello there".getBytes(StandardCharsets.UTF_8))) //
                 .test() //
                 .assertValues("hello there").assertNoError();
     }
-    
-    @Test(expected=NoSuchElementException.class)
+
+    @Test(expected = NoSuchElementException.class)
     public void testEmptyIteratorGoesTooFar() {
         StreamIterator<Object> it = Stream.empty().iterator();
         it.next();
