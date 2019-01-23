@@ -451,6 +451,16 @@ public final class StreamTest {
                 .test() //
                 .assertValuesOnly(3, 8);
     }
+    
+    @Test
+    public void testZipDifferentLengths() {
+        Stream.of(1, 2) //
+                .zipWith(Stream.of(3, 4, 5), (x, y) -> x * y) //
+                .test() //
+                .assertValues(3, 8) //
+                .assertError(e -> {
+                    return e.getMessage().startsWith("streams must have same length");});
+    }
 
     @Test
     public void testUsing() {
@@ -1727,6 +1737,27 @@ public final class StreamTest {
     public void testEmptyIteratorGoesTooFar() {
         StreamIterator<Object> it = Stream.empty().iterator();
         it.next();
+    }
+    
+    @Test(expected=NoSuchElementException.class)
+    public void testRepeatLastIteratorWithEmpty() {
+        StreamIterator<Object> it = Stream.empty().repeatLast().iterator();
+        it.next();
+    }
+    
+    @Test(expected=NoSuchElementException.class)
+    public void testRepeatLastIteratorBeyondOne() {
+        StreamIterator<Integer> it = Stream.of(1).repeatLast(1).iterator();
+        assertEquals(1, (int)  it.next());
+        assertEquals(1, (int) it.next());
+        it.next();
+    }
+    
+    @Test
+    public void testRepeatLastEarlyDispose() {
+        StreamIterator<Integer> it = Stream.of(1).repeatLast(1000).first().iterator();
+        assertEquals(1, (int) it.next());
+        assertFalse(it.hasNext());
     }
 
     public static void main(String[] args) throws MalformedURLException {

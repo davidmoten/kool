@@ -943,7 +943,6 @@ public interface Stream<T> extends StreamIterable<T> {
     }
 
     public default Stream<T> repeatLast(long count) {
-        Preconditions.checkArgument(count >= 0);
         if (count == 0) {
             return this;
         } else {
