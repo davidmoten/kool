@@ -253,5 +253,24 @@ public final class MaybeTest {
             .assertError(TestException.class);
         assertEquals(4, count.get());
     }
+
     
+    @Test
+    public void testTo() {
+        assertEquals(2, (int) Maybe.of(1).to(x -> 2));
+    }
+    
+    @Test
+    public void testStart() {
+        AtomicBoolean b = new AtomicBoolean();
+        Maybe.of(1).doOnValue(x -> b.set(true)).start();
+        assertTrue(b.get());
+    }
+    
+    @Test
+    public void testGo() {
+        AtomicBoolean b = new AtomicBoolean();
+        Maybe.of(1).doOnValue(x -> b.set(true)).go();
+        assertTrue(b.get());
+    }
 }
