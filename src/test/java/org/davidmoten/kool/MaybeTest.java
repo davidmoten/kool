@@ -47,7 +47,7 @@ public final class MaybeTest {
                 .test() //
                 .assertNoValues();
     }
-    
+
     @Test
     public void testMaybeFlatMapMaybe() {
         Maybe.of(1).flatMapMaybe(x -> Maybe.of(x + 1)).test().assertValue(2);
@@ -189,12 +189,12 @@ public final class MaybeTest {
         StreamIterator<Integer> it = Maybe.<Integer>empty().iterator();
         it.next();
     }
-    
+
     @Test
     public void testMaybeOfNull() {
         Maybe.ofNullable(null).test().assertNoValue();
     }
-    
+
     @Test
     public void testMaybeOfNonNull() {
         Maybe.ofNullable(1).test().assertValue(1);
@@ -204,73 +204,80 @@ public final class MaybeTest {
     public void testRetryWhen() {
         AtomicInteger count = new AtomicInteger();
         Maybe.error(new TestException()) //
-        .doOnError(e -> count.incrementAndGet()) //
-        .retryWhen() //
-            .maxRetries(3) //
-            .build() //
-            .test() //
-            .assertError(TestException.class);
+                .doOnError(e -> count.incrementAndGet()) //
+                .retryWhen() //
+                .maxRetries(3) //
+                .build() //
+                .test() //
+                .assertError(TestException.class);
         assertEquals(4, count.get());
     }
-    
+
     @Test
     public void testRetryWhenDelays() {
         AtomicInteger count = new AtomicInteger();
         Maybe.error(new TestException()) //
-        .doOnError(e -> count.incrementAndGet()) //
-        .retryWhen() //
-            .maxRetries(3) //
-            .delay(1,  TimeUnit.MILLISECONDS) //
-            .build() //
-            .test() //
-            .assertError(TestException.class);
+                .doOnError(e -> count.incrementAndGet()) //
+                .retryWhen() //
+                .maxRetries(3) //
+                .delay(1, TimeUnit.MILLISECONDS) //
+                .build() //
+                .test() //
+                .assertError(TestException.class);
         assertEquals(4, count.get());
     }
-    
+
     @Test
     public void testRetryWhenDelaysStream() {
         AtomicInteger count = new AtomicInteger();
         Maybe.error(new TestException()) //
-        .doOnError(e -> count.incrementAndGet()) //
-        .retryWhen() //
-            .maxRetries(3) //
-            .delays(Stream.of(1L).repeat(),  TimeUnit.MILLISECONDS) //
-            .build() //
-            .test() //
-            .assertError(TestException.class);
+                .doOnError(e -> count.incrementAndGet()) //
+                .retryWhen() //
+                .maxRetries(3) //
+                .delays(Stream.of(1L).repeat(), TimeUnit.MILLISECONDS) //
+                .build() //
+                .test() //
+                .assertError(TestException.class);
         assertEquals(4, count.get());
     }
-    
+
     @Test
     public void testRetryWhenWithPredicate() {
         AtomicInteger count = new AtomicInteger();
         Maybe.error(new TestException()) //
-        .doOnError(e -> count.incrementAndGet()) //
-        .retryWhen() //
-            .isTrue(e -> count.get() <=3) //
-            .build() //
-            .test() //
-            .assertError(TestException.class);
+                .doOnError(e -> count.incrementAndGet()) //
+                .retryWhen() //
+                .isTrue(e -> count.get() <= 3) //
+                .build() //
+                .test() //
+                .assertError(TestException.class);
         assertEquals(4, count.get());
     }
 
-    
     @Test
     public void testTo() {
         assertEquals(2, (int) Maybe.of(1).to(x -> 2));
     }
-    
+
     @Test
     public void testStart() {
         AtomicBoolean b = new AtomicBoolean();
         Maybe.of(1).doOnValue(x -> b.set(true)).start();
         assertTrue(b.get());
     }
-    
+
     @Test
     public void testGo() {
         AtomicBoolean b = new AtomicBoolean();
         Maybe.of(1).doOnValue(x -> b.set(true)).go();
         assertTrue(b.get());
     }
+
+    @Test
+    public void testMaybeToStreamIterator() {
+        StreamIterator<Integer> it = Maybe.of(1).iterator();
+        assertTrue(it.hasNext());
+        assertEquals(1, (int) it.next());
+    }
+
 }

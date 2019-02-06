@@ -147,4 +147,9 @@ public class SingleTest {
         assertEquals(4, count.get());
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void testSingleBadTimer() {
+        Single.timer(-1, TimeUnit.SECONDS);
+    }
+
 }
