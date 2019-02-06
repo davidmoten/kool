@@ -992,6 +992,15 @@ public final class StreamTest {
     }
 
     @Test
+    public void testTakeLastEarlyDisposal() {
+        AtomicBoolean b = new AtomicBoolean();
+        StreamIterator<Integer> it = Stream.of(1, 2, 3).doOnDispose(()-> b.set(true)).takeLast(2).iterator();
+        it.dispose();
+        assertTrue(b.get());
+    }
+
+    
+    @Test
     public void testGenerateOneValueAndImmediatelyComplete() {
         Stream.<Integer>generate(emitter -> {
             emitter.onNext(1);
