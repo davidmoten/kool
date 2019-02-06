@@ -5,6 +5,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.Test;
 
@@ -62,33 +63,88 @@ public class SingleTest {
     public void testSingleFlatMapMaybe() {
         Single.of(1).flatMapMaybe(x -> Maybe.of(2)).test().assertValue(2);
     }
-    
+
     @Test
     public void testSwitchOnErrorWhenNoError() {
         Single.of(1).switchOnError(e -> Single.of(2)).test().assertValueOnly(1);
     }
-    
+
     @Test
     public void testSwitchOnErrorWhenError() {
         Single.error(new RuntimeException("boo")).switchOnError(e -> Single.of(2)).test().assertValueOnly(2);
     }
-    
+
     @Test
     public void testTo() {
         assertEquals(2, (int) Single.of(1).to(x -> 2));
     }
-    
+
     @Test
     public void testGo() {
         AtomicBoolean done = new AtomicBoolean();
         Single.of(1).doOnValue(x -> done.set(true)).go();
         assertTrue(done.get());
     }
-    
+
     @Test
     public void testStart() {
         AtomicBoolean done = new AtomicBoolean();
         Single.of(1).doOnValue(x -> done.set(true)).start();
         assertTrue(done.get());
     }
+
+    @Test
+    public void testRetryWhen() {
+        AtomicInteger count = new AtomicInteger();
+        Single.error(new TestException()) //
+                .doOnError(e -> count.incrementAndGet()) //
+                .retryWhen() //
+                .maxRetries(3) //
+                .build() //
+                .test() //
+                .assertError(TestException.class);
+        assertEquals(4, count.get());
+    }
+
+    @Test
+    public void testRetryWhenDelays() {
+        AtomicInteger count = new AtomicInteger();
+        Single.error(new TestException()) //
+                .doOnError(e -> count.incrementAndGet()) //
+                .retryWhen() //
+                .maxRetries(3) //
+                .delay(1, TimeUnit.MILLISECONDS) //
+                .build() //
+                .test() //
+                .assertError(TestException.class);
+        assertEquals(4, count.get());
+    }
+
+    @Test
+    public void testRetryWhenDelaysStream() {
+        AtomicInteger count = new AtomicInteger();
+        Single.error(new TestException()) //
+                .doOnError(e -> count.incrementAndGet()) //
+                .retryWhen() //
+                .maxRetries(3) //
+                .delays(Stream.of(1L).repeat(), TimeUnit.MILLISECONDS) //
+                .build() //
+                .test() //
+                .assertError(TestException.class);
+        assertEquals(4, count.get());
+    }
+
+    @Test
+    public void testRetryWhenWithPredicate() {
+        AtomicInteger count = new AtomicInteger();
+        Single.error(new TestException()) //
+                .doOnError(e -> count.incrementAndGet()) //
+                .retryWhen() //
+                .isTrue(e -> count.get() <= 3) //
+                .build() //
+                .test() //
+                .assertError(TestException.class);
+        assertEquals(4, count.get());
+    }
+
 }
