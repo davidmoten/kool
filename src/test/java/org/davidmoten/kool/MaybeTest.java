@@ -7,6 +7,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
@@ -199,4 +200,58 @@ public final class MaybeTest {
         Maybe.ofNullable(1).test().assertValue(1);
     }
 
+    @Test
+    public void testRetryWhen() {
+        AtomicInteger count = new AtomicInteger();
+        Maybe.error(new TestException()) //
+        .doOnError(e -> count.incrementAndGet()) //
+        .retryWhen() //
+            .maxRetries(3) //
+            .build() //
+            .test() //
+            .assertError(TestException.class);
+        assertEquals(4, count.get());
+    }
+    
+    @Test
+    public void testRetryWhenDelays() {
+        AtomicInteger count = new AtomicInteger();
+        Maybe.error(new TestException()) //
+        .doOnError(e -> count.incrementAndGet()) //
+        .retryWhen() //
+            .maxRetries(3) //
+            .delay(1,  TimeUnit.MILLISECONDS) //
+            .build() //
+            .test() //
+            .assertError(TestException.class);
+        assertEquals(4, count.get());
+    }
+    
+    @Test
+    public void testRetryWhenDelaysStream() {
+        AtomicInteger count = new AtomicInteger();
+        Maybe.error(new TestException()) //
+        .doOnError(e -> count.incrementAndGet()) //
+        .retryWhen() //
+            .maxRetries(3) //
+            .delays(Stream.of(1L).repeat(),  TimeUnit.MILLISECONDS) //
+            .build() //
+            .test() //
+            .assertError(TestException.class);
+        assertEquals(4, count.get());
+    }
+    
+    @Test
+    public void testRetryWhenWithPredicate() {
+        AtomicInteger count = new AtomicInteger();
+        Maybe.error(new TestException()) //
+        .doOnError(e -> count.incrementAndGet()) //
+        .retryWhen() //
+            .isTrue(e -> count.get() <=3) //
+            .build() //
+            .test() //
+            .assertError(TestException.class);
+        assertEquals(4, count.get());
+    }
+    
 }

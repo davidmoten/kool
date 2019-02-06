@@ -30,7 +30,7 @@ public final class MaybeTester<T> {
             throw new AssertionError("Did not expect a value but found " + value.get());
         }
     }
-
+    
     public MaybeTester<T> assertNoError() {
         if (error != null) {
             throw new AssertionError("no error expected but one was found", error);
