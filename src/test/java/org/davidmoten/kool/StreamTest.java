@@ -451,7 +451,7 @@ public final class StreamTest {
                 .test() //
                 .assertValuesOnly(3, 8);
     }
-    
+
     @Test
     public void testZipDifferentLengths() {
         Stream.of(1, 2) //
@@ -459,7 +459,8 @@ public final class StreamTest {
                 .test() //
                 .assertValues(3, 8) //
                 .assertError(e -> {
-                    return e.getMessage().startsWith("streams must have same length");});
+                    return e.getMessage().startsWith("streams must have same length");
+                });
     }
 
     @Test
@@ -994,12 +995,11 @@ public final class StreamTest {
     @Test
     public void testTakeLastEarlyDisposal() {
         AtomicBoolean b = new AtomicBoolean();
-        StreamIterator<Integer> it = Stream.of(1, 2, 3).doOnDispose(()-> b.set(true)).takeLast(2).iterator();
+        StreamIterator<Integer> it = Stream.of(1, 2, 3).doOnDispose(() -> b.set(true)).takeLast(2).iterator();
         it.dispose();
         assertTrue(b.get());
     }
 
-    
     @Test
     public void testGenerateOneValueAndImmediatelyComplete() {
         Stream.<Integer>generate(emitter -> {
@@ -1747,26 +1747,33 @@ public final class StreamTest {
         StreamIterator<Object> it = Stream.empty().iterator();
         it.next();
     }
-    
-    @Test(expected=NoSuchElementException.class)
+
+    @Test(expected = NoSuchElementException.class)
     public void testRepeatLastIteratorWithEmpty() {
         StreamIterator<Object> it = Stream.empty().repeatLast().iterator();
         it.next();
     }
-    
-    @Test(expected=NoSuchElementException.class)
+
+    @Test(expected = NoSuchElementException.class)
     public void testRepeatLastIteratorBeyondOne() {
         StreamIterator<Integer> it = Stream.of(1).repeatLast(1).iterator();
-        assertEquals(1, (int)  it.next());
+        assertEquals(1, (int) it.next());
         assertEquals(1, (int) it.next());
         it.next();
     }
-    
+
     @Test
     public void testRepeatLastEarlyDispose() {
         StreamIterator<Integer> it = Stream.of(1).repeatLast(1000).first().iterator();
         assertEquals(1, (int) it.next());
         assertFalse(it.hasNext());
+    }
+
+    @Test(expected = NoSuchElementException.class)
+    public void testEmptyNext() {
+        StreamIterator<Object> it = Stream.empty().iterator();
+        assertFalse(it.hasNext());
+        it.next();
     }
 
     public static void main(String[] args) throws MalformedURLException {

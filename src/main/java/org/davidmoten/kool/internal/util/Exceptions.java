@@ -7,6 +7,10 @@ import org.davidmoten.kool.exceptions.UncheckedException;
 import com.github.davidmoten.guavamini.Preconditions;
 
 public final class Exceptions {
+    
+    private Exceptions() {
+        // prevent instantiation
+    }
 
     public static <T> T rethrow(Throwable e) {
         if (e instanceof RuntimeException) {

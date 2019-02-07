@@ -7,6 +7,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.davidmoten.kool.exceptions.TestRuntimeException;
 import org.junit.Test;
 
 public class SingleTest {
@@ -96,54 +97,54 @@ public class SingleTest {
     @Test
     public void testRetryWhen() {
         AtomicInteger count = new AtomicInteger();
-        Single.error(new TestException()) //
+        Single.error(new TestRuntimeException()) //
                 .doOnError(e -> count.incrementAndGet()) //
                 .retryWhen() //
                 .maxRetries(3) //
                 .build() //
                 .test() //
-                .assertError(TestException.class);
+                .assertError(TestRuntimeException.class);
         assertEquals(4, count.get());
     }
 
     @Test
     public void testRetryWhenDelays() {
         AtomicInteger count = new AtomicInteger();
-        Single.error(new TestException()) //
+        Single.error(new TestRuntimeException()) //
                 .doOnError(e -> count.incrementAndGet()) //
                 .retryWhen() //
                 .maxRetries(3) //
                 .delay(1, TimeUnit.MILLISECONDS) //
                 .build() //
                 .test() //
-                .assertError(TestException.class);
+                .assertError(TestRuntimeException.class);
         assertEquals(4, count.get());
     }
 
     @Test
     public void testRetryWhenDelaysStream() {
         AtomicInteger count = new AtomicInteger();
-        Single.error(new TestException()) //
+        Single.error(new TestRuntimeException()) //
                 .doOnError(e -> count.incrementAndGet()) //
                 .retryWhen() //
                 .maxRetries(3) //
                 .delays(Stream.of(1L).repeat(), TimeUnit.MILLISECONDS) //
                 .build() //
                 .test() //
-                .assertError(TestException.class);
+                .assertError(TestRuntimeException.class);
         assertEquals(4, count.get());
     }
 
     @Test
     public void testRetryWhenWithPredicate() {
         AtomicInteger count = new AtomicInteger();
-        Single.error(new TestException()) //
+        Single.error(new TestRuntimeException()) //
                 .doOnError(e -> count.incrementAndGet()) //
                 .retryWhen() //
                 .isTrue(e -> count.get() <= 3) //
                 .build() //
                 .test() //
-                .assertError(TestException.class);
+                .assertError(TestRuntimeException.class);
         assertEquals(4, count.get());
     }
 
