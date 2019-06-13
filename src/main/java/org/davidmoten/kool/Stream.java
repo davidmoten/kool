@@ -618,10 +618,6 @@ public interface Stream<T> extends StreamIterable<T> {
         return filter(function).isEmpty().map(x -> !x);
     }
 
-    public default Single<Boolean> contains(Predicate<? super T> function) {
-        return exists(function);
-    }
-
     public default void forEach() {
         count().get();
     }

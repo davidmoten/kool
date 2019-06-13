@@ -142,7 +142,8 @@ public final class StreamTest {
         AtomicBoolean sourceDisposed = new AtomicBoolean();
         AtomicInteger others = new AtomicInteger();
         Stream.of(1, 2).doOnDispose(() -> sourceDisposed.set(true))
-                .flatMap(x -> Stream.of(x).doOnDispose(() -> others.incrementAndGet())).count().get();
+                .flatMap(x -> Stream.of(x).doOnDispose(() -> others.incrementAndGet())).count()
+                .get();
         assertTrue(sourceDisposed.get());
         assertEquals(2, others.get());
     }
@@ -522,8 +523,8 @@ public final class StreamTest {
         Stream.of(1, 2, 3, 4, 5) //
                 .buffer(2) //
                 .test() //
-                .assertNoError()
-                .assertValuesOnly(Lists.newArrayList(1, 2), Lists.newArrayList(3, 4), Lists.newArrayList(5)) //
+                .assertNoError().assertValuesOnly(Lists.newArrayList(1, 2),
+                        Lists.newArrayList(3, 4), Lists.newArrayList(5)) //
         ;
     }
 
@@ -677,8 +678,8 @@ public final class StreamTest {
 
     @Test
     public void testLinesFromResource2() {
-        Stream.linesFromResource("/test3.txt", StandardCharsets.UTF_8).test().assertValuesOnly("hello", "there",
-                "world");
+        Stream.linesFromResource("/test3.txt", StandardCharsets.UTF_8).test()
+                .assertValuesOnly("hello", "there", "world");
     }
 
     @Test
@@ -692,7 +693,8 @@ public final class StreamTest {
 
     @Test
     public void testLinesFromFileThatDoesNotExist() {
-        Stream.lines(new File("THIS_FILE_DOES_NOT_EXIST")).test().assertError(UncheckedIOException.class);
+        Stream.lines(new File("THIS_FILE_DOES_NOT_EXIST")).test()
+                .assertError(UncheckedIOException.class);
     }
 
     @Test
@@ -725,7 +727,8 @@ public final class StreamTest {
         Stream.of("a", "b", "c") //
                 .mapWithIndex() //
                 .test() //
-                .assertValues(Indexed.create("a", 0), Indexed.create("b", 1), Indexed.create("c", 2));
+                .assertValues(Indexed.create("a", 0), Indexed.create("b", 1),
+                        Indexed.create("c", 2));
     }
 
     @Test
@@ -755,7 +758,9 @@ public final class StreamTest {
                 .every(100, (count, x) -> {
                     list.add(count);
                 }).forEach();
-        assertEquals(Lists.newArrayList(100L, 200L, 300L, 400L, 500L, 600L, 700L, 800L, 900L, 1000L), list);
+        assertEquals(
+                Lists.newArrayList(100L, 200L, 300L, 400L, 500L, 600L, 700L, 800L, 900L, 1000L),
+                list);
     }
 
     @Test
@@ -794,8 +799,8 @@ public final class StreamTest {
 
     @Test
     public void testByteBuffersOneElementOutput() {
-        ByteBuffer bb = Stream
-                .byteBuffers(() -> new ByteArrayInputStream("hello there".getBytes(StandardCharsets.UTF_8)), 100)
+        ByteBuffer bb = Stream.byteBuffers(
+                () -> new ByteArrayInputStream("hello there".getBytes(StandardCharsets.UTF_8)), 100)
                 .single() //
                 .get();
         byte[] x = new byte[bb.remaining()];
@@ -805,8 +810,9 @@ public final class StreamTest {
 
     @Test
     public void testByteBuffersWithDefaultBufferSizeOneElementOutput() {
-        ByteBuffer bb = Stream
-                .byteBuffers(() -> new ByteArrayInputStream("hello there".getBytes(StandardCharsets.UTF_8))).single() //
+        ByteBuffer bb = Stream.byteBuffers(
+                () -> new ByteArrayInputStream("hello there".getBytes(StandardCharsets.UTF_8)))
+                .single() //
                 .get();
         byte[] x = new byte[bb.remaining()];
         bb.get(x);
@@ -815,7 +821,8 @@ public final class StreamTest {
 
     @Test
     public void testByteBuffersManyElementsOutput() {
-        byte[] b = Stream.byteBuffers(() -> new ByteArrayInputStream("hello there".getBytes(StandardCharsets.UTF_8)), 2)
+        byte[] b = Stream.byteBuffers(
+                () -> new ByteArrayInputStream("hello there".getBytes(StandardCharsets.UTF_8)), 2)
                 .collect(() -> new ByteArrayOutputStream(), (c, bb) -> {
                     while (bb.position() < bb.limit()) {
                         c.write(bb.get());
@@ -842,7 +849,8 @@ public final class StreamTest {
 
     @Test
     public void testBytesManyElementsOutput() {
-        byte[] b = Stream.bytes(() -> new ByteArrayInputStream("hello there".getBytes(StandardCharsets.UTF_8)), 2)
+        byte[] b = Stream.bytes(
+                () -> new ByteArrayInputStream("hello there".getBytes(StandardCharsets.UTF_8)), 2)
                 .collect(() -> new ByteArrayOutputStream(), (c, bytes) -> {
                     try {
                         c.write(bytes);
@@ -886,7 +894,8 @@ public final class StreamTest {
 
     @Test
     public void testMergeInterleavedFirstStreamBiggerThanSecond() {
-        Stream.merge(Stream.of(1, 3, 5, 6, 7), Stream.of(2, 4)).test().assertValues(1, 2, 3, 4, 5, 6, 7);
+        Stream.merge(Stream.of(1, 3, 5, 6, 7), Stream.of(2, 4)).test().assertValues(1, 2, 3, 4, 5,
+                6, 7);
     }
 
     @Test
@@ -969,7 +978,8 @@ public final class StreamTest {
 
     @Test
     public void testDistinctUntilChanged() {
-        Stream.of(1, 1, 2, 3, 3, 4, 4, 4).distinctUntilChanged().test().assertValuesOnly(1, 2, 3, 4);
+        Stream.of(1, 1, 2, 3, 3, 4, 4, 4).distinctUntilChanged().test().assertValuesOnly(1, 2, 3,
+                4);
     }
 
     @Test
@@ -995,7 +1005,8 @@ public final class StreamTest {
     @Test
     public void testTakeLastEarlyDisposal() {
         AtomicBoolean b = new AtomicBoolean();
-        StreamIterator<Integer> it = Stream.of(1, 2, 3).doOnDispose(() -> b.set(true)).takeLast(2).iterator();
+        StreamIterator<Integer> it = Stream.of(1, 2, 3).doOnDispose(() -> b.set(true)).takeLast(2)
+                .iterator();
         it.dispose();
         assertTrue(b.get());
     }
@@ -1218,7 +1229,8 @@ public final class StreamTest {
 
     @Test
     public void testMaterializeValue() {
-        Stream.of(1).materialize().test().assertValuesOnly(Notification.of(1), Notification.complete());
+        Stream.of(1).materialize().test().assertValuesOnly(Notification.of(1),
+                Notification.complete());
     }
 
     @Test
@@ -1325,14 +1337,16 @@ public final class StreamTest {
 
     @Test(expected = NoSuchElementException.class)
     public void testByteBuffersIteratorNext() {
-        StreamIterator<ByteBuffer> it = Stream.byteBuffers(new ByteArrayInputStream("boo".getBytes()), 100).iterator();
+        StreamIterator<ByteBuffer> it = Stream
+                .byteBuffers(new ByteArrayInputStream("boo".getBytes()), 100).iterator();
         it.next();
         it.next();
     }
 
     @Test
     public void testByteBuffersDisposeCoverage() {
-        StreamIterator<ByteBuffer> it = Stream.byteBuffers(new ByteArrayInputStream("boo".getBytes()), 100).iterator();
+        StreamIterator<ByteBuffer> it = Stream
+                .byteBuffers(new ByteArrayInputStream("boo".getBytes()), 100).iterator();
         it.dispose();
     }
 
@@ -1353,7 +1367,8 @@ public final class StreamTest {
 
     @Test
     public void testByteBuffersHasNextRepeatedCalls() {
-        StreamIterator<ByteBuffer> it = Stream.byteBuffers(new ByteArrayInputStream("boo".getBytes()), 100).iterator();
+        StreamIterator<ByteBuffer> it = Stream
+                .byteBuffers(new ByteArrayInputStream("boo".getBytes()), 100).iterator();
         assertTrue(it.hasNext());
         assertTrue(it.hasNext());
         it.next();
@@ -1367,13 +1382,15 @@ public final class StreamTest {
 
     @Test(expected = NoSuchElementException.class)
     public void testLinesReadBeyondEnd() {
-        StreamIterator<String> it = Stream.lines(new BufferedReader(new StringReader(""))).iterator();
+        StreamIterator<String> it = Stream.lines(new BufferedReader(new StringReader("")))
+                .iterator();
         it.next();
     }
 
     @Test
     public void testLinesDisposeBeforeHasNext() {
-        StreamIterator<String> it = Stream.lines(new BufferedReader(new StringReader("abc"))).iterator();
+        StreamIterator<String> it = Stream.lines(new BufferedReader(new StringReader("abc")))
+                .iterator();
         it.dispose();
         assertFalse(it.hasNext());
     }
@@ -1501,7 +1518,8 @@ public final class StreamTest {
 
     @Test
     public void testMaterializeWithoutError() {
-        Stream.of(1).materialize().test().assertValuesOnly(Notification.of(1), Notification.complete());
+        Stream.of(1).materialize().test().assertValuesOnly(Notification.of(1),
+                Notification.complete());
     }
 
     @Test
@@ -1774,6 +1792,16 @@ public final class StreamTest {
         StreamIterator<Object> it = Stream.empty().iterator();
         assertFalse(it.hasNext());
         it.next();
+    }
+
+    @Test
+    public void testExists() {
+        assertTrue(Stream.of(1, 2, 3).exists(x -> x == 1).get());
+    }
+    
+    @Test
+    public void testExistsReturnsFalse() {
+        assertFalse(Stream.of(1, 2, 3).exists(x -> x == 4).get());
     }
 
     public static void main(String[] args) throws MalformedURLException {
