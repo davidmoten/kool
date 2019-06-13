@@ -614,6 +614,14 @@ public interface Stream<T> extends StreamIterable<T> {
         }
     }
 
+    public default Single<Boolean> exists(Predicate<? super T> function) {
+        return filter(function).isEmpty().map(x -> !x);
+    }
+
+    public default Single<Boolean> contains(Predicate<? super T> function) {
+        return exists(function);
+    }
+
     public default void forEach() {
         count().get();
     }
@@ -911,8 +919,9 @@ public interface Stream<T> extends StreamIterable<T> {
     public default Stream<Notification<T>> materialize() {
         return new Materialize<T>(this);
     }
-    
-    public default <R> Stream<R> dematerialize(Function<? super T, Notification<? extends R>> function) {
+
+    public default <R> Stream<R> dematerialize(
+            Function<? super T, Notification<? extends R>> function) {
         return new Dematerialize<T, R>(this, function);
     }
 
@@ -931,8 +940,6 @@ public interface Stream<T> extends StreamIterable<T> {
     public default Stream<T> mergeWith(Stream<? extends T> stream) {
         return merge(this, stream);
     }
-
-
 
     public default Stream<T> retryWhen(Function<? super Throwable, ? extends Single<?>> function) {
         return new RetryWhen<T>(this, function);
