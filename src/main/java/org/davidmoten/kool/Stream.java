@@ -71,6 +71,7 @@ import org.davidmoten.kool.internal.operators.stream.Map;
 import org.davidmoten.kool.internal.operators.stream.Materialize;
 import org.davidmoten.kool.internal.operators.stream.Max;
 import org.davidmoten.kool.internal.operators.stream.MergeInterleaved;
+import org.davidmoten.kool.internal.operators.stream.PowerSet;
 import org.davidmoten.kool.internal.operators.stream.PrependOne;
 import org.davidmoten.kool.internal.operators.stream.Range;
 import org.davidmoten.kool.internal.operators.stream.RangeLong;
@@ -955,6 +956,10 @@ public interface Stream<T> extends StreamIterable<T> {
 
     public default Stream<T> repeatLast() {
         return repeatLast(Long.MAX_VALUE);
+    }
+    
+    public static Stream<Set<Integer>> powerSet(int n) {
+        return new PowerSet(n);
     }
 
     // TODO
