@@ -98,6 +98,7 @@ import org.davidmoten.kool.internal.operators.stream.Using;
 import org.davidmoten.kool.internal.operators.stream.Zip;
 import org.davidmoten.kool.internal.util.Exceptions;
 import org.davidmoten.kool.internal.util.Iterables;
+import org.davidmoten.kool.internal.util.Permutations;
 import org.davidmoten.kool.internal.util.StreamImpl;
 import org.davidmoten.kool.internal.util.StreamUtils;
 
@@ -953,6 +954,20 @@ public interface Stream<T> extends StreamIterable<T> {
             return new RepeatLast<T>(this, count);
         }
     }
+    
+    public default <R> Stream<R> scan(R initialValue, BiFunction<? super R, ? super T, ? extends R> accumulator) {
+        return Stream.defer(new Callable<Stream<R>>() {
+            
+            R r = initialValue;
+            
+            @Override
+            public Stream<R> call() throws Exception {
+                return Stream.this.map(x -> {
+                    r = accumulator.apply(r, x);
+                    return r;
+                });
+            }});
+    }
 
     public default Stream<T> repeatLast() {
         return repeatLast(Long.MAX_VALUE);
@@ -960,6 +975,21 @@ public interface Stream<T> extends StreamIterable<T> {
     
     public static Stream<Set<Integer>> powerSet(int n) {
         return new PowerSet(n);
+    }
+    
+    public static <T> Stream<List<Integer>> permutations(int size) {
+        List<Integer> indexes = new ArrayList<Integer>(size);
+        for (int i = 0; i < size; i++) {
+            indexes.add(i);
+        }
+        return Stream.from(Permutations.iterable(indexes)) //
+                .scan(indexes, (a, swap) -> {
+                    List<Integer> b = new ArrayList<Integer>(a);
+                    b.set(swap.left(), a.get(swap.right()));
+                    b.set(swap.right(), a.get(swap.left()));
+                    return b;
+                }) //
+                .prepend(new ArrayList<>(indexes));
     }
 
     // TODO

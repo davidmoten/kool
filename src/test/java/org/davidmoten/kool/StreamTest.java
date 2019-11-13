@@ -21,6 +21,8 @@ import java.net.URL;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -995,8 +997,7 @@ public final class StreamTest {
     @Test
     public void testTakeLastEarlyDisposal() {
         AtomicBoolean b = new AtomicBoolean();
-        StreamIterator<Integer> it = Stream.of(1, 2, 3).doOnDispose(() -> b.set(true)).takeLast(2)
-                .iterator();
+        StreamIterator<Integer> it = Stream.of(1, 2, 3).doOnDispose(() -> b.set(true)).takeLast(2).iterator();
         it.dispose();
         assertTrue(b.get());
     }
@@ -1781,7 +1782,7 @@ public final class StreamTest {
     public void testExists() {
         assertTrue(Stream.of(1, 2, 3).exists(x -> x == 1).get());
     }
-    
+
     @Test
     public void testExistsReturnsFalse() {
         assertFalse(Stream.of(1, 2, 3).exists(x -> x == 4).get());
@@ -1800,6 +1801,30 @@ public final class StreamTest {
                 Sets.newHashSet(2, 3), //
                 Sets.newHashSet(1, 2, 3) //
         ), Stream.powerSet(3).toList().get());
+    }
+
+    @Test
+    public void testPermutations() {
+        assertEquals(Lists.newArrayList(//
+                Arrays.asList(0, 1, 2), //
+                Arrays.asList(0, 2, 1), //
+                Arrays.asList(1, 2, 0), //
+                Arrays.asList(2, 1, 0), //
+                Arrays.asList(2, 0, 1), //
+                Arrays.asList(1, 0, 2) //
+        ), Stream.permutations(3).toList().get());
+    }
+
+    @Test
+    public void testPermutationsSizeZero() {
+        assertEquals(Arrays.asList(new ArrayList<Integer>()), //
+                Stream.permutations(0).toList().get());
+    }
+
+    @Test
+    public void testPermutationsSizeOne() {
+        assertEquals(Arrays.asList(Arrays.asList(0)), //
+                Stream.permutations(1).toList().get());
     }
 
     public static void main(String[] args) throws MalformedURLException {
