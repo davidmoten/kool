@@ -1,6 +1,5 @@
 package org.davidmoten.kool.internal.operators.stream;
 
-import java.util.HashSet;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
