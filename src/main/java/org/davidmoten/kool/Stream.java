@@ -400,6 +400,7 @@ public interface Stream<T> extends StreamIterable<T> {
      * stream in round-robin style).
      * 
      * @param streams to be merged
+     * @param <T> result stream type
      * @return merges streams (interleaved)
      */
     @SafeVarargs
