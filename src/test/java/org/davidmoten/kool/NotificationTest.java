@@ -16,6 +16,8 @@ public class NotificationTest {
     public void testHashCodeWithException() {
         assertEquals(1016, Notification.of(new TestRuntimeException() {
 
+            private static final long serialVersionUID = -7316228270401147888L;
+
             @Override
             public int hashCode() {
                 return 55;

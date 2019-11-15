@@ -22,7 +22,6 @@ import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -1803,6 +1802,7 @@ public final class StreamTest {
         ), Stream.powerSet(3).toList().get());
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     public void testPermutations() {
         assertEquals(Lists.newArrayList(//
