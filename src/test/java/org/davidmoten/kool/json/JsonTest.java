@@ -14,7 +14,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 public class JsonTest {
 
     @Test
-    public void test() throws JsonParseException, IOException {
+    public void testParseJson() throws JsonParseException, IOException {
         JsonFactory factory = new JsonFactory();
         JsonParser p = factory.createParser(new BufferedInputStream(input(1), 4));
         while (p.nextToken() != null) {
@@ -23,9 +23,8 @@ public class JsonTest {
     }
 
     @Test
-    public void testFlowable() {
-        InputStream input = JsonTest.class.getResourceAsStream("/test1.json");
-        Json.stream(input) //
+    public void testStream() {
+        Json.stream(input(1)) //
                 .field("menu") //
                 .field("popup") //
                 .fieldArray("menuItem") //
@@ -36,7 +35,7 @@ public class JsonTest {
     }
 
     @Test
-    public void testFlowableObjectNode() {
+    public void testStreamObjectNode() {
         Json.stream(input(1)) //
                 .field("menu") //
                 .objectNode() //
@@ -46,7 +45,7 @@ public class JsonTest {
     }
 
     @Test
-    public void testFlowableValueNode() {
+    public void testStreamValueNode() {
         Json.stream(input(1)) //
                 .field("menu") //
                 .field("id") //
