@@ -1,6 +1,7 @@
 package org.davidmoten.kool.json;
 
 import java.io.InputStream;
+import java.io.Reader;
 import java.util.concurrent.Callable;
 
 import org.davidmoten.kool.Maybe;
@@ -27,11 +28,19 @@ public final class Json {
     public static Json stream(InputStream in) {
         return new Json(flowable(factory -> factory.createParser(in)));
     }
-
+    
+    public static Json stream(Reader reader) {
+        return new Json(flowable(factory -> factory.createParser(reader)));
+    }
+    
+    public static Json stream(String text) {
+        return new Json(flowable(factory -> factory.createParser(text)));
+    }
+    
     public static Json stream(Function<? super JsonFactory, ? extends JsonParser> creator) {
         return new Json(flowable(creator));
     }
-
+    
     private static Stream<JsonParser> flowable(
             Function<? super JsonFactory, ? extends JsonParser> creator) {
         return Stream.generate(() -> {
@@ -104,7 +113,7 @@ public final class Json {
         return node_(t -> t == JsonToken.START_ARRAY) //
                 .map(p -> new LazyArrayNode(p));
     }
-
+    
     private Maybe<JsonParser> node_(Predicate<JsonToken> predicate) {
         return stream //
                 .skipWhile(p -> p.currentToken() == JsonToken.FIELD_NAME) //

@@ -6,6 +6,7 @@ import java.io.InputStream;
 
 import org.junit.Test;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonParser;
@@ -76,26 +77,53 @@ public class JsonTest {
                 .test() //
                 .assertValue(8L);
     }
-    
+
     @Test
-    public void testArray() throws JsonParseException, IOException {
-        JsonFactory factory = new JsonFactory();
-        JsonParser p = factory.createParser(input(4));
-        System.out.println(p.nextToken());
+    public void testArrayStream() {
+        Json.stream(input(4)) //
+                .arrayNode() //
+                .flatMap(node -> node.values()) //
+                .map(node -> node.get("aqi_pm2_5").asInt()) //
+                .test() //
+                .assertValues(3721, 3664, 3566,3463);
     }
     
-//    @Test
-//    public void testArrayStream() {
-//        Json.stream(input(4)) //
-//                .arrayNode() //
-//                .flatMap(null)
-//                .map(node -> node.get())
-//                .map(node -> node.asText()) //
-//                .distinct() //
-//                .count() //
-//                .test() //
-//                .assertValue(8L);
-//    }
+    @Test
+    public void testArrayStreamOnEmptyArray() {
+        Json.stream("[]") //
+                .arrayNode() //
+                .flatMap(node -> node.values()) //
+                .test()
+                .assertNoValuesOnly();
+    }
+
+    @Test
+    public void testArrayStreamMappedToClass() {
+        Json.stream(input(4)) //
+                .arrayNode() //
+                .flatMap(node -> node.values(Record.class)) //
+                .map(x -> x.pm25) //
+                .test()
+                .assertValues(3721, 3664, 3566,3463);
+    }
+    
+    @Test
+    public void testArrayStreamMappedToClassOnEmptyArray() {
+        Json.stream("[]") //
+                .arrayNode() //
+                .flatMap(node -> node.values(Record.class)) //
+                .map(x -> x.pm25) //
+                .test()
+                .assertNoValuesOnly();
+    }
+    
+    static final class Record {
+        @JsonProperty("datetime")
+        String datetime;
+        
+        @JsonProperty("aqi_pm2_5")
+        Integer pm25;
+    }
 
     private static InputStream input(int i) {
         return JsonTest.class.getResourceAsStream("/test" + i + ".json");
