@@ -2,7 +2,6 @@ package org.davidmoten.kool.json;
 
 import java.io.InputStream;
 import java.util.concurrent.Callable;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import org.davidmoten.kool.Maybe;
 import org.davidmoten.kool.Stream;
@@ -52,21 +51,20 @@ public final class Json {
 
     public Json field(String name) {
         return new Json(Stream.defer(() -> {
-            // TODO use single element array instead of AtomicXXX
-            AtomicInteger depth = new AtomicInteger();
+            int[] depth = new int[1];
             return stream //
                     .doOnNext(p -> {
                         JsonToken t = p.currentToken();
                         if (t == JsonToken.START_OBJECT || t == JsonToken.START_ARRAY) {
-                            depth.incrementAndGet();
+                            depth[0]++;
                         } else if (t == JsonToken.END_OBJECT || t == JsonToken.END_ARRAY) {
-                            depth.decrementAndGet();
+                            depth[0]--;
                         }
                     }) //
                     .skipWhile(p -> !(p.currentToken() == JsonToken.FIELD_NAME //
                             && p.currentName().equals(name) //
-                            && depth.get() == 1)) //
-                    .takeUntil(p -> depth.get() == 0);
+                            && depth[0] == 1)) //
+                    .takeUntil(p -> depth[0] == 0);
         }));
     }
 

@@ -76,6 +76,26 @@ public class JsonTest {
                 .test() //
                 .assertValue(8L);
     }
+    
+    @Test
+    public void testArray() throws JsonParseException, IOException {
+        JsonFactory factory = new JsonFactory();
+        JsonParser p = factory.createParser(input(4));
+        System.out.println(p.nextToken());
+    }
+    
+//    @Test
+//    public void testArrayStream() {
+//        Json.stream(input(4)) //
+//                .arrayNode() //
+//                .flatMap(null)
+//                .map(node -> node.get())
+//                .map(node -> node.asText()) //
+//                .distinct() //
+//                .count() //
+//                .test() //
+//                .assertValue(8L);
+//    }
 
     private static InputStream input(int i) {
         return JsonTest.class.getResourceAsStream("/test" + i + ".json");

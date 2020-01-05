@@ -40,20 +40,19 @@ public final class JsonArray {
 
     private Stream<JsonParser> nodes_() {
         return Stream.defer(() -> {
-            // TODO use single element array instead of AtomicXXX
-            AtomicInteger depth = new AtomicInteger();
+            int[] depth = new int[1];
             return stream //
                     .doOnNext(p -> {
                         JsonToken t = p.currentToken();
                         if (t == JsonToken.START_OBJECT || t == JsonToken.START_ARRAY) {
-                            depth.incrementAndGet();
+                            depth[0]++;
                         } else if (t == JsonToken.END_OBJECT || t == JsonToken.END_ARRAY) {
-                            depth.decrementAndGet();
+                            depth[0]--;
                         }
                     }) //
                     .skipWhile(p -> p.currentToken() == JsonToken.FIELD_NAME
                             || p.currentToken() == JsonToken.START_ARRAY) //
-                    .takeUntil(p -> depth.get() == 0) //
+                    .takeUntil(p -> depth[0] == 0) //
                     .filter(p -> p.currentToken() != JsonToken.END_ARRAY
                             && p.currentToken() != JsonToken.END_OBJECT); //
         });
