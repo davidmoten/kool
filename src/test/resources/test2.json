@@ -1,0 +1,48 @@
+{
+	"menu": [
+		{
+			"id": "file",
+			"value": "File",
+			"popup": {
+				"menuItem": [
+					{
+						"value": "New",
+						"onClick": "CreateNewDoc()"
+					},
+					{
+						"value": "Open",
+						"onClick": "OpenDoc()"
+					},
+					{
+						"value": "Close",
+						"onClick": "CloseDoc()"
+					}
+				]
+			}
+		},
+		{
+			"id": "edit",
+			"value": "Edit",
+			"popup": {
+				"menuItem": [
+					{
+						"value": "Undo",
+						"onClick": "Undo()"
+					},
+					{
+						"value": "Cut",
+						"onClick": "Cut()"
+					},
+					{
+						"value": "Copy",
+						"onClick": "Copy()"
+					}
+					{
+						"value": "Paste",
+						"onClick": "Paste()"
+					}
+				]
+			}
+		}
+	]
+}

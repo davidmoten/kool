@@ -170,6 +170,16 @@ public interface Stream<T> extends StreamIterable<T> {
         return new Generate<T>(consumer);
     }
 
+    public static <T, R> Stream<T> generate(Callable<R> factory,
+            BiConsumer<R, Emitter<T>> consumer) {
+        return Stream.defer(() -> {
+            R r = factory.call();
+            return generate(e -> {
+                consumer.accept(r, e);
+            });
+        });
+    }
+
     public static <T> Stream<T> error(Callable<? extends Throwable> callable) {
         return Stream.from(new StreamIterable<T>() {
             @Override
@@ -400,7 +410,7 @@ public interface Stream<T> extends StreamIterable<T> {
      * stream in round-robin style).
      * 
      * @param streams to be merged
-     * @param <T> result stream type
+     * @param         <T> result stream type
      * @return merges streams (interleaved)
      */
     @SafeVarargs
@@ -955,29 +965,31 @@ public interface Stream<T> extends StreamIterable<T> {
             return new RepeatLast<T>(this, count);
         }
     }
-    
-    public default <R> Stream<R> scan(R initialValue, BiFunction<? super R, ? super T, ? extends R> accumulator) {
+
+    public default <R> Stream<R> scan(R initialValue,
+            BiFunction<? super R, ? super T, ? extends R> accumulator) {
         return Stream.defer(new Callable<Stream<R>>() {
-            
+
             R r = initialValue;
-            
+
             @Override
             public Stream<R> call() throws Exception {
                 return Stream.this.map(x -> {
                     r = accumulator.apply(r, x);
                     return r;
                 });
-            }});
+            }
+        });
     }
 
     public default Stream<T> repeatLast() {
         return repeatLast(Long.MAX_VALUE);
     }
-    
+
     public static Stream<Set<Integer>> powerSet(int n) {
         return new PowerSet(n);
     }
-    
+
     public static <T> Stream<List<Integer>> permutations(int size) {
         List<Integer> indexes = new ArrayList<Integer>(size);
         for (int i = 0; i < size; i++) {
