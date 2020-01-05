@@ -1,21 +1,22 @@
 package org.davidmoten.kool.json;
 
 
-import java.util.concurrent.atomic.AtomicInteger;
-
 import org.davidmoten.kool.Stream;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 
 public final class JsonArray {
 
     private final Stream<JsonParser> stream;
+    private final ObjectMapper mapper;
 
-    JsonArray(Stream<JsonParser> flowable) {
+    JsonArray(Stream<JsonParser> flowable, ObjectMapper mapper) {
         this.stream = flowable;
+        this.mapper = mapper;
     }
 
     public <T> Stream<LazyTreeNode> nodes() {
@@ -31,7 +32,7 @@ public final class JsonArray {
     }
 
     public Stream<LazyArrayNode> arrayNodes() {
-        return nodes_().map(p -> new LazyArrayNode(p));
+        return nodes_().map(p -> new LazyArrayNode(p, mapper));
     }
 
     public Stream<JsonNode> field(String name) {

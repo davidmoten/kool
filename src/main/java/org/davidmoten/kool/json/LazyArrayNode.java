@@ -10,20 +10,23 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.core.TreeNode;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 
 public final class LazyArrayNode implements Supplier<ArrayNode> {
 
     private final JsonParser parser;
+    private final ObjectMapper mapper;
 
-    LazyArrayNode(JsonParser parser) {
+    LazyArrayNode(JsonParser parser, ObjectMapper mapper) {
         this.parser = parser;
+        this.mapper = mapper;
     }
 
     @Override
     public ArrayNode get() {
         try {
-            return (ArrayNode) Util.MAPPER.readTree(parser);
+            return (ArrayNode) mapper.readTree(parser);
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
@@ -37,23 +40,27 @@ public final class LazyArrayNode implements Supplier<ArrayNode> {
                 if (token.equals(JsonToken.END_ARRAY)) {
                     emitter.onComplete();
                 } else {
-                    TreeNode v = Util.MAPPER.readTree(parser);
+                    TreeNode v = mapper.readTree(parser);
                     emitter.onNext((JsonNode) v);
                 }
             });
         });
     }
-    
+
     public <T> Stream<T> values(Class<T> cls) {
         return Stream.defer(() -> {
             // skip array start
+            parser.nextToken();
             return Stream.generate(emitter -> {
-                JsonToken token = parser.nextToken();
-                if (token.equals(JsonToken.END_ARRAY)) {
+                if (parser.isClosed()) {
                     emitter.onComplete();
                 } else {
-                    T v = Util.MAPPER.readValue(parser,cls);
-                    emitter.onNext(v);
+                    T v = mapper.readValue(parser, cls);
+                    if (v == null) {
+                        emitter.onComplete();
+                    } else {
+                        emitter.onNext(v);
+                    }
                 }
             });
         });

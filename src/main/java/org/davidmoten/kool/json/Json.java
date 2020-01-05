@@ -12,36 +12,43 @@ import org.davidmoten.kool.function.Predicate;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public final class Json {
 
     private static final JsonFactory FACTORY = new JsonFactory();
 
     private final Stream<JsonParser> stream;
+    private ObjectMapper mapper = new ObjectMapper();
 
     public static Json stream(Callable<InputStream> in) {
         return new Json(Stream.using(in, //
-                is -> flowable(factory -> factory.createParser(is)), //
+                is -> streamFrom(factory -> factory.createParser(is)), //
                 is -> is.close()));
     }
-
+    
     public static Json stream(InputStream in) {
-        return new Json(flowable(factory -> factory.createParser(in)));
+        return new Json(streamFrom(factory -> factory.createParser(in)));
     }
     
     public static Json stream(Reader reader) {
-        return new Json(flowable(factory -> factory.createParser(reader)));
+        return new Json(streamFrom(factory -> factory.createParser(reader)));
     }
     
     public static Json stream(String text) {
-        return new Json(flowable(factory -> factory.createParser(text)));
+        return new Json(streamFrom(factory -> factory.createParser(text)));
     }
     
     public static Json stream(Function<? super JsonFactory, ? extends JsonParser> creator) {
-        return new Json(flowable(creator));
+        return new Json(streamFrom(creator));
     }
     
-    private static Stream<JsonParser> flowable(
+    public Json withMapper(ObjectMapper mapper) {
+        this.mapper = mapper;
+        return this;
+    }
+    
+    private static Stream<JsonParser> streamFrom(
             Function<? super JsonFactory, ? extends JsonParser> creator) {
         return Stream.generate(() -> {
             return creator.apply(FACTORY);
@@ -90,7 +97,7 @@ public final class Json {
     }
 
     public JsonArray fieldArray(String name) {
-        return new JsonArray(field(name).stream);
+        return new JsonArray(field(name).stream, mapper);
     }
 
     public Maybe<LazyObjectNode> objectNode() {
@@ -111,7 +118,7 @@ public final class Json {
 
     public Maybe<LazyArrayNode> arrayNode() {
         return node_(t -> t == JsonToken.START_ARRAY) //
-                .map(p -> new LazyArrayNode(p));
+                .map(p -> new LazyArrayNode(p, mapper));
     }
     
     private Maybe<JsonParser> node_(Predicate<JsonToken> predicate) {
