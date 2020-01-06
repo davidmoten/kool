@@ -1,8 +1,10 @@
 package org.davidmoten.kool.json;
 
 import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 
 import org.junit.Test;
 
@@ -11,6 +13,7 @@ import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class JsonTest {
 
@@ -85,16 +88,15 @@ public class JsonTest {
                 .flatMap(node -> node.values()) //
                 .map(node -> node.get("aqi_pm2_5").asInt()) //
                 .test() //
-                .assertValues(3721, 3664, 3566,3463);
+                .assertValues(3721, 3664, 3566, 3463);
     }
-    
+
     @Test
     public void testArrayStreamOnEmptyArray() {
         Json.stream("[]") //
                 .arrayNode() //
                 .flatMap(node -> node.values()) //
-                .test()
-                .assertNoValuesOnly();
+                .test().assertNoValuesOnly();
     }
 
     @Test
@@ -103,30 +105,81 @@ public class JsonTest {
                 .arrayNode() //
                 .flatMap(node -> node.values(Record.class)) //
                 .map(x -> x.pm25) //
-                .test()
-                .assertValues(3721, 3664, 3566,3463);
+                .test().assertValues(3721, 3664, 3566, 3463);
     }
-    
+
     @Test
     public void testArrayStreamMappedToClassOnEmptyArray() {
         Json.stream("[]") //
                 .arrayNode() //
                 .flatMap(node -> node.values(Record.class)) //
                 .map(x -> x.pm25) //
-                .test()
-                .assertNoValuesOnly();
+                .test().assertNoValuesOnly();
     }
-    
+
+    @Test
+    public void testInputBiggerThanParserBuffer() throws JsonParseException, IOException {
+        InputStream in = new InputStream() {
+            byte[] bytes = "[{\"datetime\":\"2020-01-01T14:00:00.000\",\"aqi_pm2_5\":\"3463\"}"
+                    .getBytes(StandardCharsets.UTF_8);
+            int index = 0;
+            long count = 0;
+
+            @Override
+            public int read() throws IOException {
+                if (bytes == null) {
+                    return -1;
+                }
+                if (index == bytes.length) {
+                    if (count > 100000000) {
+                        bytes = null;
+                        return (int) ']';
+                    } else {
+                        index = 1;
+                        return (int) ',';
+                    }
+                } else {
+                    int v = (int) bytes[index];
+                    index++;
+                    count++;
+                    return v;
+                }
+            }
+
+            @Override
+            public void close() throws IOException {
+                index = 0;
+            }
+        };
+
+        Json.stream(in) //
+                .arrayNode() //
+                .flatMap(node -> node.values()) //
+                .map(x -> x.get("datetime").asText()) //
+                .last() //
+                .println() //
+                .go();
+    }
+
     static final class Record {
         @JsonProperty("datetime")
         String datetime;
-        
+
         @JsonProperty("aqi_pm2_5")
         Integer pm25;
     }
 
     private static InputStream input(int i) {
         return JsonTest.class.getResourceAsStream("/test" + i + ".json");
+    }
+
+    public static byte[] getBytes(InputStream is) throws IOException {
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+        byte[] buffer = new byte[0xFFFF];
+        for (int len = is.read(buffer); len != -1; len = is.read(buffer)) {
+            os.write(buffer, 0, len);
+        }
+        return os.toByteArray();
     }
 
 }

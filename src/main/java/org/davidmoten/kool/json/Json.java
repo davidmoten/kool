@@ -2,7 +2,6 @@ package org.davidmoten.kool.json;
 
 import java.io.InputStream;
 import java.io.Reader;
-import java.util.concurrent.Callable;
 
 import org.davidmoten.kool.Maybe;
 import org.davidmoten.kool.Stream;
@@ -21,35 +20,36 @@ public final class Json {
     private final Stream<JsonParser> stream;
     private ObjectMapper mapper = new ObjectMapper();
 
-    public static Json stream(Callable<InputStream> in) {
-        return new Json(Stream.using(in, //
-                is -> streamFrom(factory -> factory.createParser(is)), //
-                is -> {}));
-    }
-    
+    // Note that it's a bad idea to provide a stream(Callable<InputStream>) method
+    // that takes because the responsibility for closing the InputStream would rest
+    // with this library. The fact that a stateful JsonParser is emitted by methods
+    // on this stream mean that the InputStream could be closed before the parser
+    // has read stuff (dependening on what operators are applied to the stream). For
+    // this reason InputStream closure is best handled by the client than by this
+    // library.
+
     public static Json stream(InputStream in) {
         return new Json(streamFrom(factory -> factory.createParser(in)));
     }
-    
+
     public static Json stream(Reader reader) {
         return new Json(streamFrom(factory -> factory.createParser(reader)));
     }
-    
+
     public static Json stream(String text) {
         return new Json(streamFrom(factory -> factory.createParser(text)));
     }
-    
+
     public static Json stream(Function<? super JsonFactory, ? extends JsonParser> creator) {
         return new Json(streamFrom(creator));
     }
-    
+
     public Json withMapper(ObjectMapper mapper) {
         this.mapper = mapper;
         return this;
     }
-    
-    private static Stream<JsonParser> streamFrom(
-            Function<? super JsonFactory, ? extends JsonParser> creator) {
+
+    private static Stream<JsonParser> streamFrom(Function<? super JsonFactory, ? extends JsonParser> creator) {
         return Stream.generate(() -> {
             return creator.apply(FACTORY);
         }, (p, emitter) -> {
@@ -120,7 +120,7 @@ public final class Json {
         return node_(t -> t == JsonToken.START_ARRAY) //
                 .map(p -> new LazyArrayNode(p, mapper));
     }
-    
+
     private Maybe<JsonParser> node_(Predicate<JsonToken> predicate) {
         return stream //
                 .skipWhile(p -> p.currentToken() == JsonToken.FIELD_NAME) //

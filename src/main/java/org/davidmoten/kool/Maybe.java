@@ -19,8 +19,10 @@ import org.davidmoten.kool.internal.operators.maybe.MaybeMap;
 import org.davidmoten.kool.internal.operators.maybe.MaybeOrElse;
 import org.davidmoten.kool.internal.operators.maybe.MaybeSwitchOnError;
 import org.davidmoten.kool.internal.operators.maybe.MaybeToStream;
+import org.davidmoten.kool.internal.operators.stream.DoOnNext;
 import org.davidmoten.kool.internal.util.MaybeImpl;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.github.davidmoten.guavamini.Preconditions;
 
 public interface Maybe<T> extends StreamIterable<T> {
@@ -151,6 +153,10 @@ public interface Maybe<T> extends StreamIterable<T> {
 
     default RetryWhenBuilderMaybe<T> retryWhen() {
         return new RetryWhenBuilderMaybe<T>(this);
+    }
+
+    default Maybe<T> println() {
+        return doOnValue(System.out::println);
     }
 
 }
