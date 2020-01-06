@@ -27,6 +27,7 @@ public final class Using<R, T> implements Stream<T> {
             return new StreamIterator<T>() {
 
                 R resource = resourceFactory.call();
+                
                 @SuppressWarnings("unchecked")
                 StreamIterator<T> it = (StreamIterator<T>) streamFactory.apply(resource).iteratorNullChecked();
 

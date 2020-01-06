@@ -16,7 +16,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public final class Json {
 
-    private static final JsonFactory FACTORY = new JsonFactory();
+    private static final JsonFactory FACTORY = new JsonFactory().configure(JsonParser.Feature.AUTO_CLOSE_SOURCE, false);
 
     private final Stream<JsonParser> stream;
     private ObjectMapper mapper = new ObjectMapper();
@@ -24,7 +24,7 @@ public final class Json {
     public static Json stream(Callable<InputStream> in) {
         return new Json(Stream.using(in, //
                 is -> streamFrom(factory -> factory.createParser(is)), //
-                is -> is.close()));
+                is -> {}));
     }
     
     public static Json stream(InputStream in) {
