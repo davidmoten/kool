@@ -124,4 +124,8 @@ public interface Single<T> extends StreamIterable<T> {
     default RetryWhenBuilderSingle<T> retryWhen() {
         return new RetryWhenBuilderSingle<T>(this);
     }
+    
+    default Single<T> println() {
+        return doOnValue(System.out::println);
+    }
 }
