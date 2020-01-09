@@ -1,0 +1,24 @@
+{
+	"menu": {
+		"id": "file",
+		"value": "File",
+		"thing": {}, 
+		"enabled": true, 
+		"popup": {
+			"menuItem": [
+				{
+					"value": "New",
+					"onClick": "CreateNewDoc()"
+				},
+				{
+					"value": "Open",
+					"onClick": "OpenDoc()"
+				},
+				{
+					"value": "Close",
+					"onClick": "CloseDoc()"
+				}
+			]
+		}
+	}
+}
