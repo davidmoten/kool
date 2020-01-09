@@ -143,6 +143,9 @@ starting at 1544663200659
 java.net.UnknownHostException: doesnotexist.zz
 ```
 
+## JSON support
+See [kool-json](kool-json).
+
 ## Origin of the name
 Functional programming -> Funk -> Kool and the Gang -> Kool!
 
