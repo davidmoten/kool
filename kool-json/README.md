@@ -14,7 +14,7 @@ Project goals are these:
 
 We'll use this JSON to show some extraction methods:
 
-```json
+```
 {
   "books": [
     {
@@ -49,7 +49,7 @@ long count =
 ### Parse an array and map each item to an object
 Given a streaming array of JSON like this:
 
-```json
+```
 [{"name":"Civic","datetime":"2020-01-10T08:00:00.000","aqi_pm2_5":"36"}
 ,{"name":"Civic","datetime":"2020-01-10T07:00:00.000","aqi_pm2_5":"36"}
 ,{"name":"Civic","datetime":"2020-01-10T06:00:00.000","aqi_pm2_5":"39"}
@@ -102,7 +102,7 @@ Process it like this to map each row to a Jackson annotated class:
 ### Parse an array and do what you like with each element
 Given a streaming array of JSON like this:
 
-```json
+```
 [{"name":"Civic","datetime":"2020-01-10T08:00:00.000","aqi_pm2_5":"36"}
 ,{"name":"Civic","datetime":"2020-01-10T07:00:00.000","aqi_pm2_5":"36"}
 ,{"name":"Civic","datetime":"2020-01-10T06:00:00.000","aqi_pm2_5":"39"}
