@@ -62,7 +62,7 @@ Given a streaming array of JSON like this:
 ...
 ```
 
-Object:
+Mapping class:
 
 ```java
 import java.util.Date;
@@ -97,9 +97,40 @@ Process it like this to map each row to a Jackson annotated class:
     .doOnNext(rec -> System.out.println(rec.value))
     // start the stream
     .go();
-;
-```    
+```
 
+### Parse an array and do what you like with each element
+Given a streaming array of JSON like this:
+
+```json
+[{"name":"Civic","datetime":"2020-01-10T08:00:00.000","aqi_pm2_5":"36"}
+,{"name":"Civic","datetime":"2020-01-10T07:00:00.000","aqi_pm2_5":"36"}
+,{"name":"Civic","datetime":"2020-01-10T06:00:00.000","aqi_pm2_5":"39"}
+,{"name":"Civic","datetime":"2020-01-10T05:00:00.000","aqi_pm2_5":"43"}
+,{"name":"Civic","datetime":"2020-01-10T04:00:00.000","aqi_pm2_5":"50"}
+,{"name":"Civic","datetime":"2020-01-10T03:00:00.000","aqi_pm2_5":"54"}
+,{"name":"Civic","datetime":"2020-01-10T02:00:00.000","aqi_pm2_5":"61"}
+,{"name":"Civic","datetime":"2020-01-10T01:00:00.000","aqi_pm2_5":"73"}
+,{"name":"Civic","datetime":"2020-01-10T00:00:00.000","aqi_pm2_5":"85"}
+...
+```
+
+Process it like this to extract what we like from each element using `JsonNode`:
+
+```java
+  Json 
+    .stream(in)
+    .arrayNode()
+    .flatMap(node -> node.values())
+    // we now have a stream of JsonNode
+    .map(node -> node.get("aqi_pm2_5").asInt())
+    // ignore some records
+    .filter(x -> x != null && x > 50)
+    // print the values to stdout
+    .doOnNext(System.out::println)
+    // start the stream
+    .go();
+```
 
 ## Usage notes
 You'll notice that there is no method that takes an InputStream/Reader factory and autocloses it (using the Kool.using method). This is because under the covers a single `JsonParser` element is emitted which is a stateful singleton and really just a pointer to the current position of the parser in the JSON input. For those methods that return `Stream<JsonParser` it is necessary to map `JsonParser` to your own data object immediately it appears in the stream. Some stream operators dispose the upstream before emitting the final value so a `using` operator is not appropriate on a library method that returns `Stream<JsonParser>` because the created InputStream/Reader may be closed before the `JsonParser` has finished reading. Note that you might not notice this effect because a JsonParser uses a BufferedInputStream and if your input is smaller than the buffer size, closing the InputStream/Reader early may not have an effect because the whole stream was read into the buffer already.
