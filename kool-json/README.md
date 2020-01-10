@@ -48,6 +48,7 @@ long count =
 
 ### Parse an array and map each item to an object
 Given a streaming array of JSON like this:
+
 ```json
 [{"name":"Civic","datetime":"2020-01-10T08:00:00.000","aqi_pm2_5":"36"}
 ,{"name":"Civic","datetime":"2020-01-10T07:00:00.000","aqi_pm2_5":"36"}
@@ -62,6 +63,7 @@ Given a streaming array of JSON like this:
 ```
 
 Object:
+
 ```java
 import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -83,6 +85,7 @@ public class Record {
 ```
 
 Process it like this to map each row to a Jackson annotated class:
+
 ```java
   Json 
     .stream(in)
