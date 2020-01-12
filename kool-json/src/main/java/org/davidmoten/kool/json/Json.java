@@ -3,7 +3,6 @@ package org.davidmoten.kool.json;
 import java.io.InputStream;
 import java.io.Reader;
 import java.util.List;
-import java.util.concurrent.Callable;
 
 import org.davidmoten.kool.Maybe;
 import org.davidmoten.kool.Stream;
@@ -36,11 +35,11 @@ public final class Json {
     // this reason InputStream closure is best handled by the client than by this
     // library.
 
-    public static Json fromInputStreamFactory(Callable<InputStream> inputStreamFactory) {
+    public static Json stream(InputStreamFactory inputStreamFactory) {
         return new Json(streamFrom(FACTORY_AUTO_CLOSE_ON, factory -> factory.createParser(inputStreamFactory.call())));
     }
     
-    public static Json fromReaderFactory(Callable<Reader> readerFactory) {
+    public static Json stream(ReaderFactory readerFactory) {
         return new Json(streamFrom(FACTORY_AUTO_CLOSE_ON, factory -> factory.createParser(readerFactory.call())));
     }
     
