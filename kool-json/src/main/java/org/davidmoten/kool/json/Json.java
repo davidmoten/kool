@@ -89,14 +89,6 @@ public final class Json {
         }));
     }
 
-    public static String indent(int n) {
-        StringBuilder s = new StringBuilder(n);
-        for (int i = 0; i < n; i++) {
-            s.append("  ");
-        }
-        return s.toString();
-    }
-
     public Stream<JsonParser> get() {
         return stream;
     }
