@@ -2,6 +2,7 @@ package org.davidmoten.kool.json;
 
 import java.io.InputStream;
 import java.io.Reader;
+import java.util.List;
 
 import org.davidmoten.kool.Maybe;
 import org.davidmoten.kool.Stream;
@@ -12,6 +13,7 @@ import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.davidmoten.guavamini.Lists;
 
 public final class Json {
 
@@ -19,6 +21,10 @@ public final class Json {
 
     private final Stream<JsonParser> stream;
     private ObjectMapper mapper = new ObjectMapper();
+    
+    private static final List<JsonToken> VALUE_TOKENS = Lists.newArrayList(JsonToken.VALUE_STRING,
+            JsonToken.VALUE_EMBEDDED_OBJECT, JsonToken.VALUE_FALSE, JsonToken.VALUE_NULL, JsonToken.VALUE_NUMBER_FLOAT,
+            JsonToken.VALUE_NUMBER_INT, JsonToken.VALUE_TRUE);
 
     // Note that it's a bad idea to provide a stream(Callable<InputStream>) method
     // because the responsibility for closing the InputStream would rest
@@ -105,8 +111,7 @@ public final class Json {
     }
 
     public Maybe<LazyValueNode> valueNode() {
-        // TODO make test more efficient?
-        return node_(t -> t.name().startsWith("VALUE")) //
+        return node_(t -> VALUE_TOKENS.contains(t)) //
                 .map(p -> new LazyValueNode(p));
     }
 
