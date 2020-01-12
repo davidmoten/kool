@@ -158,5 +158,9 @@ public interface Maybe<T> extends StreamIterable<T> {
     default Maybe<T> println() {
         return doOnValue(System.out::println);
     }
+    
+    default Single<Long> count() {
+        return toStream().count();
+    }
 
 }

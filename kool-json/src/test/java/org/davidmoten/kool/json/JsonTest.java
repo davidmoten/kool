@@ -156,13 +156,11 @@ public class JsonTest {
                 .flatMap(node -> node.values()) //
                 .map(x -> x.get("datetime").asText()) //
                 .last() //
-                .println() //
-                .go();
+                .count() //
+                .test() //
+                .assertValueOnly(1L);
     }
     
-    public void test1() {
-    }
-
     static final class Record {
         @JsonProperty("datetime")
         String datetime;

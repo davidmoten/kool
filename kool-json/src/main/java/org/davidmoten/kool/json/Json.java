@@ -50,15 +50,14 @@ public final class Json {
     }
 
     private static Stream<JsonParser> streamFrom(Function<? super JsonFactory, ? extends JsonParser> creator) {
-        return Stream.generate(() -> {
-            return creator.apply(FACTORY);
-        }, (p, emitter) -> {
-            if (p.nextToken() != null) {
-                emitter.onNext(p);
-            } else {
-                emitter.onComplete();
-            }
-        });
+        return Stream.generate(() -> creator.apply(FACTORY), //
+                (p, emitter) -> {
+                    if (p.nextToken() != null) {
+                        emitter.onNext(p);
+                    } else {
+                        emitter.onComplete();
+                    }
+                });
     }
 
     private Json(Stream<JsonParser> flowable) {
