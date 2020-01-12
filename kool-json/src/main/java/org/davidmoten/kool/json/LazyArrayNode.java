@@ -33,22 +33,20 @@ public final class LazyArrayNode implements Supplier<ArrayNode> {
     }
 
     public Stream<JsonNode> values() {
-        return Stream.defer(() -> {
-            // skip array start
-            return Stream.generate(emitter -> {
-                JsonToken token = parser.nextToken();
-                if (token.equals(JsonToken.END_ARRAY)) {
-                    emitter.onComplete();
-                } else {
-                    TreeNode v = mapper.readTree(parser);
-                    emitter.onNext((JsonNode) v);
-                }
-            });
-        });
+        return Stream.<JsonNode>defer(() -> //
+        Stream.generate(emitter -> {
+            JsonToken token = parser.nextToken();
+            if (token.equals(JsonToken.END_ARRAY)) {
+                emitter.onComplete();
+            } else {
+                TreeNode v = mapper.readTree(parser);
+                emitter.onNext((JsonNode) v);
+            }
+        })).doOnDispose(() -> parser.close());
     }
 
     public <T> Stream<T> values(Class<T> cls) {
-        return Stream.defer(() -> {
+        return Stream.<T>defer(() -> {
             // skip array start
             parser.nextToken();
             return Stream.generate(emitter -> {
@@ -63,7 +61,7 @@ public final class LazyArrayNode implements Supplier<ArrayNode> {
                     }
                 }
             });
-        });
+        }).doOnDispose(() -> parser.close());
     }
 
 }

@@ -18,7 +18,7 @@ public final class SingleTester<T> {
     public SingleTester<T> assertValue(T v) {
         assertNoError();
         if (!v.equals(value)) {
-            throw new AssertionError("single result " + value + " not equal to " + v);
+            throw new AssertionError("expected " + value + " but value is " + v);
         }
         return this;
     }

@@ -132,9 +132,3 @@ Process it like this to extract what we like from each element using `JsonNode`:
     .go();
 ```
 
-## Usage notes
-There is no method that takes an InputStream/Reader factory and autocloses it (using the Kool.using method). This is because under the covers a single `JsonParser` element is emitted which is a stateful singleton and really just a pointer to the current position of the parser in the JSON input. 
-
-For those methods that return `Stream<JsonParser` it is necessary to map `JsonParser` to your own data object immediately it appears in the stream. Some stream operators dispose the upstream before emitting the final value so a `using` operator is not appropriate on a library method that returns `Stream<JsonParser>` because the created InputStream/Reader may be closed before the `JsonParser` has finished reading. Note that you might not notice this effect because a JsonParser uses a BufferedInputStream and if your input is smaller than the buffer size, closing the InputStream/Reader early may not have an effect because the whole stream was read into the buffer already.
-
-

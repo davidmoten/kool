@@ -3,6 +3,7 @@ package org.davidmoten.kool.json;
 import java.io.InputStream;
 import java.io.Reader;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 import org.davidmoten.kool.Maybe;
 import org.davidmoten.kool.Stream;
@@ -17,7 +18,8 @@ import com.github.davidmoten.guavamini.Lists;
 
 public final class Json {
 
-    private static final JsonFactory FACTORY = new JsonFactory().configure(JsonParser.Feature.AUTO_CLOSE_SOURCE, false);
+    private static final JsonFactory FACTORY_AUTO_CLOSE_OFF = new JsonFactory().configure(JsonParser.Feature.AUTO_CLOSE_SOURCE, false);
+    private static final JsonFactory FACTORY_AUTO_CLOSE_ON = new JsonFactory().configure(JsonParser.Feature.AUTO_CLOSE_SOURCE, true);
 
     private final Stream<JsonParser> stream;
     private ObjectMapper mapper = new ObjectMapper();
@@ -34,20 +36,28 @@ public final class Json {
     // this reason InputStream closure is best handled by the client than by this
     // library.
 
+    public static Json fromInputStreamFactory(Callable<InputStream> inputStreamFactory) {
+        return new Json(streamFrom(FACTORY_AUTO_CLOSE_ON, factory -> factory.createParser(inputStreamFactory.call())));
+    }
+    
+    public static Json fromReaderFactory(Callable<Reader> readerFactory) {
+        return new Json(streamFrom(FACTORY_AUTO_CLOSE_ON, factory -> factory.createParser(readerFactory.call())));
+    }
+    
     public static Json stream(InputStream in) {
-        return new Json(streamFrom(factory -> factory.createParser(in)));
+        return new Json(streamFrom(FACTORY_AUTO_CLOSE_OFF, factory -> factory.createParser(in)));
     }
 
     public static Json stream(Reader reader) {
-        return new Json(streamFrom(factory -> factory.createParser(reader)));
+        return new Json(streamFrom(FACTORY_AUTO_CLOSE_OFF,factory -> factory.createParser(reader)));
     }
 
     public static Json stream(String text) {
-        return new Json(streamFrom(factory -> factory.createParser(text)));
+        return new Json(streamFrom(FACTORY_AUTO_CLOSE_OFF,factory -> factory.createParser(text)));
     }
 
     public static Json stream(Function<? super JsonFactory, ? extends JsonParser> creator) {
-        return new Json(streamFrom(creator));
+        return new Json(streamFrom(FACTORY_AUTO_CLOSE_OFF, creator));
     }
 
     public Json withMapper(ObjectMapper mapper) {
@@ -55,8 +65,8 @@ public final class Json {
         return this;
     }
 
-    private static Stream<JsonParser> streamFrom(Function<? super JsonFactory, ? extends JsonParser> creator) {
-        return Stream.generate(() -> creator.apply(FACTORY), //
+    private static Stream<JsonParser> streamFrom(JsonFactory factory, Function<? super JsonFactory, ? extends JsonParser> creator) {
+        return Stream.generate(() -> creator.apply(factory), //
                 (p, emitter) -> {
                     if (p.nextToken() != null) {
                         emitter.onNext(p);

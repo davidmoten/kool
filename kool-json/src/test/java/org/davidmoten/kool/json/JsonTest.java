@@ -1,5 +1,8 @@
 package org.davidmoten.kool.json;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -158,6 +161,64 @@ public class JsonTest {
                 .last() //
                 .test() //
                 .assertPresent();
+    }
+    
+    @Test
+    public void testDoesNotCloseInputStream() {
+        WrappedInputStream w = new WrappedInputStream(input(4));
+        Json.stream(w).arrayNode() //
+                .flatMap(node -> node.values()) //
+                .count() //
+                .test() //
+                .assertValueOnly(4L);
+        assertFalse(w.closed);
+    }
+    
+    @Test
+    public void testUsingFactoryMethodDoesCloseInputStream() throws IOException {
+        try (WrappedInputStream w = new WrappedInputStream(input(4))) {
+            Json.fromInputStreamFactory(() -> w) //
+                    .arrayNode() //
+                    .flatMap(node -> node.values()) //
+                    .count() //
+                    .test() //
+                    .assertValueOnly(4L);
+            assertTrue(w.closed);
+        }
+    }
+
+    @Test
+    public void testDisposalNotCalledIfInputStreamPassedDirectly() throws IOException {
+        try (WrappedInputStream w = new WrappedInputStream(input(4))) {
+            Json.stream(w) //
+                    .arrayNode() //
+                    .flatMap(node -> node.values()) //
+                    .count() //
+                    .test() //
+                    .assertValueOnly(4L);
+            assertFalse(w.closed);
+        }
+    }
+    
+    private static final class WrappedInputStream extends InputStream {
+
+        private final InputStream in;
+        boolean closed;
+
+        WrappedInputStream(InputStream in) {
+            this.in = in;
+        }
+        
+        @Override
+        public int read() throws IOException {
+            return in.read();
+        }
+        
+        @Override
+        public void close() throws IOException {
+            in.close();
+            closed = true;
+        }
     }
     
     static final class Record {
