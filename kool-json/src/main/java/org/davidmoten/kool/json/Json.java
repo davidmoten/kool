@@ -23,8 +23,8 @@ public final class Json {
     // Note that it's a bad idea to provide a stream(Callable<InputStream>) method
     // that takes because the responsibility for closing the InputStream would rest
     // with this library. The fact that a stateful JsonParser is emitted by methods
-    // on this stream mean that the InputStream could be closed before the parser
-    // has read stuff (dependening on what operators are applied to the stream). For
+    // on this stream means that the InputStream could be closed before the parser
+    // has read stuff (depending on what operators are applied to the stream). For
     // this reason InputStream closure is best handled by the client than by this
     // library.
 

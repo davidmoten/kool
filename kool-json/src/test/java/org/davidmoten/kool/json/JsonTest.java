@@ -13,7 +13,6 @@ import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class JsonTest {
 
@@ -159,6 +158,9 @@ public class JsonTest {
                 .last() //
                 .println() //
                 .go();
+    }
+    
+    public void test1() {
     }
 
     static final class Record {
