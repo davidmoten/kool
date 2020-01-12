@@ -21,7 +21,7 @@ public final class Json {
     private ObjectMapper mapper = new ObjectMapper();
 
     // Note that it's a bad idea to provide a stream(Callable<InputStream>) method
-    // that takes because the responsibility for closing the InputStream would rest
+    // because the responsibility for closing the InputStream would rest
     // with this library. The fact that a stateful JsonParser is emitted by methods
     // on this stream means that the InputStream could be closed before the parser
     // has read stuff (depending on what operators are applied to the stream). For
@@ -60,8 +60,8 @@ public final class Json {
                 });
     }
 
-    private Json(Stream<JsonParser> flowable) {
-        this.stream = flowable;
+    private Json(Stream<JsonParser> stream) {
+        this.stream = stream;
     }
 
     public Json field(String name) {
