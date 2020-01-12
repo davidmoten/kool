@@ -156,9 +156,8 @@ public class JsonTest {
                 .flatMap(node -> node.values()) //
                 .map(x -> x.get("datetime").asText()) //
                 .last() //
-                .count() //
                 .test() //
-                .assertValueOnly(1L);
+                .assertPresent();
     }
     
     static final class Record {

@@ -14,13 +14,20 @@ public final class MaybeTester<T> {
             error = e;
         }
     }
-
+    
     public void assertValue(T t) {
         assertNoError();
         if (!value.isPresent()) {
             throw new AssertionError("Value " + t + " expected but no value found");
         } else if (!value.get().equals(t)) {
             throw new AssertionError("Value " + t + " expected but found " + value.get());
+        }
+    }
+    
+    public void assertPresent() {
+        assertNoError();
+        if (!value.isPresent()) {
+            throw new AssertionError("Value expected but no value found");
         }
     }
 

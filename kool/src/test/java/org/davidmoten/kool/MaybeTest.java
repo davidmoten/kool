@@ -160,6 +160,16 @@ public final class MaybeTest {
     public void testDefer() {
         Maybe.defer(() -> Maybe.of(1)).test().assertValue(1);
     }
+    
+    @Test
+    public void testMaybePresent() {
+        Maybe.of(1).test().assertPresent();
+    }
+    
+    @Test(expected=AssertionError.class)
+    public void testMaybeNotPresent() {
+        Maybe.empty().test().assertPresent();
+    }
 
     @Test
     public void testFromOptional() {
