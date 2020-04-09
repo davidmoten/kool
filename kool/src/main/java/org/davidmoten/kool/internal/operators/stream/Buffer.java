@@ -7,6 +7,8 @@ import java.util.NoSuchElementException;
 import org.davidmoten.kool.Stream;
 import org.davidmoten.kool.StreamIterator;
 
+import com.github.davidmoten.guavamini.Preconditions;
+
 public class Buffer<T> implements Stream<java.util.List<T>> {
 
     private final Stream<T> stream;
@@ -14,6 +16,7 @@ public class Buffer<T> implements Stream<java.util.List<T>> {
     private final int step;
 
     public Buffer(Stream<T> stream, int size, int step) {
+        Preconditions.checkArgument(step > 0, "step must be greater than 0");
         this.stream = stream;
         this.size = size;
         this.step = step;

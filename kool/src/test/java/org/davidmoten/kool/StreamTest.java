@@ -524,8 +524,7 @@ public final class StreamTest {
                 .buffer(2) //
                 .test() //
                 .assertNoError()
-                .assertValuesOnly(Lists.newArrayList(1, 2), Lists.newArrayList(3, 4), Lists.newArrayList(5)) //
-        ;
+                .assertValuesOnly(Lists.newArrayList(1, 2), Lists.newArrayList(3, 4), Lists.newArrayList(5));
     }
 
     @Test
@@ -539,6 +538,11 @@ public final class StreamTest {
     @Test
     public void testBufferEmpty() {
         Stream.empty().buffer(2).test().assertNoValuesOnly();
+    }
+    
+    @Test(expected=IllegalArgumentException.class)
+    public void testBufferBadStepThrows() {
+        Stream.empty().buffer(2, 0);
     }
 
     @Test
