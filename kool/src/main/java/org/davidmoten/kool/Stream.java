@@ -1003,6 +1003,10 @@ public interface Stream<T> extends StreamIterable<T> {
             }
         });
     }
+    
+    public default <R extends Number> Single<Statistics> statistics(Function<? super T, R> mapper) {
+        return statistics(this.map(mapper));
+    }
 
     public default Stream<T> repeatLast() {
         return repeatLast(Long.MAX_VALUE);

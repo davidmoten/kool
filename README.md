@@ -16,6 +16,7 @@ Alternative to `java.util.stream.Stream`:
 * does not support streams of nulls (use `Optional` or `Maybe`)
 * 30% **faster** on *Shakespeare Plays Scrabble* [benchmark](benchmarks.md)
 * has **time-based** operators
+* has statistics operator (reduction) that offers count, mean, sd, variance, kurtosis, skewness, min, max, range 
 
 Status: *available on Maven Central* 
 
@@ -141,6 +142,27 @@ starting at 1544663194657
 starting at 1544663196658
 starting at 1544663200659
 java.net.UnknownHostException: doesnotexist.zz
+```
+## Statistics
+Give a stream of numbers you can calculate common statistics like count, mean, standard deviation, variance, kurtosis, skewness, range, min, max:
+
+```java
+Statistics stats = Stream.of(1, 2, 6)
+  .statistics(x -> x)
+  .get();
+System.out.println(stats.toString("", "\n"));
+```
+output
+```
+count=4
+mean=2.5
+standardDeviation=1.118033988749895
+variance=1.2500000000000002
+kurtosis=1.64
+skewness=0.0
+min=1.0
+max=4.0
+range=3.0
 ```
 
 ## JSON support

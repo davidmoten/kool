@@ -1843,7 +1843,12 @@ public final class StreamTest {
     
     @Test
     public void testStatistics() {
-        assertEquals(2.5, Stream.of(1,2,3,4).composeSingle(Stream::statistics).get().mean(), 0.00001);
+        assertEquals(2.5, Stream.of(1,2,3,4).statistics(x -> x).get().mean(), 0.00001);
+    }
+    
+    @Test
+    public void testStatisticsForReadme() {
+        System.out.println(Stream.of(1,2,3,4).statistics(x -> x).get().toString("", "\n"));
     }
 
     public static void main(String[] args) throws MalformedURLException {
