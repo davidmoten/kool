@@ -1830,6 +1830,21 @@ public final class StreamTest {
         assertEquals(Arrays.asList(Arrays.asList(0)), //
                 Stream.permutations(1).toList().get());
     }
+    
+    @Test
+    public void testComposeSingle() {
+        assertEquals(3, Stream.of(1,2,4).composeSingle(s -> s.count()).get().longValue());
+    }
+    
+    @Test
+    public void testComposeMaybe() {
+        assertEquals(4, Stream.of(1,2,4).composeMaybe(s -> s.last()).get().get().longValue());
+    }
+    
+    @Test
+    public void testStatistics() {
+        assertEquals(2.5, Stream.of(1,2,3,4).composeSingle(Stream::statistics).get().mean(), 0.00001);
+    }
 
     public static void main(String[] args) throws MalformedURLException {
         URL url = new URL("https://doesnotexist.zz");

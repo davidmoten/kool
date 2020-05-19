@@ -94,6 +94,8 @@ import org.davidmoten.kool.internal.operators.stream.TakeWithPredicate;
 import org.davidmoten.kool.internal.operators.stream.ToMaybe;
 import org.davidmoten.kool.internal.operators.stream.ToSingle;
 import org.davidmoten.kool.internal.operators.stream.Transform;
+import org.davidmoten.kool.internal.operators.stream.TransformMaybe;
+import org.davidmoten.kool.internal.operators.stream.TransformSingle;
 import org.davidmoten.kool.internal.operators.stream.Using;
 import org.davidmoten.kool.internal.operators.stream.Zip;
 import org.davidmoten.kool.internal.util.Exceptions;
@@ -736,10 +738,30 @@ public interface Stream<T> extends StreamIterable<T> {
             Function<? super Stream<T>, ? extends Stream<? extends R>> transformer) {
         return new Transform<T, R>(transformer, this);
     }
+    
+    public default <R> Single<R> transformSingle(
+            Function<? super Stream<T>, ? extends Single<? extends R>> transformer) {
+        return new TransformSingle<T, R>(transformer, this);
+    }
+    
+    public default <R> Maybe<R> transformMaybe(
+            Function<? super Stream<T>, ? extends Maybe<? extends R>> transformer) {
+        return new TransformMaybe<T, R>(transformer, this);
+    }
 
     public default <R> Stream<R> compose(
             Function<? super Stream<T>, ? extends Stream<? extends R>> transformer) {
         return transform(transformer);
+    }
+    
+    public default <R> Single<R> composeSingle(
+            Function<? super Stream<T>, ? extends Single<? extends R>> transformer) {
+        return transformSingle(transformer);
+    }
+    
+    public default <R> Maybe<R> composeMaybe(
+            Function<? super Stream<T>, ? extends Maybe<? extends R>> transformer) {
+        return transformMaybe(transformer);
     }
 
     public default Stream<T> switchOnError(
@@ -1003,6 +1025,12 @@ public interface Stream<T> extends StreamIterable<T> {
                     return b;
                 }) //
                 .prepend(new ArrayList<>(indexes));
+    }
+    
+    public static <T extends Number> Single<Statistics> statistics(Stream<T> stream) {
+        // don't need to use factory to create Statistics instance because is immutable
+        return stream.reduce(new Statistics(), //
+                (stats, x) -> stats.add(x.doubleValue()));
     }
 
     // TODO
