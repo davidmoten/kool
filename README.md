@@ -154,15 +154,15 @@ System.out.println(stats.toString("", "\n"));
 ```
 output
 ```
-count=4
-mean=2.5
-standardDeviation=1.118033988749895
-variance=1.2500000000000002
-kurtosis=1.64
-skewness=0.0
+count=3
+mean=3.0
+standardDeviation=2.1602468994692865
+variance=4.666666666666665
+kurtosis=1.5
+skewness=0.5951700641394974
 min=1.0
-max=4.0
-range=3.0
+max=6.0
+range=5.0
 ```
 
 ## JSON support
