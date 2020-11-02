@@ -1850,6 +1850,18 @@ public final class StreamTest {
     public void testStatisticsForReadme() {
         System.out.println(Stream.of(1,2,3,4).statistics(x -> x).get().toString("", "\n"));
     }
+    
+    @Test
+    public void testJavaStreamEarlyClosure() {
+        AtomicBoolean disposed = new AtomicBoolean();
+        java.util.stream.Stream<Integer> s = Stream //
+                .of(1, 2, 3) //
+                .doOnDispose(() -> disposed.set(true)) //
+                .toStreamJava();
+        assertEquals(1, (int) s.findFirst().get());
+        s.close();
+        assertTrue(disposed.get());
+    }
 
     public static void main(String[] args) throws MalformedURLException {
         URL url = new URL("https://doesnotexist.zz");

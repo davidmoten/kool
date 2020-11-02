@@ -21,6 +21,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.Spliterator;
+import java.util.Spliterators;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
@@ -779,7 +781,9 @@ public interface Stream<T> extends StreamIterable<T> {
     }
 
     public default java.util.stream.Stream<T> toStreamJava() {
-        return StreamSupport.stream(this.spliterator(), false);
+        StreamIterator<T> si = iterator();
+        Spliterator<T> spliterator = Spliterators.spliteratorUnknownSize(si, 0);
+        return StreamSupport.stream(spliterator, false).onClose(() -> si.dispose());
     }
 
     public default <K, V> Single<java.util.Map<K, V>> toMap(
