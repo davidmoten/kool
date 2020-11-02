@@ -24,6 +24,7 @@
         <exec.version>1.6.0</exec.version>
         <jmh.version>1.23</jmh.version>
         <jackson.version>2.11.0</jackson.version>
+        <junit.version>4.13.1</junit.version>
 
         <checkstyle.version>3.0.0</checkstyle.version>
         <findbugs.version>2.5.4</findbugs.version>
