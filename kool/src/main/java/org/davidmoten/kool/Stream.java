@@ -19,6 +19,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.Spliterator;
@@ -117,7 +118,7 @@ public interface Stream<T> extends StreamIterable<T> {
     // Factories
     //////////////////
 
-    public static <T> Stream<T> create(Iterable<T> source) {
+    public static <T> Stream<T> create(Iterable<? extends T> source) {
         return new StreamImpl<T>(source);
     }
 
@@ -193,7 +194,7 @@ public interface Stream<T> extends StreamIterable<T> {
         });
     }
 
-    public static <T> Stream<T> from(Iterable<T> iterable) {
+    public static <T> Stream<T> from(Iterable<? extends T> iterable) {
         return create(iterable);
     }
 
@@ -215,6 +216,11 @@ public interface Stream<T> extends StreamIterable<T> {
 
     public static Stream<String> from(InputStream in) {
         return from(in, StandardCharsets.UTF_8);
+    }
+    
+    @SuppressWarnings("unchecked")
+    public static <T> Stream<T> from(java.util.stream.Stream<? extends T> stream) {
+        return from(() -> (Iterator<T>) stream.iterator());
     }
 
     public static <T> Stream<T> fromArray(T[] array, int fromIndex, int toIndex) {
@@ -269,7 +275,7 @@ public interface Stream<T> extends StreamIterable<T> {
         return new FromBufferedReader(reader);
     }
 
-    public static Stream<String> lines(Callable<BufferedReader> readerFactory) {
+    public static Stream<String> lines(Callable<? extends BufferedReader> readerFactory) {
         return Stream.using(() -> {
             try {
                 return readerFactory.call();
@@ -279,7 +285,7 @@ public interface Stream<T> extends StreamIterable<T> {
         }, br -> lines(br));
     }
 
-    public static Stream<String> lines(Callable<InputStream> inFactory, Charset charset) {
+    public static Stream<String> lines(Callable<? extends InputStream> inFactory, Charset charset) {
         return lines(() -> new BufferedReader(new InputStreamReader(inFactory.call(), charset)));
     }
 
@@ -377,13 +383,13 @@ public interface Stream<T> extends StreamIterable<T> {
         return (Stream<T>) StreamUtils.EmptyHolder.EMPTY;
     }
 
-    public static <R, T> Stream<T> using(Callable<R> resourceFactory,
+    public static <R, T> Stream<T> using(Callable<? extends R> resourceFactory,
             Function<? super R, ? extends Stream<? extends T>> streamFactory,
             Consumer<? super R> closer) {
         return new Using<R, T>(resourceFactory, streamFactory, closer);
     }
 
-    public static <R extends Closeable, T> Stream<T> using(Callable<R> resourceFactory,
+    public static <R extends Closeable, T> Stream<T> using(Callable<? extends R> resourceFactory,
             Function<? super R, ? extends Stream<? extends T>> streamFactory) {
         return new Using<R, T>(resourceFactory, streamFactory, CLOSEABLE_CLOSER);
     }
@@ -678,6 +684,11 @@ public interface Stream<T> extends StreamIterable<T> {
     public default <R> Stream<R> flatMap(
             Function<? super T, ? extends StreamIterable<? extends R>> function) {
         return new FlatMap<T, R>(function, this);
+    }
+    
+    public default <R> Stream<R> flatMapJavaStream(
+            Function<? super T, ? extends java.util.stream.Stream<? extends R>> function) {
+        return flatMap(x -> Stream.from(function.apply(x)));
     }
 
     public default Maybe<T> findFirst(Predicate<? super T> predicate) {

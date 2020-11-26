@@ -10,11 +10,11 @@ import org.davidmoten.kool.internal.util.Exceptions;
 
 public final class Using<R, T> implements Stream<T> {
 
-    private final Callable<R> resourceFactory;
+    private final Callable<? extends R> resourceFactory;
     private final Function<? super R, ? extends Stream<? extends T>> streamFactory;
     private final Consumer<? super R> closer;
 
-    public Using(Callable<R> resourceFactory, Function<? super R, ? extends Stream<? extends T>> streamFactory,
+    public Using(Callable<? extends R> resourceFactory, Function<? super R, ? extends Stream<? extends T>> streamFactory,
             Consumer<? super R> closer) {
         this.resourceFactory = resourceFactory;
         this.streamFactory = streamFactory;

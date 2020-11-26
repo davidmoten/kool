@@ -7,9 +7,9 @@ import org.davidmoten.kool.StreamIterator;
 
 public final class StreamImpl<T> implements Stream<T> {
 
-    private final Iterable<T> source;
+    private final Iterable<? extends T> source;
 
-    public StreamImpl(Iterable<T> source) {
+    public StreamImpl(Iterable<? extends T> source) {
         this.source = source;
     }
 
@@ -17,7 +17,7 @@ public final class StreamImpl<T> implements Stream<T> {
     public StreamIterator<T> iterator() {
         return new StreamIterator<T>() {
 
-            Iterator<T> it = source.iterator();
+            Iterator<? extends T> it = source.iterator();
 
             @Override
             public boolean hasNext() {
