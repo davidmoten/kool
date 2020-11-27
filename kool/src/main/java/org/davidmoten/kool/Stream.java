@@ -220,7 +220,7 @@ public interface Stream<T> extends StreamIterable<T> {
     
     @SuppressWarnings("unchecked")
     public static <T> Stream<T> from(java.util.stream.Stream<? extends T> stream) {
-        return from(() -> (Iterator<T>) stream.iterator());
+        return from(() -> (Iterator<T>) stream.iterator()).doOnDispose(() -> stream.close());
     }
 
     public static <T> Stream<T> fromArray(T[] array, int fromIndex, int toIndex) {
