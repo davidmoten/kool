@@ -1862,6 +1862,19 @@ public final class StreamTest {
         s.close();
         assertTrue(disposed.get());
     }
+    
+	@Test
+	public void testDoWithIndex() {
+		AtomicInteger count = new AtomicInteger();
+		List<Long> list = new ArrayList<>();
+		Stream.of(1, 1, 1, 1, 1, 1, 1).doWithIndex((i, x) -> {
+			if (i % 3 == 0)
+				count.incrementAndGet();
+			list.add(i);
+		}).go();
+		assertEquals(Lists.newArrayList(0L, 1L, 2L, 3L, 4L, 5L, 6L), list);
+		assertEquals(3, count.get());
+	}
 
     public static void main(String[] args) throws MalformedURLException {
         URL url = new URL("https://doesnotexist.zz");
@@ -1876,5 +1889,4 @@ public final class StreamTest {
                 .switchOnError(e -> Single.of(-1)) //
                 .forEach();
     }
-
 }

@@ -706,6 +706,16 @@ public interface Stream<T> extends StreamIterable<T> {
     public default Stream<T> doOnNext(Consumer<? super T> consumer) {
         return new DoOnNext<T>(consumer, this);
     }
+    
+    public default Stream<T> doWithIndex(BiConsumer<? super Long, ? super T> consumer) {
+		return defer(() -> {
+        	long[] idx = new long[1];
+        	return doOnNext(x ->  {
+       			consumer.accept(idx[0], x);
+        		idx[0]++;
+        	});
+        });
+    }
 
     public default Stream<T> doOnError(Consumer<? super Throwable> consumer) {
         return new DoOnError<T>(consumer, this);
