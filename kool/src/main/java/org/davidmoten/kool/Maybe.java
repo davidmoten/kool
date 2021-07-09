@@ -5,11 +5,13 @@ import java.util.concurrent.Callable;
 
 import org.davidmoten.kool.function.Consumer;
 import org.davidmoten.kool.function.Function;
+import org.davidmoten.kool.function.Predicate;
 import org.davidmoten.kool.internal.operators.maybe.MaybeDefer;
 import org.davidmoten.kool.internal.operators.maybe.MaybeDoOnEmpty;
 import org.davidmoten.kool.internal.operators.maybe.MaybeDoOnError;
 import org.davidmoten.kool.internal.operators.maybe.MaybeDoOnValue;
 import org.davidmoten.kool.internal.operators.maybe.MaybeError;
+import org.davidmoten.kool.internal.operators.maybe.MaybeFilter;
 import org.davidmoten.kool.internal.operators.maybe.MaybeFlatMap;
 import org.davidmoten.kool.internal.operators.maybe.MaybeFlatMapMaybe;
 import org.davidmoten.kool.internal.operators.maybe.MaybeFromCallable;
@@ -99,6 +101,10 @@ public interface Maybe<T> extends StreamIterable<T> {
 
     public default Maybe<T> doOnError(Consumer<? super Throwable> consumer) {
         return new MaybeDoOnError<T>(consumer, this);
+    }
+    
+    public default Maybe<T> filter(Predicate<? super T> predicate) {
+        return new MaybeFilter<T>(predicate, this);
     }
 
     public default Maybe<T> doOnEmpty(Runnable action) {

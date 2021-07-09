@@ -14,6 +14,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import org.davidmoten.kool.exceptions.TestRuntimeException;
 import org.davidmoten.kool.exceptions.UncheckedException;
+import org.junit.Assert;
 import org.junit.Test;
 
 public final class MaybeTest {
@@ -160,13 +161,13 @@ public final class MaybeTest {
     public void testDefer() {
         Maybe.defer(() -> Maybe.of(1)).test().assertValue(1);
     }
-    
+
     @Test
     public void testMaybePresent() {
         Maybe.of(1).test().assertPresent();
     }
-    
-    @Test(expected=AssertionError.class)
+
+    @Test(expected = AssertionError.class)
     public void testMaybeNotPresent() {
         Maybe.empty().test().assertPresent();
     }
@@ -289,6 +290,28 @@ public final class MaybeTest {
         StreamIterator<Integer> it = Maybe.of(1).iterator();
         assertTrue(it.hasNext());
         assertEquals(1, (int) it.next());
+    }
+
+    @Test
+    public void testMaybeFilter() {
+        assertEquals(1, (int) Maybe.of(1).filter(x -> x > 0).get().get());
+    }
+
+    @Test
+    public void testMaybeFilterFails() {
+        assertFalse(Maybe.of(1).filter(x -> x > 1).get().isPresent());
+    }
+
+    @Test
+    public void testMaybeFilterThrows() {
+        try {
+            Maybe.of(1).filter(x -> {
+                throw new RuntimeException("boo");
+            }).get();
+            Assert.fail();
+        } catch (RuntimeException e) {
+            assertEquals("boo", e.getMessage());
+        }
     }
 
 }
