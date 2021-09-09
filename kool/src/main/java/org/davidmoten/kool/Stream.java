@@ -34,6 +34,7 @@ import org.davidmoten.kool.function.BiConsumer;
 import org.davidmoten.kool.function.BiFunction;
 import org.davidmoten.kool.function.BiPredicate;
 import org.davidmoten.kool.function.Consumer;
+import org.davidmoten.kool.function.Consumers;
 import org.davidmoten.kool.function.Function;
 import org.davidmoten.kool.function.Predicate;
 import org.davidmoten.kool.function.Predicates;
@@ -58,6 +59,7 @@ import org.davidmoten.kool.internal.operators.stream.DoOnStart;
 import org.davidmoten.kool.internal.operators.stream.Filter;
 import org.davidmoten.kool.internal.operators.stream.First;
 import org.davidmoten.kool.internal.operators.stream.FlatMap;
+import org.davidmoten.kool.internal.operators.stream.FlatMapGenerator;
 import org.davidmoten.kool.internal.operators.stream.FromArray;
 import org.davidmoten.kool.internal.operators.stream.FromArrayDouble;
 import org.davidmoten.kool.internal.operators.stream.FromArrayFloat;
@@ -217,7 +219,7 @@ public interface Stream<T> extends StreamIterable<T> {
     public static Stream<String> from(InputStream in) {
         return from(in, StandardCharsets.UTF_8);
     }
-    
+
     @SuppressWarnings("unchecked")
     public static <T> Stream<T> from(java.util.stream.Stream<? extends T> stream) {
         return from(() -> (Iterator<T>) stream.iterator()).doOnDispose(() -> stream.close());
@@ -420,7 +422,7 @@ public interface Stream<T> extends StreamIterable<T> {
      * stream in round-robin style).
      * 
      * @param streams to be merged
-     * @param         <T> result stream type
+     * @param <T>     result stream type
      * @return merges streams (interleaved)
      */
     @SafeVarargs
@@ -685,7 +687,24 @@ public interface Stream<T> extends StreamIterable<T> {
             Function<? super T, ? extends StreamIterable<? extends R>> function) {
         return new FlatMap<T, R>(function, this);
     }
+
+    public default <R> Stream<R> flatMap(BiConsumer<T, Consumer<R>> generator, Consumer<Consumer<R>> onFinish) {
+        return new FlatMapGenerator<T, R>(generator, onFinish, this);
+    }
     
+    /**
+     * Using a consumer to report items to downstream is more performant (fewer
+     * allocations) because a Stream object doesn't have to be created for each
+     * upstream element.
+     * 
+     * @param <R>       type of return stream
+     * @param generator generator of downstream items
+     * @return new stream
+     */
+    public default <R> Stream<R> flatMap(BiConsumer<T, Consumer<R>> generator) {
+        return new FlatMapGenerator<T, R>(generator, Consumers.doNothing(), this);
+    }
+
     public default <R> Stream<R> flatMapJavaStream(
             Function<? super T, ? extends java.util.stream.Stream<? extends R>> function) {
         return flatMap(x -> Stream.from(function.apply(x)));
@@ -706,14 +725,14 @@ public interface Stream<T> extends StreamIterable<T> {
     public default Stream<T> doOnNext(Consumer<? super T> consumer) {
         return new DoOnNext<T>(consumer, this);
     }
-    
+
     public default Stream<T> doWithIndex(BiConsumer<? super Long, ? super T> consumer) {
-		return defer(() -> {
-        	long[] idx = new long[1];
-        	return doOnNext(x ->  {
-       			consumer.accept(idx[0], x);
-        		idx[0]++;
-        	});
+        return defer(() -> {
+            long[] idx = new long[1];
+            return doOnNext(x -> {
+                consumer.accept(idx[0], x);
+                idx[0]++;
+            });
         });
     }
 
@@ -761,12 +780,12 @@ public interface Stream<T> extends StreamIterable<T> {
             Function<? super Stream<T>, ? extends Stream<? extends R>> transformer) {
         return new Transform<T, R>(transformer, this);
     }
-    
+
     public default <R> Single<R> transformSingle(
             Function<? super Stream<T>, ? extends Single<? extends R>> transformer) {
         return new TransformSingle<T, R>(transformer, this);
     }
-    
+
     public default <R> Maybe<R> transformMaybe(
             Function<? super Stream<T>, ? extends Maybe<? extends R>> transformer) {
         return new TransformMaybe<T, R>(transformer, this);
@@ -776,12 +795,12 @@ public interface Stream<T> extends StreamIterable<T> {
             Function<? super Stream<T>, ? extends Stream<? extends R>> transformer) {
         return transform(transformer);
     }
-    
+
     public default <R> Single<R> composeSingle(
             Function<? super Stream<T>, ? extends Single<? extends R>> transformer) {
         return transformSingle(transformer);
     }
-    
+
     public default <R> Maybe<R> composeMaybe(
             Function<? super Stream<T>, ? extends Maybe<? extends R>> transformer) {
         return transformMaybe(transformer);
@@ -879,7 +898,7 @@ public interface Stream<T> extends StreamIterable<T> {
 
     public default Stream<Indexed<T>> mapWithIndex(int startIndex) {
         return defer(() -> {
-            int[] index = new int[] { startIndex };
+            int[] index = new int[] {startIndex};
             return map(x -> {
                 int n = index[0];
                 index[0] = n + 1;
@@ -1028,8 +1047,9 @@ public interface Stream<T> extends StreamIterable<T> {
             }
         });
     }
-    
-    public default <R extends Number> Single<Statistics> statistics(Function<? super T, ? extends R> mapper) {
+
+    public default <R extends Number> Single<Statistics> statistics(
+            Function<? super T, ? extends R> mapper) {
         return statistics(this.map(mapper));
     }
 
@@ -1055,7 +1075,7 @@ public interface Stream<T> extends StreamIterable<T> {
                 }) //
                 .prepend(new ArrayList<>(indexes));
     }
-    
+
     public static <T extends Number> Single<Statistics> statistics(Stream<T> stream) {
         // don't need to use factory to create Statistics instance because is immutable
         return stream.reduce(new Statistics(), //
