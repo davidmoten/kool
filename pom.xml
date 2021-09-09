@@ -29,7 +29,6 @@
         <findbugs.version>2.5.4</findbugs.version>
         <javadoc.version>3.3.1</javadoc.version>
         <pmd.version>3.14.0</pmd.version>
-        <jdepend.version>2.0</jdepend.version>
         <javancss.version>2.1</javancss.version>
         <project.info.version>3.0.0</project.info.version>
         <jxr.version>3.1.1</jxr.version>
@@ -164,14 +163,6 @@
                     <targetJdk>${maven.compiler.target}</targetJdk>
                     <aggregate>true</aggregate>
                 </configuration>
-            </plugin>
-            <!-- <plugin> <groupId>org.codehaus.mojo</groupId> <artifactId>findbugs-maven-plugin</artifactId> 
-                <version>${findbugs.version}</version> <configuration> <xmlOutput>true</xmlOutput> 
-                <effort>Max</effort> </configuration> </plugin> -->
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>jdepend-maven-plugin</artifactId>
-                <version>${jdepend.version}</version>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
