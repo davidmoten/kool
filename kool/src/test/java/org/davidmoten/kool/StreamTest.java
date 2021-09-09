@@ -1900,14 +1900,18 @@ public final class StreamTest {
 
     @Test
     public void testFlatMapGenerator() {
-        List<String> list = Stream.of(1).<String>flatMap((x, consumer) -> consumer.accept(x + ""))
-                .toList().get();
+        List<String> list = Stream //
+                .of(1) //
+                .<String>flatMap((x, consumer) -> consumer.accept(x + "")) //
+                .toList() //
+                .get();
         assertEquals(Arrays.asList("1"), list);
     }
 
     @Test
     public void testFlatMapGeneratorWithOnFinish() {
-        Single<List<String>> stream = Stream.of(1, 5).<String>flatMap( //
+        Single<List<String>> stream = Stream.of(1, 5) //
+                .<String>flatMap( //
                 (x, consumer) -> {
                     consumer.accept(x + "");
                     consumer.accept(2 * x + "");
@@ -1922,7 +1926,8 @@ public final class StreamTest {
     
     @Test
     public void testFlatMapGeneratorEmptyWithOnFinish() {
-        List<String> list = Stream.<Integer>empty().<String>flatMap( //
+        List<String> list = Stream.<Integer>empty() //
+                .<String>flatMap( //
                 (x, consumer) -> {
                     consumer.accept(x + "");
                     consumer.accept(2 * x + "");
