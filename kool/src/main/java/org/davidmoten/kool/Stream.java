@@ -688,7 +688,7 @@ public interface Stream<T> extends StreamIterable<T> {
         return new FlatMap<T, R>(function, this);
     }
 
-    public default <R> Stream<R> flatMap(BiConsumer<T, Consumer<R>> generator, Consumer<Consumer<R>> onFinish) {
+    public default <R> Stream<R> flatMap(BiConsumer<? super T, ? super Consumer<R>> generator, Consumer<? super Consumer<R>> onFinish) {
         return new FlatMapGenerator<T, R>(generator, onFinish, this);
     }
     
@@ -701,7 +701,7 @@ public interface Stream<T> extends StreamIterable<T> {
      * @param generator generator of downstream items
      * @return new stream
      */
-    public default <R> Stream<R> flatMap(BiConsumer<T, Consumer<R>> generator) {
+    public default <R> Stream<R> flatMap(BiConsumer<? super T, ? super Consumer<R>> generator) {
         return new FlatMapGenerator<T, R>(generator, Consumers.doNothing(), this);
     }
 

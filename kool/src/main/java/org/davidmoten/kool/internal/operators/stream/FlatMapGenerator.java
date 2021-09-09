@@ -12,11 +12,11 @@ import org.davidmoten.kool.internal.util.Exceptions;
 
 public final class FlatMapGenerator<T, R> implements Stream<R> {
 
-    private final BiConsumer<T, Consumer<R>> generator;
+    private final BiConsumer<? super T, ? super Consumer<R>> generator;
     private final Stream<T> stream;
-    private final Consumer<Consumer<R>> onFinish;
+    private final Consumer<? super Consumer<R>> onFinish;
 
-    public FlatMapGenerator(BiConsumer<T, Consumer<R>> generator, Consumer<Consumer<R>> onFinish,
+    public FlatMapGenerator(BiConsumer<? super T, ? super Consumer<R>> generator, Consumer<? super Consumer<R>> onFinish,
             Stream<T> stream) {
         this.generator = generator;
         this.onFinish = onFinish;
