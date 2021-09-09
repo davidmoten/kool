@@ -9,7 +9,7 @@
         <version>0.1</version>
     </parent>
     <artifactId>kool-parent</artifactId>
-    <version>0.1.19-SNAPSHOT</version>
+    <version>0.1.19</version>
     <name>${project.artifactId}</name>
     <description>Streaming library supporting reuse and many operators</description>
     <packaging>pom</packaging>
@@ -76,7 +76,7 @@
         <connection>scm:git:https://github.com/davidmoten/kool.git</connection>
         <developerConnection>scm:git:https://github.com/davidmoten/kool.git</developerConnection>
         <url>scm:git:https://github.com:davidmoten/kool.git</url>
-        <tag>HEAD</tag>
+        <tag>0.1.19</tag>
     </scm>
 
     <modules>
