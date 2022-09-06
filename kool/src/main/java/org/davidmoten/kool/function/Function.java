@@ -17,7 +17,7 @@ public interface Function<T, R> {
     }
 
     @SuppressWarnings("unchecked")
-    public static <T> Function<T, T> identity() {
+    static <T> Function<T, T> identity() {
         return (Function<T, T>) StreamUtils.FunctionIdentityHolder.IDENTITY;
     }
 

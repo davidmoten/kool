@@ -27,27 +27,27 @@ public interface Single<T> extends StreamIterable<T> {
     // Factories
     //////////////////
 
-    public static <T> Single<T> of(T t) {
+    static <T> Single<T> of(T t) {
         return new SingleOf<T>(t);
     }
 
-    public static <T> Single<T> fromCallable(Callable<? extends T> callable) {
+    static <T> Single<T> fromCallable(Callable<? extends T> callable) {
         return new SingleFromCallable<T>(callable);
     }
 
-    public static <T> Single<T> error(Callable<? extends Throwable> callable) {
+    static <T> Single<T> error(Callable<? extends Throwable> callable) {
         return new SingleError<T>(callable);
     }
 
-    public static <T> Single<T> error(Throwable error) {
+    static <T> Single<T> error(Throwable error) {
         return error(() -> error);
     }
 
-    public static Single<Integer> timer(long duration, TimeUnit unit) {
+    static Single<Integer> timer(long duration, TimeUnit unit) {
         return timer(1, duration, unit);
     }
 
-    public static <T> Single<T> timer(T t, long duration, TimeUnit unit) {
+    static <T> Single<T> timer(T t, long duration, TimeUnit unit) {
         Preconditions.checkNotNull(t);
         Preconditions.checkNotNull(unit);
         Preconditions.checkArgument(duration >= 0);
@@ -61,27 +61,27 @@ public interface Single<T> extends StreamIterable<T> {
     // Operators
     //////////////////
 
-    public default <R> Single<R> map(Function<? super T, ? extends R> mapper) {
+    default <R> Single<R> map(Function<? super T, ? extends R> mapper) {
         return new Map<T, R>(mapper, this);
     }
 
-    public default <R> Stream<R> flatMap(Function<? super T, ? extends StreamIterable<? extends R>> mapper) {
+    default <R> Stream<R> flatMap(Function<? super T, ? extends StreamIterable<? extends R>> mapper) {
         return new SingleFlatMap<T, R>(this, mapper);
     }
 
-    public default <R> Maybe<R> flatMapMaybe(Function<? super T, ? extends Maybe<? extends R>> mapper) {
+    default <R> Maybe<R> flatMapMaybe(Function<? super T, ? extends Maybe<? extends R>> mapper) {
         return new SingleFlatMapMaybe<T, R>(this, mapper);
     }
 
-    public default Single<T> doOnValue(Consumer<? super T> consumer) {
+    default Single<T> doOnValue(Consumer<? super T> consumer) {
         return new SingleDoOnValue<T>(consumer, this);
     }
 
-    public default Single<T> doOnError(Consumer<? super Throwable> consumer) {
+    default Single<T> doOnError(Consumer<? super Throwable> consumer) {
         return new SingleDoOnError<T>(consumer, this);
     }
     
-    public default <R> Single<T> switchOnError(Function<? super Throwable, ? extends Single<? extends T>> function) {
+    default <R> Single<T> switchOnError(Function<? super Throwable, ? extends Single<? extends T>> function) {
         return new SingleSwitchOnError<T>(this, function);
     }
 
@@ -97,7 +97,7 @@ public interface Single<T> extends StreamIterable<T> {
         return new SingleIterator<T>(this);
     }
 
-    public default <R> R to(Function<? super Single<T>, R> mapper) {
+    default <R> R to(Function<? super Single<T>, R> mapper) {
         return mapper.applyUnchecked(this);
     }
 

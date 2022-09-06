@@ -9,7 +9,7 @@ import org.davidmoten.kool.StreamIterator;
 
 import com.github.davidmoten.guavamini.Preconditions;
 
-public class Buffer<T> implements Stream<java.util.List<T>> {
+public class Buffer<T> implements Stream<List<T>> {
 
     private final Stream<T> stream;
     private final int size;

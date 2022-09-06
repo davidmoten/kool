@@ -90,15 +90,11 @@ public final class RetryWhen<T> implements Stream<T> {
             StreamIterator<Long> delaysIt = delays == null ? null : delays.iteratorNullChecked();
             Function<Throwable, Single<?>> function = e -> {
                 retryNumber[0]++;
-                if (maxRetries > 0) {
-                    if (retryNumber[0] > maxRetries) {
-                        return Exceptions.rethrow(e);
-                    }
+                if (maxRetries > 0 && retryNumber[0] > maxRetries) {
+                    return Exceptions.rethrow(e);
                 }
-                if (predicate != null) {
-                    if (!predicate.test(e)) {
-                        return Exceptions.rethrow(e);
-                    }
+                if (predicate != null && !predicate.test(e)) {
+                    return Exceptions.rethrow(e);
                 }
                 if (delaysIt != null) {
                     if (delaysIt.hasNext()) {

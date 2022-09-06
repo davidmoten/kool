@@ -52,6 +52,5 @@ public final class SingleToStream<T> implements Stream<T> {
             }
 
         };
-    };
-
+    }
 }

@@ -33,12 +33,12 @@ public interface Maybe<T> extends StreamIterable<T> {
     // Factories
     //////////////////
 
-    public static <T> Maybe<T> of(T value) {
+    static <T> Maybe<T> of(T value) {
         Preconditions.checkNotNull(value);
         return new MaybeImpl<T>(Optional.of(value));
     }
 
-    public static <T> Maybe<T> fromOptional(Optional<? extends T> optional) {
+    static <T> Maybe<T> fromOptional(Optional<? extends T> optional) {
         if (optional.isPresent()) {
             return Maybe.of(optional.get());
         } else {
@@ -46,15 +46,15 @@ public interface Maybe<T> extends StreamIterable<T> {
         }
     }
 
-    public static <T> Maybe<T> fromCallableNullable(Callable<? extends T> callable) {
+    static <T> Maybe<T> fromCallableNullable(Callable<? extends T> callable) {
         return new MaybeFromCallable<T>(callable, true);
     }
 
-    public static <T> Maybe<T> fromCallable(Callable<? extends T> callable) {
+    static <T> Maybe<T> fromCallable(Callable<? extends T> callable) {
         return new MaybeFromCallable<T>(callable, false);
     }
 
-    public static <T> Maybe<T> ofNullable(T value) {
+    static <T> Maybe<T> ofNullable(T value) {
         if (value == null) {
             return empty();
         } else {
@@ -63,19 +63,19 @@ public interface Maybe<T> extends StreamIterable<T> {
     }
 
     @SuppressWarnings("unchecked")
-    public static <T> Maybe<T> empty() {
+    static <T> Maybe<T> empty() {
         return (Maybe<T>) MaybeImpl.EmptyHolder.INSTANCE;
     }
 
-    public static <T> Maybe<T> defer(Callable<? extends Maybe<? extends T>> factory) {
+    static <T> Maybe<T> defer(Callable<? extends Maybe<? extends T>> factory) {
         return new MaybeDefer<T>(factory);
     }
 
-    public static <T> Maybe<T> error(Callable<? extends Throwable> callable) {
+    static <T> Maybe<T> error(Callable<? extends Throwable> callable) {
         return new MaybeError<T>(callable);
     }
 
-    public static <T> Maybe<T> error(Throwable error) {
+    static <T> Maybe<T> error(Throwable error) {
         return error(() -> error);
     }
 
@@ -83,35 +83,35 @@ public interface Maybe<T> extends StreamIterable<T> {
     // Operators
     //////////////////
 
-    public default <R> Maybe<R> map(Function<? super T, ? extends R> mapper) {
+    default <R> Maybe<R> map(Function<? super T, ? extends R> mapper) {
         return new MaybeMap<T, R>(this, mapper);
     }
 
-    public default Stream<T> toStream() {
+    default Stream<T> toStream() {
         return new MaybeToStream<T>(this);
     }
 
-    public default <R> Stream<R> flatMap(Function<? super T, ? extends StreamIterable<? extends R>> mapper) {
+    default <R> Stream<R> flatMap(Function<? super T, ? extends StreamIterable<? extends R>> mapper) {
         return new MaybeFlatMap<T, R>(this, mapper);
     }
     
-    public default Maybe<T> doOnValue(Consumer<? super T> consumer) {
+    default Maybe<T> doOnValue(Consumer<? super T> consumer) {
         return new MaybeDoOnValue<T>(consumer, this);
     }
 
-    public default Maybe<T> doOnError(Consumer<? super Throwable> consumer) {
+    default Maybe<T> doOnError(Consumer<? super Throwable> consumer) {
         return new MaybeDoOnError<T>(consumer, this);
     }
     
-    public default Maybe<T> filter(Predicate<? super T> predicate) {
+    default Maybe<T> filter(Predicate<? super T> predicate) {
         return new MaybeFilter<T>(predicate, this);
     }
 
-    public default Maybe<T> doOnEmpty(Runnable action) {
+    default Maybe<T> doOnEmpty(Runnable action) {
         return new MaybeDoOnEmpty<T>(this, action);
     }
 
-    public default Single<T> orElse(T value) {
+    default Single<T> orElse(T value) {
         return new MaybeOrElse<T>(this, value);
     }
 
@@ -127,19 +127,19 @@ public interface Maybe<T> extends StreamIterable<T> {
         return new MaybeIterator<T>(this);
     }
 
-    public default <R> R to(Function<? super Maybe<T>, R> mapper) {
+    default <R> R to(Function<? super Maybe<T>, R> mapper) {
         return mapper.applyUnchecked(this);
     }
 
-    public default void forEach() {
+    default void forEach() {
         get();
     }
     
-    public default void start() {
+    default void start() {
         get();
     }
     
-    public default void go() {
+    default void go() {
         get();
     }
 
@@ -147,7 +147,7 @@ public interface Maybe<T> extends StreamIterable<T> {
         return new MaybeSwitchOnError<T>(this, function);
     }
 
-    public default <R> Maybe<R> flatMapMaybe(Function<? super T, ? extends Maybe<? extends R>> mapper) {
+    default <R> Maybe<R> flatMapMaybe(Function<? super T, ? extends Maybe<? extends R>> mapper) {
         return new MaybeFlatMapMaybe<T, R>(this, mapper);
     }
     

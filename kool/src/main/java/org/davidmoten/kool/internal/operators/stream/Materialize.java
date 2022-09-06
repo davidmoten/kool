@@ -6,7 +6,7 @@ import org.davidmoten.kool.StreamIterable;
 import org.davidmoten.kool.StreamIterator;
 import org.davidmoten.kool.internal.util.BaseStreamIterator;
 
-public final class Materialize<T> implements Stream<org.davidmoten.kool.Notification<T>> {
+public final class Materialize<T> implements Stream<Notification<T>> {
 
     private final Stream<T> stream;
 
