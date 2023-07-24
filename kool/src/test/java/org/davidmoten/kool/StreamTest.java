@@ -663,11 +663,48 @@ public final class StreamTest {
     @Test
     public void testBufferUntil() {
         Stream.of(1, 2, 3) //
-                .bufferUntil((list, t) -> list.size() == 2, true) //
+                .bufferUntil((list, t) -> t == 3, true) //
                 .test() //
                 .assertValuesOnly( //
-                        Lists.newArrayList(1, 2), //
-                        Lists.newArrayList(3));
+                        Lists.newArrayList(1, 2, 3));
+    }
+    
+    @Test
+    public void testBufferUntilEmitMultiple() {
+        Stream.of(1, 2, 3, 2, 3) //
+                .bufferUntil((list, t) -> t == 3, true) //
+                .test() //
+                .assertValuesOnly( //
+                        Lists.newArrayList(1, 2, 3), //
+                        Lists.newArrayList(2, 3));
+    }
+    
+    @Test
+    public void testBufferUntilEmitMultipleEmitRemainderTrue() {
+        Stream.of(1, 2, 3, 2, 4) //
+                .bufferUntil((list, t) -> t == 3, true) //
+                .test() //
+                .assertValuesOnly( //
+                        Lists.newArrayList(1, 2, 3), //
+                        Lists.newArrayList(2, 4));
+    }
+    
+    @Test
+    public void testBufferUntilEmitMultipleEmitRemainderFalse() {
+        Stream.of(1, 2, 3, 2, 4) //
+                .bufferUntil((list, t) -> t == 3, false) //
+                .test() //
+                .assertValuesOnly( //
+                        Lists.newArrayList(1, 2, 3));
+    }
+    
+    @Test
+    public void testBufferWhileNoRemainder() {
+        Stream.of(1, 2, 3, 4) //
+                .bufferWhile((list, t) -> list.size()<=1, false) //
+                .test() //
+                .assertValuesOnly( //
+                        Lists.newArrayList(1, 2));
     }
     
     @Test
@@ -676,7 +713,7 @@ public final class StreamTest {
                 .bufferUntil((list, t) -> list.size() == 2, false) //
                 .test() //
                 .assertValuesOnly( //
-                        Lists.newArrayList(1, 2));
+                        Lists.newArrayList(1, 2, 3));
     }
     
     @Test
@@ -684,8 +721,15 @@ public final class StreamTest {
         Stream.of(1, 2, 3) //
                 .bufferUntil((list, t) -> list.size() == 3, false) //
                 .test() //
-                .assertValuesOnly( //
-                        Lists.newArrayList(1, 2, 3));
+                .assertNoValuesOnly();
+    }
+    
+    @Test
+    public void testBufferWhileRemainderEqualsFalseDoesNotEmitAnything() {
+        Stream.of(1, 2, 3) //
+                .bufferWhile((list, t) -> list.size() != 3, false) //
+                .test() //
+                .assertNoValuesOnly();
     }
     
     @Test
@@ -721,12 +765,8 @@ public final class StreamTest {
                 .test() //
                 .assertValuesOnly( //
                         Lists.newArrayList(1, 2, 3, 4), //
-                        Lists.newArrayList(2, 3, 4, 5), // 
-                        Lists.newArrayList(3, 4, 5, 6), //
-                        Lists.newArrayList(4, 5, 6, 7), //
-                        Lists.newArrayList(5, 6, 7), //
-                        Lists.newArrayList(6, 7), //
-                        Lists.newArrayList(7));
+                        Lists.newArrayList(2, 3, 4, 5), //
+                        Lists.newArrayList(3, 4, 5, 6));
     }
 
     @Test
