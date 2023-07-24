@@ -3,8 +3,6 @@ package org.davidmoten.kool.internal.operators.stream;
 import org.davidmoten.kool.StreamIterator;
 import org.davidmoten.kool.internal.util.RingBuffer;
 
-import com.github.davidmoten.guavamini.Preconditions;
-
 public final class ReplayableStreamIterator<T> implements StreamIterator<T> {
 
     private final StreamIterator<T> it;
