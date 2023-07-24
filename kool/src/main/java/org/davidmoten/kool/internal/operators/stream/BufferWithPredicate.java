@@ -72,10 +72,8 @@ public final class BufferWithPredicate<T> implements Stream<List<T>> {
                         // until
                         if (b) {
                             ready = true;
-                            buffer.add(t);
-                        } else {
-                            buffer.add(t);
                         }
+                        buffer.add(t);
                     }
                 }
                 if (!ready) {
