@@ -54,9 +54,11 @@ public final class BufferWithPredicateAndStep<T> implements Stream<List<T>> {
                     ready = false;
                     int offset = step.applyUnchecked(list);
                     if (offset > list.size()) {
+                        int bufferSize = buffer.size();
+                        buffer.clear();
                         int n = offset - list.size();
                         // skip n values
-                        for (int i = 0; i < n; i++) {
+                        for (int i = 0; i < n - bufferSize; i++) {
                             if (it.hasNext()) {
                                 it.next();
                             } else {

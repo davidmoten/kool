@@ -669,6 +669,17 @@ public final class StreamTest {
                         Lists.newArrayList(1, 2), //
                         Lists.newArrayList(3));
     }
+    
+    @Test
+    public void testBufferUntilWithStep() {
+        Stream.of(1, 2, 3, 4, 5, 6, 7) //
+                .bufferUntil((list, t) -> list.size() == 2, true, 3, 10) //
+                .test() //
+                .assertValuesOnly( //
+                        Lists.newArrayList(1, 2), //
+                        Lists.newArrayList(4, 5), // 
+                        Lists.newArrayList(7));
+    }
 
     @Test
     public void testLinesFromResource() {
