@@ -34,7 +34,7 @@ public final class ReplayableStreamIterator<T> implements StreamIterator<T> {
     }
 
     public void replay(int count) {
-        Preconditions.checkArgument(count > buffer.size(),
+        Preconditions.checkArgument(count <= buffer.size(),
                 "total replay count too large: " + count + ", available = " + buffer.size());
         buffer.replay(count);
     }
