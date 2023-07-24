@@ -671,6 +671,24 @@ public final class StreamTest {
     }
     
     @Test
+    public void testBufferUntilRemainderEqualsFalse() {
+        Stream.of(1, 2, 3) //
+                .bufferUntil((list, t) -> list.size() == 2, false) //
+                .test() //
+                .assertValuesOnly( //
+                        Lists.newArrayList(1, 2));
+    }
+    
+    @Test
+    public void testBufferUntilRemainderEqualsFalseEmitsAll() {
+        Stream.of(1, 2, 3) //
+                .bufferUntil((list, t) -> list.size() == 3, false) //
+                .test() //
+                .assertValuesOnly( //
+                        Lists.newArrayList(1, 2, 3));
+    }
+    
+    @Test
     public void testBufferUntilWithStepLargerThanBufferedList() {
         Stream.of(1, 2, 3, 4, 5, 6, 7) //
                 .bufferUntil((list, t) -> list.size() == 2, true, 3) //

@@ -55,6 +55,7 @@ public final class BufferWithPredicateAndStep<T> implements Stream<List<T>> {
                         offset = list.size();
                     }
                     int bufferSize = buffer.size();
+                    System.out.println("emitting " + list + ", offset=" + offset + ", bufferSize=" + bufferSize);
                     buffer.clear();
                     if (offset > list.size()) {
                         int n = offset - list.size();
