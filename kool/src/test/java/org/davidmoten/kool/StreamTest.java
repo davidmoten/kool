@@ -806,6 +806,12 @@ public final class StreamTest {
                         Lists.newArrayList(2, 3, 4, 5), //
                         Lists.newArrayList(3, 4, 5, 6));
     }
+    
+    @Test(expected = NoSuchElementException.class)
+    public void testBufferUntilWithStepWhenEmptyAndNextCalled() {
+        Stream.empty().bufferWhile((list, t) -> true, true, 1).iterator().next();
+                
+    }
 
     @Test
     public void testLinesFromResource() {
