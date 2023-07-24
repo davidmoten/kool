@@ -6,19 +6,35 @@ public final class RingBuffer<T> {
     private int start;
     private int finish;
 
+    private static final float GROWTH_FACTOR = 0.5f;
+
+    public RingBuffer() {
+        this(7);
+    }
+
     @SuppressWarnings("unchecked")
-    public RingBuffer(int size) {
+    public RingBuffer(int initialSize) {
         // add one element to array to differentiate between a full RingBuffer and an
         // empty one
-        this.buffer = (T[]) new Object[size + 1];
+        this.buffer = (T[]) new Object[initialSize + 1];
         this.start = 0;
         this.finish = 0;
     }
 
     public RingBuffer<T> add(T value) {
+        ensureArrayLargeEnough();
         buffer[finish] = value;
         finish = (finish + 1) % buffer.length;
         return this;
+    }
+
+    private void ensureArrayLargeEnough() {
+        if (size() == buffer.length - 1) {
+            int newLength = buffer.length + Math.min(1, Math.round(buffer.length * GROWTH_FACTOR));
+            @SuppressWarnings("unchecked")
+            T[] newBuffer = (T[]) new Object[newLength];
+            System.arraycopy(buffer, 0, newBuffer, 0, buffer.length);
+        }
     }
 
     public T poll() {

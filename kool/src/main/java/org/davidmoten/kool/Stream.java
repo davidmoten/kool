@@ -898,23 +898,23 @@ public interface Stream<T> extends StreamIterable<T> {
     }
     
     default Stream<List<T>> bufferWhile(BiPredicate<? super List<T>, ? super T> condition, boolean emitRemainder,
-            int step, int maxListSize) {
-        return new BufferWithPredicateAndStep<T>(condition, emitRemainder, false, this, list -> step, maxListSize);
+            int step) {
+        return new BufferWithPredicateAndStep<T>(condition, emitRemainder, false, this, list -> step);
     }
 
     default Stream<List<T>> bufferUntil(BiPredicate<? super List<T>, ? super T> condition, boolean emitRemainder,
-            int step, int maxListSize) {
-        return new BufferWithPredicateAndStep<T>(condition, emitRemainder, true, this, list -> step, maxListSize);
+            int step) {
+        return new BufferWithPredicateAndStep<T>(condition, emitRemainder, true, this, list -> step);
     }
 
     default Stream<List<T>> bufferWhile(BiPredicate<? super List<T>, ? super T> condition, boolean emitRemainder,
-            Function<? super List<T>, Integer> step, int maxListSize) {
-        return new BufferWithPredicateAndStep<T>(condition, emitRemainder, false, this, step, maxListSize);
+            Function<? super List<T>, Integer> step) {
+        return new BufferWithPredicateAndStep<T>(condition, emitRemainder, false, this, step);
     }
 
     default Stream<List<T>> bufferUntil(BiPredicate<? super List<T>, ? super T> condition, boolean emitRemainder,
-            Function<? super List<T>, Integer> step, int maxListSize) {
-        return new BufferWithPredicateAndStep<T>(condition, emitRemainder, true, this, step, maxListSize);
+            Function<? super List<T>, Integer> step) {
+        return new BufferWithPredicateAndStep<T>(condition, emitRemainder, true, this, step);
     }
 
     default Stream<Indexed<T>> mapWithIndex(int startIndex) {

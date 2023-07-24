@@ -8,13 +8,11 @@ import com.github.davidmoten.guavamini.Preconditions;
 public final class ReplayableStreamIterator<T> implements StreamIterator<T> {
 
     private final StreamIterator<T> it;
-    private final int maxReplay;
     private final RingBuffer<T> buffer;
 
-    public ReplayableStreamIterator(StreamIterator<T> it, int maxReplay) {
+    public ReplayableStreamIterator(StreamIterator<T> it) {
         this.it = it;
-        this.maxReplay = maxReplay;
-        this.buffer = new RingBuffer<T>(maxReplay);
+        this.buffer = new RingBuffer<T>();
     }
 
     @Override
@@ -36,13 +34,9 @@ public final class ReplayableStreamIterator<T> implements StreamIterator<T> {
     }
 
     public void replay(int count) {
-        Preconditions.checkArgument(count + buffer.size() <= maxReplay,
-                "total replay count too large: " + count + ", max is " + maxReplay);
+        Preconditions.checkArgument(count > buffer.size(),
+                "total replay count too large: " + count + ", available = " + buffer.size());
         buffer.replay(count);
-    }
-
-    public int maxReplay() {
-        return maxReplay;
     }
 
 }

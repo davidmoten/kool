@@ -16,22 +16,20 @@ public final class BufferWithPredicateAndStep<T> implements Stream<List<T>> {
     private final boolean until;
     private final Stream<T> source;
     private final Function<? super List<T>, Integer> step;
-    private final int maxListSize;
 
     public BufferWithPredicateAndStep(BiPredicate<? super List<T>, ? super T> condition, boolean emitRemainder,
-            boolean until, Stream<T> source, Function<? super List<T>, Integer> step, int maxListSize) {
+            boolean until, Stream<T> source, Function<? super List<T>, Integer> step) {
         this.condition = condition;
         this.emitRemainder = emitRemainder;
         this.until = until;
         this.source = source;
         this.step = step;
-        this.maxListSize = maxListSize;
     }
 
     @Override
     public StreamIterator<List<T>> iterator() {
         return new StreamIterator<List<T>>() {
-            ReplayableStreamIterator<T> it = new ReplayableStreamIterator<>(source.iteratorNullChecked(), maxListSize);
+            ReplayableStreamIterator<T> it = new ReplayableStreamIterator<>(source.iteratorNullChecked());
             List<T> buffer = new ArrayList<>();
             List<T> nextBuffer = new ArrayList<>();
             boolean ready;
