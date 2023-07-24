@@ -42,6 +42,7 @@ import org.davidmoten.kool.internal.operators.stream.All;
 import org.davidmoten.kool.internal.operators.stream.Any;
 import org.davidmoten.kool.internal.operators.stream.Buffer;
 import org.davidmoten.kool.internal.operators.stream.BufferWithPredicate;
+import org.davidmoten.kool.internal.operators.stream.BufferWithPredicateAndStep;
 import org.davidmoten.kool.internal.operators.stream.Cache;
 import org.davidmoten.kool.internal.operators.stream.Collect;
 import org.davidmoten.kool.internal.operators.stream.Concat;
@@ -894,6 +895,26 @@ public interface Stream<T> extends StreamIterable<T> {
     default Stream<List<T>> bufferUntil(BiPredicate<? super List<T>, ? super T> condition,
             boolean emitRemainder) {
         return new BufferWithPredicate<T>(condition, emitRemainder, true, this);
+    }
+    
+    default Stream<List<T>> bufferWhile(BiPredicate<? super List<T>, ? super T> condition, boolean emitRemainder,
+            int step, int maxListSize) {
+        return new BufferWithPredicateAndStep<T>(condition, emitRemainder, false, this, list -> step, maxListSize);
+    }
+
+    default Stream<List<T>> bufferUntil(BiPredicate<? super List<T>, ? super T> condition, boolean emitRemainder,
+            int step, int maxListSize) {
+        return new BufferWithPredicateAndStep<T>(condition, emitRemainder, true, this, list -> step, maxListSize);
+    }
+
+    default Stream<List<T>> bufferWhile(BiPredicate<? super List<T>, ? super T> condition, boolean emitRemainder,
+            Function<? super List<T>, Integer> step, int maxListSize) {
+        return new BufferWithPredicateAndStep<T>(condition, emitRemainder, false, this, step, maxListSize);
+    }
+
+    default Stream<List<T>> bufferUntil(BiPredicate<? super List<T>, ? super T> condition, boolean emitRemainder,
+            Function<? super List<T>, Integer> step, int maxListSize) {
+        return new BufferWithPredicateAndStep<T>(condition, emitRemainder, true, this, step, maxListSize);
     }
 
     default Stream<Indexed<T>> mapWithIndex(int startIndex) {
