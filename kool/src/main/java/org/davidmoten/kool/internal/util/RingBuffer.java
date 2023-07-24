@@ -1,14 +1,12 @@
 package org.davidmoten.kool.internal.util;
 
-import java.util.Arrays;
-
 public final class RingBuffer<T> {
 
     private T[] buffer;
     private int start;
     private int finish;
 
-    private static final float GROWTH_FACTOR = 0.5f;
+    private static final float GROWTH_FACTOR = 1.5f;
 
     public RingBuffer() {
         this(7);
@@ -27,13 +25,12 @@ public final class RingBuffer<T> {
         ensureArrayLargeEnough();
         buffer[finish] = value;
         finish = (finish + 1) % buffer.length;
-        log();
         return this;
     }
 
     private void ensureArrayLargeEnough() {
         if (size() == buffer.length - 2) {
-            int newLength = buffer.length + Math.min(1, Math.round(buffer.length * GROWTH_FACTOR));
+            int newLength = buffer.length + Math.max(1, Math.round(buffer.length * GROWTH_FACTOR));
             @SuppressWarnings("unchecked")
             T[] newBuffer = (T[]) new Object[newLength];
             if (start <= finish) {
@@ -46,12 +43,7 @@ public final class RingBuffer<T> {
                 start = newBuffer.length - buffer.length + start;
             }
             buffer = newBuffer;
-            log();
         }
-    }
-
-    private void log() {
-        System.out.println(Arrays.toString(buffer) + ", start=" + start + ", finish=" + finish);
     }
 
     public T poll() {
@@ -60,7 +52,6 @@ public final class RingBuffer<T> {
         } else {
             T value = buffer[start];
             start = (start + 1) % buffer.length;
-            log();
             return value;
         }
     }
@@ -78,7 +69,6 @@ public final class RingBuffer<T> {
         if (start < 0) {
             start += buffer.length;
         }
-        log();
         return this;
     }
 

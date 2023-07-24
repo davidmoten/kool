@@ -35,7 +35,7 @@ public class RingBufferTest {
         assertEquals(2, (int) r.poll());
         assertEquals(3, (int) r.poll());
     }
-    
+
     @Test
     public void testAllocateMore() {
         RingBuffer<Integer> r = new RingBuffer<>(2);
@@ -47,7 +47,7 @@ public class RingBufferTest {
         assertEquals(4, (int) r.poll());
         assertEquals(0, r.size());
     }
-    
+
     @Test
     public void testAllocateMoreWhenFinishBeforeStart() {
         RingBuffer<Integer> r = new RingBuffer<>(2);
@@ -55,5 +55,8 @@ public class RingBufferTest {
         r.add(2).add(3).add(4);
         r.replay(1);
         assertEquals(1, (int) r.poll());
+        assertEquals(2, (int) r.poll());
+        assertEquals(3, (int) r.poll());
+        r.add(5).add(6).add(7).add(8).add(9).add(10).add(11).add(12);
     }
 }
