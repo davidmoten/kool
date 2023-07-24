@@ -2,7 +2,7 @@ package org.davidmoten.kool.internal.util;
 
 public final class RingBuffer<T> {
 
-    private final T[] buffer;
+    private T[] buffer;
     private int start;
     private int finish;
 
@@ -33,7 +33,15 @@ public final class RingBuffer<T> {
             int newLength = buffer.length + Math.min(1, Math.round(buffer.length * GROWTH_FACTOR));
             @SuppressWarnings("unchecked")
             T[] newBuffer = (T[]) new Object[newLength];
-            System.arraycopy(buffer, 0, newBuffer, 0, buffer.length);
+            if (start < finish) {
+                System.arraycopy(buffer, 0, newBuffer, 0, finish);
+            } else {
+                System.arraycopy(buffer, start, newBuffer, 0, buffer.length - start);
+                System.arraycopy(buffer, 0, newBuffer, buffer.length - start, finish);
+                finish = size();
+                start = 0;
+            }
+            buffer = newBuffer;
         }
     }
 
