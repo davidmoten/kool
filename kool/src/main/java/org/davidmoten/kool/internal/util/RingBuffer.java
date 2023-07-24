@@ -1,5 +1,7 @@
 package org.davidmoten.kool.internal.util;
 
+import java.util.Arrays;
+
 public final class RingBuffer<T> {
 
     private T[] buffer;
@@ -25,24 +27,31 @@ public final class RingBuffer<T> {
         ensureArrayLargeEnough();
         buffer[finish] = value;
         finish = (finish + 1) % buffer.length;
+        log();
         return this;
     }
 
     private void ensureArrayLargeEnough() {
-        if (size() == buffer.length - 1) {
+        if (size() == buffer.length - 2) {
             int newLength = buffer.length + Math.min(1, Math.round(buffer.length * GROWTH_FACTOR));
             @SuppressWarnings("unchecked")
             T[] newBuffer = (T[]) new Object[newLength];
-            if (start < finish) {
+            if (start <= finish) {
                 System.arraycopy(buffer, 0, newBuffer, 0, finish);
             } else {
-                System.arraycopy(buffer, start, newBuffer, 0, buffer.length - start);
-                System.arraycopy(buffer, 0, newBuffer, buffer.length - start, finish);
-                finish = size();
-                start = 0;
+                // make space in the middle between finish and start
+                System.arraycopy(buffer, 0, newBuffer, 0, finish);
+                int extra = newLength - buffer.length;
+                System.arraycopy(buffer, finish, newBuffer, finish + extra, buffer.length - finish);
+                start = newBuffer.length - buffer.length + start;
             }
             buffer = newBuffer;
+            log();
         }
+    }
+
+    private void log() {
+        System.out.println(Arrays.toString(buffer) + ", start=" + start + ", finish=" + finish);
     }
 
     public T poll() {
@@ -51,6 +60,7 @@ public final class RingBuffer<T> {
         } else {
             T value = buffer[start];
             start = (start + 1) % buffer.length;
+            log();
             return value;
         }
     }
@@ -68,6 +78,7 @@ public final class RingBuffer<T> {
         if (start < 0) {
             start += buffer.length;
         }
+        log();
         return this;
     }
 
