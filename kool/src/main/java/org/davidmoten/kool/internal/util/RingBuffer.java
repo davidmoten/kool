@@ -5,18 +5,20 @@ public final class RingBuffer<T> {
     private T[] buffer;
     private int start;
     private int finish;
+    private final int maxSize;
 
     private static final float GROWTH_FACTOR = 1.5f;
 
     public RingBuffer() {
-        this(7);
+        this(7, 1000);
     }
 
     @SuppressWarnings("unchecked")
-    public RingBuffer(int initialSize) {
+    public RingBuffer(int initialSize, int maxSize) {
         // add one element to array to differentiate between a full RingBuffer and an
         // empty one
         this.buffer = (T[]) new Object[initialSize + 1];
+        this.maxSize = maxSize;
         this.start = 0;
         this.finish = 0;
     }
@@ -30,7 +32,11 @@ public final class RingBuffer<T> {
 
     private void ensureArrayLargeEnough() {
         if (size() == buffer.length - 2) {
-            int newLength = buffer.length + Math.max(1, Math.round(buffer.length * GROWTH_FACTOR));
+            int newLength = Math.min(maxSize + 1,
+                    buffer.length + Math.max(1, Math.round(buffer.length * GROWTH_FACTOR)));
+            if (newLength == buffer.length) {
+                throw new RuntimeException("buffer at max size and is full, maxSize=" + maxSize);
+            }
             @SuppressWarnings("unchecked")
             T[] newBuffer = (T[]) new Object[newLength];
             if (start <= finish) {

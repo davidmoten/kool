@@ -9,9 +9,11 @@ import org.junit.Test;
 
 public class RingBufferTest {
 
+    private static final int MAX_SIZE = 100;
+
     @Test
     public void test() {
-        RingBuffer<Integer> r = new RingBuffer<>(2);
+        RingBuffer<Integer> r = new RingBuffer<>(2, MAX_SIZE);
         assertEquals(0, r.size());
         assertTrue(r.isEmpty());
         assertNull(r.poll());
@@ -38,7 +40,7 @@ public class RingBufferTest {
 
     @Test
     public void testAllocateMore() {
-        RingBuffer<Integer> r = new RingBuffer<>(2);
+        RingBuffer<Integer> r = new RingBuffer<>(2, MAX_SIZE);
         r.add(1).add(2).add(3).add(4);
         assertEquals(4, r.size());
         assertEquals(1, (int) r.poll());
@@ -50,7 +52,7 @@ public class RingBufferTest {
 
     @Test
     public void testAllocateMoreWhenFinishBeforeStart() {
-        RingBuffer<Integer> r = new RingBuffer<>(2);
+        RingBuffer<Integer> r = new RingBuffer<>(2, MAX_SIZE);
         r.add(1).poll();
         r.add(2).add(3).add(4);
         r.replay(1);

@@ -735,7 +735,7 @@ public final class StreamTest {
     @Test
     public void testBufferUntilWithStepLargerThanBufferedList() {
         Stream.of(1, 2, 3, 4, 5, 6, 7) //
-                .bufferUntil((list, t) -> list.size() == 1, true, 3) //
+                .bufferUntil((list, t) -> list.size() == 1, true, 3, 100) //
                 .test() //
                 .assertValuesOnly( //
                         Lists.newArrayList(1, 2), //
@@ -746,7 +746,7 @@ public final class StreamTest {
     @Test
     public void testBufferWhileWithStepLargerThanBufferedList() {
         Stream.of(1, 2, 3, 4, 5, 6, 7) //
-                .bufferWhile((list, t) -> list.size() < 2, true, 3) //
+                .bufferWhile((list, t) -> list.size() < 2, true, 3, 100) //
                 .test() //
                 .assertValuesOnly( //
                         Lists.newArrayList(1, 2), //
@@ -757,7 +757,7 @@ public final class StreamTest {
     @Test
     public void testBufferUntilWithStepSmallerThanBufferedList() {
         Stream.of(1, 2, 3, 4, 5, 6, 7) //
-                .bufferUntil((list, t) -> list.size() == 3, true, 1) //
+                .bufferUntil((list, t) -> list.size() == 3, true, 1, 100) //
                 .test() //
                 .assertValuesOnly( //
                         Lists.newArrayList(1, 2, 3, 4), //
@@ -772,7 +772,7 @@ public final class StreamTest {
     @Test
     public void testBufferWhileWithStepSmallerThanBufferedList() {
         Stream.of(1, 2, 3, 4, 5, 6, 7) //
-                .bufferWhile((list, t) -> list.size() <= 3, true, 1) //
+                .bufferWhile((list, t) -> list.size() <= 3, true, 1, 100) //
                 .test() //
                 .assertValuesOnly( //
                         Lists.newArrayList(1, 2, 3, 4), //
@@ -787,7 +787,7 @@ public final class StreamTest {
     @Test
     public void testBufferUntilWithStepSmallerThanBufferedListDontEmitRemainder() {
         Stream.of(1, 2, 3, 4, 5, 6, 7) //
-                .bufferUntil((list, t) -> list.size() == 3, false, 1) //
+                .bufferUntil((list, t) -> list.size() == 3, false, 1, 100) //
                 .test() //
                 .assertValuesOnly( //
                         Lists.newArrayList(1, 2, 3, 4), //
@@ -799,7 +799,7 @@ public final class StreamTest {
     @Test
     public void testBufferWhileWithStepSmallerThanBufferedListDontEmitRemainder() {
         Stream.of(1, 2, 3, 4, 5, 6, 7) //
-                .bufferWhile((list, t) -> list.size() <= 3, false, 1) //
+                .bufferWhile((list, t) -> list.size() <= 3, false, 1, 100) //
                 .test() //
                 .assertValuesOnly( //
                         Lists.newArrayList(1, 2, 3, 4), //
@@ -809,7 +809,7 @@ public final class StreamTest {
     
     @Test(expected = NoSuchElementException.class)
     public void testBufferUntilWithStepWhenEmptyAndNextCalled() {
-        Stream.empty().bufferWhile((list, t) -> true, true, 1).iterator().next();
+        Stream.empty().bufferWhile((list, t) -> true, true, 1, 100).iterator().next();
                 
     }
 

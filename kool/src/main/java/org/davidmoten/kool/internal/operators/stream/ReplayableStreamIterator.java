@@ -8,9 +8,9 @@ public final class ReplayableStreamIterator<T> implements StreamIterator<T> {
     private final StreamIterator<T> it;
     private final RingBuffer<T> buffer;
 
-    public ReplayableStreamIterator(StreamIterator<T> it) {
+    public ReplayableStreamIterator(StreamIterator<T> it, int maxReplay) {
         this.it = it;
-        this.buffer = new RingBuffer<T>();
+        this.buffer = new RingBuffer<T>(7, maxReplay);
     }
 
     @Override
