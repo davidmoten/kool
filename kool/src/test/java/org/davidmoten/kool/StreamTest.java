@@ -812,6 +812,15 @@ public final class StreamTest {
         Stream.empty().bufferWhile((list, t) -> true, true, 1, 100).iterator().next();
                 
     }
+    
+    @Test
+    public void testBufferWhileExceedsMaxBufferSize() {
+        Stream.range(1, 10) //
+                .bufferWhile((list, t) -> true, true, 1, 2) //
+                .doOnNext(System.out::println) //
+                .test() //
+                .assertError(RuntimeException.class);
+    }
 
     @Test
     public void testLinesFromResource() {

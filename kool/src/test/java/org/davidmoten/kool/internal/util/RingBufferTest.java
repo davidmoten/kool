@@ -61,4 +61,10 @@ public class RingBufferTest {
         assertEquals(3, (int) r.poll());
         r.add(5).add(6).add(7).add(8).add(9).add(10).add(11).add(12);
     }
+
+    @Test(expected = RuntimeException.class)
+    public void addMoreThanMaxSize() {
+        RingBuffer<Integer> r = new RingBuffer<>(2, 2);
+        r.add(1).add(2).add(3).add(4);
+    }
 }

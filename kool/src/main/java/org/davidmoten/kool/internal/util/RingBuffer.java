@@ -34,7 +34,7 @@ public final class RingBuffer<T> {
         if (size() == buffer.length - 2) {
             int newLength = Math.min(maxSize + 1,
                     buffer.length + Math.max(1, Math.round(buffer.length * GROWTH_FACTOR)));
-            if (newLength == buffer.length) {
+            if (newLength <= buffer.length) {
                 throw new RuntimeException("buffer at max size and is full, maxSize=" + maxSize);
             }
             @SuppressWarnings("unchecked")
