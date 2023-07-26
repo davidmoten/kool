@@ -39,8 +39,8 @@ public class RingBufferTest {
     }
 
     @Test
-    public void testAllocateMore() {
-        RingBuffer<Integer> r = new RingBuffer<>(MAX_SIZE);
+    public void testSize() {
+        RingBuffer<Integer> r = new RingBuffer<>(4);
         r.add(1).add(2).add(3).add(4);
         assertEquals(4, r.size());
         assertEquals(1, (int) r.poll());
@@ -48,6 +48,8 @@ public class RingBufferTest {
         assertEquals(3, (int) r.poll());
         assertEquals(4, (int) r.poll());
         assertEquals(0, r.size());
+        r.add(5).add(6).add(7);
+        assertEquals(3, r.size());
     }
 
     @Test

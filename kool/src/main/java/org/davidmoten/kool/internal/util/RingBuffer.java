@@ -8,10 +8,6 @@ public final class RingBuffer<T> {
     private int start;
     private int finish;
 
-    public RingBuffer() {
-        this(1000);
-    }
-
     @SuppressWarnings("unchecked")
     public RingBuffer(int maxSize) {
         // add one element to array to differentiate between a full RingBuffer and an
