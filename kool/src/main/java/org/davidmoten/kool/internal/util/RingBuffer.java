@@ -50,6 +50,7 @@ public final class RingBuffer<T> {
 
     public RingBuffer<T> replay(int count) {
         if (count > buffer.length - 1) {
+            // detects an extreme case, user can still get into trouble with replay
             throw new IllegalArgumentException("cannot replay " + count + " items on a buffer of size="+ (buffer.length - 1));
         }
         start = start - count;
