@@ -22,6 +22,9 @@ public final class RingBuffer<T> {
     public RingBuffer<T> add(T value) {
         buffer[finish] = value;
         finish = (finish + 1) % buffer.length;
+        if (finish == start) {
+            throw new RuntimeException("buffer overflowed, maxSize="+ (buffer.length - 1));
+        }
         return this;
     }
 

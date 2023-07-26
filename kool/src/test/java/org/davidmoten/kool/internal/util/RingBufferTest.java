@@ -13,7 +13,7 @@ public class RingBufferTest {
 
     @Test
     public void test() {
-        RingBuffer<Integer> r = new RingBuffer<>(2, MAX_SIZE);
+        RingBuffer<Integer> r = new RingBuffer<>(MAX_SIZE);
         assertEquals(0, r.size());
         assertTrue(r.isEmpty());
         assertNull(r.poll());
@@ -40,7 +40,7 @@ public class RingBufferTest {
 
     @Test
     public void testAllocateMore() {
-        RingBuffer<Integer> r = new RingBuffer<>(2, MAX_SIZE);
+        RingBuffer<Integer> r = new RingBuffer<>(MAX_SIZE);
         r.add(1).add(2).add(3).add(4);
         assertEquals(4, r.size());
         assertEquals(1, (int) r.poll());
@@ -52,7 +52,7 @@ public class RingBufferTest {
 
     @Test
     public void testAllocateMoreWhenFinishBeforeStart() {
-        RingBuffer<Integer> r = new RingBuffer<>(2, MAX_SIZE);
+        RingBuffer<Integer> r = new RingBuffer<>(MAX_SIZE);
         r.add(1).poll();
         r.add(2).add(3).add(4);
         r.replay(1);
@@ -64,7 +64,7 @@ public class RingBufferTest {
 
     @Test(expected = RuntimeException.class)
     public void addMoreThanMaxSize() {
-        RingBuffer<Integer> r = new RingBuffer<>(2, 2);
+        RingBuffer<Integer> r = new RingBuffer<>(2);
         r.add(1).add(2).add(3).add(4);
     }
 }
