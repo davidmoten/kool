@@ -96,7 +96,7 @@ public final class StreamTest {
     @Test
     public void testPrependMany() {
         Stream.of(2, 3) //
-                .prepend(new Integer[] {0, 1}) //
+                .prepend(new Integer[] { 0, 1 }) //
                 .test() //
                 .assertValuesOnly(0, 1, 2, 3);
     }
@@ -147,8 +147,7 @@ public final class StreamTest {
         AtomicBoolean sourceDisposed = new AtomicBoolean();
         AtomicInteger others = new AtomicInteger();
         Stream.of(1, 2).doOnDispose(() -> sourceDisposed.set(true))
-                .flatMap(x -> Stream.of(x).doOnDispose(() -> others.incrementAndGet())).count()
-                .get();
+                .flatMap(x -> Stream.of(x).doOnDispose(() -> others.incrementAndGet())).count().get();
         assertTrue(sourceDisposed.get());
         assertEquals(2, others.get());
     }
@@ -528,8 +527,8 @@ public final class StreamTest {
         Stream.of(1, 2, 3, 4, 5) //
                 .buffer(2) //
                 .test() //
-                .assertNoError().assertValuesOnly(Lists.newArrayList(1, 2),
-                        Lists.newArrayList(3, 4), Lists.newArrayList(5));
+                .assertNoError()
+                .assertValuesOnly(Lists.newArrayList(1, 2), Lists.newArrayList(3, 4), Lists.newArrayList(5));
     }
 
     @Test
@@ -668,7 +667,7 @@ public final class StreamTest {
                 .assertValuesOnly( //
                         Lists.newArrayList(1, 2, 3));
     }
-    
+
     @Test
     public void testBufferUntilEmitMultiple() {
         Stream.of(1, 2, 3, 2, 3) //
@@ -678,7 +677,7 @@ public final class StreamTest {
                         Lists.newArrayList(1, 2, 3), //
                         Lists.newArrayList(2, 3));
     }
-    
+
     @Test
     public void testBufferUntilEmitMultipleEmitRemainderTrue() {
         Stream.of(1, 2, 3, 2, 4) //
@@ -688,7 +687,7 @@ public final class StreamTest {
                         Lists.newArrayList(1, 2, 3), //
                         Lists.newArrayList(2, 4));
     }
-    
+
     @Test
     public void testBufferUntilEmitMultipleEmitRemainderFalse() {
         Stream.of(1, 2, 3, 2, 4) //
@@ -697,16 +696,16 @@ public final class StreamTest {
                 .assertValuesOnly( //
                         Lists.newArrayList(1, 2, 3));
     }
-    
+
     @Test
     public void testBufferWhileNoRemainder() {
         Stream.of(1, 2, 3, 4) //
-                .bufferWhile((list, t) -> list.size()<=1, false) //
+                .bufferWhile((list, t) -> list.size() <= 1, false) //
                 .test() //
                 .assertValuesOnly( //
                         Lists.newArrayList(1, 2));
     }
-    
+
     @Test
     public void testBufferUntilRemainderEqualsFalse() {
         Stream.of(1, 2, 3) //
@@ -715,7 +714,7 @@ public final class StreamTest {
                 .assertValuesOnly( //
                         Lists.newArrayList(1, 2, 3));
     }
-    
+
     @Test
     public void testBufferUntilRemainderEqualsFalseEmitsAll() {
         Stream.of(1, 2, 3) //
@@ -723,7 +722,7 @@ public final class StreamTest {
                 .test() //
                 .assertNoValuesOnly();
     }
-    
+
     @Test
     public void testBufferWhileRemainderEqualsFalseDoesNotEmitAnything() {
         Stream.of(1, 2, 3) //
@@ -731,7 +730,7 @@ public final class StreamTest {
                 .test() //
                 .assertNoValuesOnly();
     }
-    
+
     @Test
     public void testBufferUntilWithStepLargerThanBufferedList() {
         Stream.of(1, 2, 3, 4, 5, 6, 7) //
@@ -739,10 +738,10 @@ public final class StreamTest {
                 .test() //
                 .assertValuesOnly( //
                         Lists.newArrayList(1, 2), //
-                        Lists.newArrayList(4, 5), // 
+                        Lists.newArrayList(4, 5), //
                         Lists.newArrayList(7));
     }
-    
+
     @Test
     public void testBufferWhileWithStepLargerThanBufferedList() {
         Stream.of(1, 2, 3, 4, 5, 6, 7) //
@@ -750,10 +749,10 @@ public final class StreamTest {
                 .test() //
                 .assertValuesOnly( //
                         Lists.newArrayList(1, 2), //
-                        Lists.newArrayList(4, 5), // 
+                        Lists.newArrayList(4, 5), //
                         Lists.newArrayList(7));
     }
-    
+
     @Test
     public void testBufferUntilWithStepSmallerThanBufferedList() {
         Stream.of(1, 2, 3, 4, 5, 6, 7) //
@@ -761,14 +760,14 @@ public final class StreamTest {
                 .test() //
                 .assertValuesOnly( //
                         Lists.newArrayList(1, 2, 3, 4), //
-                        Lists.newArrayList(2, 3, 4, 5), // 
+                        Lists.newArrayList(2, 3, 4, 5), //
                         Lists.newArrayList(3, 4, 5, 6), //
                         Lists.newArrayList(4, 5, 6, 7), //
                         Lists.newArrayList(5, 6, 7), //
                         Lists.newArrayList(6, 7), //
                         Lists.newArrayList(7));
     }
-    
+
     @Test
     public void testBufferWhileWithStepSmallerThanBufferedList() {
         Stream.of(1, 2, 3, 4, 5, 6, 7) //
@@ -776,14 +775,14 @@ public final class StreamTest {
                 .test() //
                 .assertValuesOnly( //
                         Lists.newArrayList(1, 2, 3, 4), //
-                        Lists.newArrayList(2, 3, 4, 5), // 
+                        Lists.newArrayList(2, 3, 4, 5), //
                         Lists.newArrayList(3, 4, 5, 6), //
                         Lists.newArrayList(4, 5, 6, 7), //
                         Lists.newArrayList(5, 6, 7), //
                         Lists.newArrayList(6, 7), //
                         Lists.newArrayList(7));
     }
-    
+
     @Test
     public void testBufferUntilWithStepSmallerThanBufferedListDontEmitRemainder() {
         Stream.of(1, 2, 3, 4, 5, 6, 7) //
@@ -795,7 +794,7 @@ public final class StreamTest {
                         Lists.newArrayList(3, 4, 5, 6), //
                         Lists.newArrayList(4, 5, 6, 7));
     }
-    
+
     @Test
     public void testBufferWhileWithStepSmallerThanBufferedListDontEmitRemainder() {
         Stream.of(1, 2, 3, 4, 5, 6, 7) //
@@ -806,20 +805,20 @@ public final class StreamTest {
                         Lists.newArrayList(2, 3, 4, 5), //
                         Lists.newArrayList(3, 4, 5, 6));
     }
-    
+
     @Test(expected = NoSuchElementException.class)
     public void testBufferUntilWithStepWhenEmptyAndNextCalled() {
         Stream.empty().bufferWhile((list, t) -> true, true, 1, 100).iterator().next();
-                
+
     }
-    
+
     @Test
     public void testBufferWhileExceedsMaxBufferSize() {
         Stream.range(1, 10) //
                 .bufferWhile((list, t) -> true, true, 1, 2) //
                 .doOnNext(System.out::println) //
                 .test() //
-                .assertError(RuntimeException.class);
+                .assertError(IllegalArgumentException.class); // cannot replay enough when maxSize is 2
     }
 
     @Test
@@ -839,8 +838,8 @@ public final class StreamTest {
 
     @Test
     public void testLinesFromResource2() {
-        Stream.linesFromResource("/test3.txt", StandardCharsets.UTF_8).test()
-                .assertValuesOnly("hello", "there", "world");
+        Stream.linesFromResource("/test3.txt", StandardCharsets.UTF_8).test().assertValuesOnly("hello", "there",
+                "world");
     }
 
     @Test
@@ -854,8 +853,7 @@ public final class StreamTest {
 
     @Test
     public void testLinesFromFileThatDoesNotExist() {
-        Stream.lines(new File("THIS_FILE_DOES_NOT_EXIST")).test()
-                .assertError(UncheckedIOException.class);
+        Stream.lines(new File("THIS_FILE_DOES_NOT_EXIST")).test().assertError(UncheckedIOException.class);
     }
 
     @Test
@@ -888,8 +886,7 @@ public final class StreamTest {
         Stream.of("a", "b", "c") //
                 .mapWithIndex() //
                 .test() //
-                .assertValues(Indexed.create("a", 0), Indexed.create("b", 1),
-                        Indexed.create("c", 2));
+                .assertValues(Indexed.create("a", 0), Indexed.create("b", 1), Indexed.create("c", 2));
     }
 
     @Test
@@ -919,9 +916,7 @@ public final class StreamTest {
                 .every(100, (count, x) -> {
                     list.add(count);
                 }).forEach();
-        assertEquals(
-                Lists.newArrayList(100L, 200L, 300L, 400L, 500L, 600L, 700L, 800L, 900L, 1000L),
-                list);
+        assertEquals(Lists.newArrayList(100L, 200L, 300L, 400L, 500L, 600L, 700L, 800L, 900L, 1000L), list);
     }
 
     @Test
@@ -960,8 +955,8 @@ public final class StreamTest {
 
     @Test
     public void testByteBuffersOneElementOutput() {
-        ByteBuffer bb = Stream.byteBuffers(
-                () -> new ByteArrayInputStream("hello there".getBytes(StandardCharsets.UTF_8)), 100)
+        ByteBuffer bb = Stream
+                .byteBuffers(() -> new ByteArrayInputStream("hello there".getBytes(StandardCharsets.UTF_8)), 100)
                 .single() //
                 .get();
         byte[] x = new byte[bb.remaining()];
@@ -971,9 +966,8 @@ public final class StreamTest {
 
     @Test
     public void testByteBuffersWithDefaultBufferSizeOneElementOutput() {
-        ByteBuffer bb = Stream.byteBuffers(
-                () -> new ByteArrayInputStream("hello there".getBytes(StandardCharsets.UTF_8)))
-                .single() //
+        ByteBuffer bb = Stream
+                .byteBuffers(() -> new ByteArrayInputStream("hello there".getBytes(StandardCharsets.UTF_8))).single() //
                 .get();
         byte[] x = new byte[bb.remaining()];
         bb.get(x);
@@ -982,8 +976,7 @@ public final class StreamTest {
 
     @Test
     public void testByteBuffersManyElementsOutput() {
-        byte[] b = Stream.byteBuffers(
-                () -> new ByteArrayInputStream("hello there".getBytes(StandardCharsets.UTF_8)), 2)
+        byte[] b = Stream.byteBuffers(() -> new ByteArrayInputStream("hello there".getBytes(StandardCharsets.UTF_8)), 2)
                 .collect(() -> new ByteArrayOutputStream(), (c, bb) -> {
                     while (bb.position() < bb.limit()) {
                         c.write(bb.get());
@@ -1010,8 +1003,7 @@ public final class StreamTest {
 
     @Test
     public void testBytesManyElementsOutput() {
-        byte[] b = Stream.bytes(
-                () -> new ByteArrayInputStream("hello there".getBytes(StandardCharsets.UTF_8)), 2)
+        byte[] b = Stream.bytes(() -> new ByteArrayInputStream("hello there".getBytes(StandardCharsets.UTF_8)), 2)
                 .collect(() -> new ByteArrayOutputStream(), (c, bytes) -> {
                     try {
                         c.write(bytes);
@@ -1055,8 +1047,7 @@ public final class StreamTest {
 
     @Test
     public void testMergeInterleavedFirstStreamBiggerThanSecond() {
-        Stream.merge(Stream.of(1, 3, 5, 6, 7), Stream.of(2, 4)).test().assertValues(1, 2, 3, 4, 5,
-                6, 7);
+        Stream.merge(Stream.of(1, 3, 5, 6, 7), Stream.of(2, 4)).test().assertValues(1, 2, 3, 4, 5, 6, 7);
     }
 
     @Test
@@ -1139,8 +1130,7 @@ public final class StreamTest {
 
     @Test
     public void testDistinctUntilChanged() {
-        Stream.of(1, 1, 2, 3, 3, 4, 4, 4).distinctUntilChanged().test().assertValuesOnly(1, 2, 3,
-                4);
+        Stream.of(1, 1, 2, 3, 3, 4, 4, 4).distinctUntilChanged().test().assertValuesOnly(1, 2, 3, 4);
     }
 
     @Test
@@ -1166,8 +1156,7 @@ public final class StreamTest {
     @Test
     public void testTakeLastEarlyDisposal() {
         AtomicBoolean b = new AtomicBoolean();
-        StreamIterator<Integer> it = Stream.of(1, 2, 3).doOnDispose(() -> b.set(true)).takeLast(2)
-                .iterator();
+        StreamIterator<Integer> it = Stream.of(1, 2, 3).doOnDispose(() -> b.set(true)).takeLast(2).iterator();
         it.dispose();
         assertTrue(b.get());
     }
@@ -1239,17 +1228,17 @@ public final class StreamTest {
 
     @Test
     public void testFromArrayOne() {
-        Stream.fromArray(new Integer[] {1}).test().assertValuesOnly(1);
+        Stream.fromArray(new Integer[] { 1 }).test().assertValuesOnly(1);
     }
 
     @Test
     public void testFromArrayTwo() {
-        Stream.fromArray(new Integer[] {1, 2}).test().assertValuesOnly(1, 2);
+        Stream.fromArray(new Integer[] { 1, 2 }).test().assertValuesOnly(1, 2);
     }
 
     @Test
     public void testFromArrayPartial() {
-        Stream.fromArray(new Integer[] {1, 2, 3, 4, 5}, 2, 4).test().assertValuesOnly(3, 4);
+        Stream.fromArray(new Integer[] { 1, 2, 3, 4, 5 }, 2, 4).test().assertValuesOnly(3, 4);
     }
 
     @Test
@@ -1259,17 +1248,17 @@ public final class StreamTest {
 
     @Test
     public void testFromArrayIntOne() {
-        Stream.fromArray(new int[] {1}).test().assertValuesOnly(1);
+        Stream.fromArray(new int[] { 1 }).test().assertValuesOnly(1);
     }
 
     @Test
     public void testFromArrayIntTwo() {
-        Stream.fromArray(new int[] {1, 2}).test().assertValuesOnly(1, 2);
+        Stream.fromArray(new int[] { 1, 2 }).test().assertValuesOnly(1, 2);
     }
 
     @Test
     public void testFromArrayIntPartial() {
-        Stream.fromArray(new int[] {1, 2, 3, 4, 5}, 2, 4).test().assertValuesOnly(3, 4);
+        Stream.fromArray(new int[] { 1, 2, 3, 4, 5 }, 2, 4).test().assertValuesOnly(3, 4);
     }
 
     @Test
@@ -1279,17 +1268,17 @@ public final class StreamTest {
 
     @Test
     public void testFromArrayDoubleOne() {
-        Stream.fromArray(new double[] {1}).test().assertValuesOnly(1.0);
+        Stream.fromArray(new double[] { 1 }).test().assertValuesOnly(1.0);
     }
 
     @Test
     public void testFromArrayDoubleTwo() {
-        Stream.fromArray(new double[] {1, 2}).test().assertValuesOnly(1.0, 2.0);
+        Stream.fromArray(new double[] { 1, 2 }).test().assertValuesOnly(1.0, 2.0);
     }
 
     @Test
     public void testFromArrayDoublePartial() {
-        Stream.fromArray(new double[] {1, 2, 3, 4, 5}, 2, 4).test().assertValuesOnly(3.0, 4.0);
+        Stream.fromArray(new double[] { 1, 2, 3, 4, 5 }, 2, 4).test().assertValuesOnly(3.0, 4.0);
     }
 
     @Test
@@ -1299,17 +1288,17 @@ public final class StreamTest {
 
     @Test
     public void testFromArrayFloatOne() {
-        Stream.fromArray(new float[] {1}).test().assertValuesOnly(1.0f);
+        Stream.fromArray(new float[] { 1 }).test().assertValuesOnly(1.0f);
     }
 
     @Test
     public void testFromArrayFloatTwo() {
-        Stream.fromArray(new float[] {1, 2}).test().assertValuesOnly(1.0f, 2.0f);
+        Stream.fromArray(new float[] { 1, 2 }).test().assertValuesOnly(1.0f, 2.0f);
     }
 
     @Test
     public void testFromArrayFloatPartial() {
-        Stream.fromArray(new float[] {1, 2, 3, 4, 5}, 2, 4).test().assertValuesOnly(3.0f, 4.0f);
+        Stream.fromArray(new float[] { 1, 2, 3, 4, 5 }, 2, 4).test().assertValuesOnly(3.0f, 4.0f);
     }
 
     @Test
@@ -1390,8 +1379,7 @@ public final class StreamTest {
 
     @Test
     public void testMaterializeValue() {
-        Stream.of(1).materialize().test().assertValuesOnly(Notification.of(1),
-                Notification.complete());
+        Stream.of(1).materialize().test().assertValuesOnly(Notification.of(1), Notification.complete());
     }
 
     @Test
@@ -1498,16 +1486,14 @@ public final class StreamTest {
 
     @Test(expected = NoSuchElementException.class)
     public void testByteBuffersIteratorNext() {
-        StreamIterator<ByteBuffer> it = Stream
-                .byteBuffers(new ByteArrayInputStream("boo".getBytes()), 100).iterator();
+        StreamIterator<ByteBuffer> it = Stream.byteBuffers(new ByteArrayInputStream("boo".getBytes()), 100).iterator();
         it.next();
         it.next();
     }
 
     @Test
     public void testByteBuffersDisposeCoverage() {
-        StreamIterator<ByteBuffer> it = Stream
-                .byteBuffers(new ByteArrayInputStream("boo".getBytes()), 100).iterator();
+        StreamIterator<ByteBuffer> it = Stream.byteBuffers(new ByteArrayInputStream("boo".getBytes()), 100).iterator();
         it.dispose();
     }
 
@@ -1528,8 +1514,7 @@ public final class StreamTest {
 
     @Test
     public void testByteBuffersHasNextRepeatedCalls() {
-        StreamIterator<ByteBuffer> it = Stream
-                .byteBuffers(new ByteArrayInputStream("boo".getBytes()), 100).iterator();
+        StreamIterator<ByteBuffer> it = Stream.byteBuffers(new ByteArrayInputStream("boo".getBytes()), 100).iterator();
         assertTrue(it.hasNext());
         assertTrue(it.hasNext());
         it.next();
@@ -1543,15 +1528,13 @@ public final class StreamTest {
 
     @Test(expected = NoSuchElementException.class)
     public void testLinesReadBeyondEnd() {
-        StreamIterator<String> it = Stream.lines(new BufferedReader(new StringReader("")))
-                .iterator();
+        StreamIterator<String> it = Stream.lines(new BufferedReader(new StringReader(""))).iterator();
         it.next();
     }
 
     @Test
     public void testLinesDisposeBeforeHasNext() {
-        StreamIterator<String> it = Stream.lines(new BufferedReader(new StringReader("abc")))
-                .iterator();
+        StreamIterator<String> it = Stream.lines(new BufferedReader(new StringReader("abc"))).iterator();
         it.dispose();
         assertFalse(it.hasNext());
     }
@@ -1679,8 +1662,7 @@ public final class StreamTest {
 
     @Test
     public void testMaterializeWithoutError() {
-        Stream.of(1).materialize().test().assertValuesOnly(Notification.of(1),
-                Notification.complete());
+        Stream.of(1).materialize().test().assertValuesOnly(Notification.of(1), Notification.complete());
     }
 
     @Test
@@ -2064,30 +2046,32 @@ public final class StreamTest {
     public void testFlatMapGeneratorWithOnFinish() {
         Single<List<String>> stream = Stream.of(1, 5) //
                 .<String>flatMap( //
-                (x, consumer) -> {
-                    consumer.accept(x + "");
-                    consumer.accept(2 * x + "");
-                }, //
-                consumer -> {
-                    consumer.accept("a");
-                    consumer.accept("b");
-                }).toList();
-        assertEquals(Arrays.asList("1","2", "5","10", "a", "b"), stream.get());
-        assertEquals(Arrays.asList("1","2", "5","10", "a", "b"), stream.get());
+                        (x, consumer) -> {
+                            consumer.accept(x + "");
+                            consumer.accept(2 * x + "");
+                        }, //
+                        consumer -> {
+                            consumer.accept("a");
+                            consumer.accept("b");
+                        })
+                .toList();
+        assertEquals(Arrays.asList("1", "2", "5", "10", "a", "b"), stream.get());
+        assertEquals(Arrays.asList("1", "2", "5", "10", "a", "b"), stream.get());
     }
-    
+
     @Test
     public void testFlatMapGeneratorEmptyWithOnFinish() {
         List<String> list = Stream.<Integer>empty() //
                 .<String>flatMap( //
-                (x, consumer) -> {
-                    consumer.accept(x + "");
-                    consumer.accept(2 * x + "");
-                }, //
-                consumer -> {
-                    consumer.accept("a");
-                    consumer.accept("b");
-                }).toList().get();
+                        (x, consumer) -> {
+                            consumer.accept(x + "");
+                            consumer.accept(2 * x + "");
+                        }, //
+                        consumer -> {
+                            consumer.accept("a");
+                            consumer.accept("b");
+                        })
+                .toList().get();
         assertEquals(Arrays.asList("a", "b"), list);
     }
 
