@@ -13,7 +13,7 @@ public final class Permutations {
         return new Iterable<Swap<T>>() {
             @Override
             public Iterator<Swap<T>> iterator() {
-                return new PermutationsSwapIterator<T>(list);
+                return Permutations.iterator(list);
             }
         };
     }
@@ -138,13 +138,6 @@ public final class Permutations {
 
         public void reverse() {
             this.direction = -this.direction;
-        }
-
-        @Override
-        public String toString() {
-            String val = String.valueOf(reference);
-            String result = direction == -1 ? "<" + val : val + ">";
-            return result + String.valueOf(reference);
         }
     }
 

@@ -7,26 +7,31 @@ import java.util.NoSuchElementException;
 import org.davidmoten.kool.Stream;
 import org.davidmoten.kool.StreamIterator;
 import org.davidmoten.kool.function.BiPredicate;
+import org.davidmoten.kool.function.Function;
 
-public final class BufferWithPredicate<T> implements Stream<List<T>> {
+public final class BufferWithPredicateAndStep<T> implements Stream<List<T>> {
 
     private final BiPredicate<? super List<T>, ? super T> condition;
     private final boolean emitRemainder;
     private final boolean until;
     private final Stream<T> source;
+    private final Function<? super List<T>, Integer> step;
+    private final int maxReplay;
 
-    public BufferWithPredicate(BiPredicate<? super List<T>, ? super T> condition,
-            boolean emitRemainder, boolean until, Stream<T> source) {
+    public BufferWithPredicateAndStep(BiPredicate<? super List<T>, ? super T> condition, boolean emitRemainder,
+            boolean until, Stream<T> source, Function<? super List<T>, Integer> step, int maxReplay) {
         this.condition = condition;
         this.emitRemainder = emitRemainder;
         this.until = until;
         this.source = source;
+        this.step = step;
+        this.maxReplay = maxReplay;
     }
 
     @Override
     public StreamIterator<List<T>> iterator() {
         return new StreamIterator<List<T>>() {
-            StreamIterator<T> it = source.iteratorNullChecked();
+            ReplayableStreamIterator<T> it = new ReplayableStreamIterator<>(source.iteratorNullChecked(), maxReplay);
             List<T> buffer = new ArrayList<>();
             List<T> nextBuffer = new ArrayList<>();
             boolean ready;
@@ -47,6 +52,22 @@ public final class BufferWithPredicate<T> implements Stream<List<T>> {
                     buffer = nextBuffer;
                     nextBuffer = new ArrayList<>();
                     ready = false;
+                    int offset = step.applyUnchecked(list);
+                    int bufferSize = buffer.size();
+                    buffer.clear();
+                    if (offset > list.size()) {
+                        int n = offset - list.size();
+                        // skip n values
+                        for (int i = 0; i < n - bufferSize; i++) {
+                            if (it.hasNext()) {
+                                it.next();
+                            } else {
+                                break;
+                            }
+                        }
+                    } else {
+                        it.replay(list.size() - offset + bufferSize);
+                    }
                     return list;
                 }
             }
