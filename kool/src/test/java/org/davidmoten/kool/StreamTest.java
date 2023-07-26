@@ -816,7 +816,6 @@ public final class StreamTest {
     public void testBufferWhileExceedsMaxBufferSize() {
         Stream.range(1, 10) //
                 .bufferWhile((list, t) -> true, true, 1, 2) //
-                .doOnNext(System.out::println) //
                 .test() //
                 .assertError(IllegalArgumentException.class); // cannot replay enough when maxSize is 2
     }
@@ -1309,7 +1308,6 @@ public final class StreamTest {
                         .range(1, n) //
                         .reduce(0, (a, b) -> a + b)) //
                 .mapWithIndex(1) //
-                .println() //
                 .forEach();
     }
 
@@ -2004,7 +2002,7 @@ public final class StreamTest {
 
     @Test
     public void testStatisticsForReadme() {
-        System.out.println(Stream.of(1, 2, 3, 4).statistics(x -> x).get().toString("", "\n"));
+        Stream.of(1, 2, 3, 4).statistics(x -> x).get().toString("", "\n");
     }
 
     @Test
