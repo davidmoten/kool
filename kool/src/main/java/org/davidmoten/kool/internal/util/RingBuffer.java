@@ -25,7 +25,7 @@ public final class RingBuffer<T> {
         buffer[finish] = value;
         finish = (finish + 1) % buffer.length;
         if (finish == start) {
-            throw new BufferOverflowException("buffer overflowed, maxSize="+ (buffer.length));
+            throw new BufferOverflowException("buffer overflowed, maxSize=" + (buffer.length));
         }
         return this;
     }
@@ -49,9 +49,9 @@ public final class RingBuffer<T> {
     }
 
     public RingBuffer<T> replay(int count) {
-        if (count > buffer.length - 1) {
-            // detects an extreme case, user can still get into trouble with replay
-            throw new IllegalArgumentException("cannot replay " + count + " items on a buffer of size="+ (buffer.length - 1));
+        if (count >= buffer.length - size()) {
+            throw new IllegalArgumentException("cannot replay " + count + " items on a buffer of maxSize="
+                    + (buffer.length - 1) + " where " + size() + " items still queued for reading");
         }
         start = start - count;
         if (start < 0) {
