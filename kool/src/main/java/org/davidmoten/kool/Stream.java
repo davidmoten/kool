@@ -879,14 +879,12 @@ public interface Stream<T> extends StreamIterable<T> {
 
     default Stream<List<T>> bufferUntil(BiPredicate<? super List<T>, ? super T> condition, boolean emitRemainder,
             int step, int maxReplay) {
-        return new BufferWithFactoryPredicateAndStep<List<T>, T>(ArrayList::new, StreamUtils.listAccumulator(),
-                condition, emitRemainder, true, this, list -> step, maxReplay);
+        return bufferUntil(condition, emitRemainder, list -> step, maxReplay);
     }
 
     default Stream<List<T>> bufferWhile(BiPredicate<? super List<T>, ? super T> condition, boolean emitRemainder,
             int step, int maxReplay) {
-        return new BufferWithFactoryPredicateAndStep<List<T>, T>(ArrayList::new, StreamUtils.listAccumulator(),
-                condition, emitRemainder, false, this, list -> step, maxReplay);
+        return bufferWhile(condition, emitRemainder, list -> step, maxReplay);
     }
     
     default Stream<List<T>> bufferUntil(BiPredicate<? super List<T>, ? super T> condition, boolean emitRemainder,
@@ -896,14 +894,13 @@ public interface Stream<T> extends StreamIterable<T> {
     
     default Stream<List<T>> bufferWhile(BiPredicate<? super List<T>, ? super T> condition, boolean emitRemainder,
             Function<? super List<T>, Integer> step, int maxReplay) {
-        return new BufferWithFactoryPredicateAndStep<>(ArrayList::new, StreamUtils.listAccumulator(), condition,
-                emitRemainder, false, this, step, maxReplay);
+        return bufferWhile(ArrayList::new, StreamUtils.listAccumulator(), condition, emitRemainder, step, maxReplay);
     }
 
     default <S> Stream<S> bufferUntil(Callable<? extends S> factory,
             BiFunction<? super S, ? super T, ? extends S> accumulator, BiPredicate<? super S, ? super T> condition,
             boolean emitRemainder, Function<? super S, Integer> step, int maxReplay) {
-        return new BufferWithFactoryPredicateAndStep<>(factory, accumulator, condition, emitRemainder, false, this,
+        return new BufferWithFactoryPredicateAndStep<>(factory, accumulator, condition, emitRemainder, true, this,
                 step, maxReplay);
     }
     
