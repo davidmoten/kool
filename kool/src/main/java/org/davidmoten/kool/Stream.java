@@ -178,8 +178,7 @@ public interface Stream<T> extends StreamIterable<T> {
         return new Generate<T>(consumer);
     }
 
-    static <T, R> Stream<T> generate(Callable<R> factory,
-            BiConsumer<R, Emitter<T>> consumer) {
+    static <T, R> Stream<T> generate(Callable<R> factory, BiConsumer<R, Emitter<T>> consumer) {
         return Stream.defer(() -> {
             R r = factory.call();
             return generate(e -> {
@@ -318,8 +317,7 @@ public interface Stream<T> extends StreamIterable<T> {
         return linesFromResource(Stream.class, resource, StandardCharsets.UTF_8);
     }
 
-    static Stream<ByteBuffer> byteBuffers(Callable<? extends InputStream> provider,
-            int bufferSize) {
+    static Stream<ByteBuffer> byteBuffers(Callable<? extends InputStream> provider, int bufferSize) {
         return using(provider, is -> byteBuffers(is));
     }
 
@@ -387,8 +385,7 @@ public interface Stream<T> extends StreamIterable<T> {
     }
 
     static <R, T> Stream<T> using(Callable<? extends R> resourceFactory,
-            Function<? super R, ? extends Stream<? extends T>> streamFactory,
-            Consumer<? super R> closer) {
+            Function<? super R, ? extends Stream<? extends T>> streamFactory, Consumer<? super R> closer) {
         return new Using<R, T>(resourceFactory, streamFactory, closer);
     }
 
@@ -451,10 +448,8 @@ public interface Stream<T> extends StreamIterable<T> {
         return StreamUtils.toInputStream(stream);
     }
 
-    static Stream<String> strings(Stream<? extends byte[]> stream, Charset charset,
-            int bufferSize) {
-        return defer(() -> Stream.from(
-                new InputStreamReader(inputStream(stream), charset.newDecoder()), bufferSize));
+    static Stream<String> strings(Stream<? extends byte[]> stream, Charset charset, int bufferSize) {
+        return defer(() -> Stream.from(new InputStreamReader(inputStream(stream), charset.newDecoder()), bufferSize));
     }
 
     static Stream<String> strings(Stream<? extends byte[]> stream, Charset charset) {
@@ -494,8 +489,7 @@ public interface Stream<T> extends StreamIterable<T> {
         return new ReduceNoInitialValue<T>(reducer, this);
     }
 
-    default <R> Single<R> reduce(R initialValue,
-            BiFunction<? super R, ? super T, ? extends R> reducer) {
+    default <R> Single<R> reduce(R initialValue, BiFunction<? super R, ? super T, ? extends R> reducer) {
         return reduceWithFactory(() -> initialValue, reducer);
     }
 
@@ -516,8 +510,7 @@ public interface Stream<T> extends StreamIterable<T> {
         return reduce(0.0, (x, y) -> x + mapper.apply(y));
     }
 
-    default <R> Single<R> collect(Callable<? extends R> factory,
-            BiConsumer<? super R, ? super T> collector) {
+    default <R> Single<R> collect(Callable<? extends R> factory, BiConsumer<? super R, ? super T> collector) {
         return new Collect<T, R>(factory, collector, this);
     }
 
@@ -623,13 +616,11 @@ public interface Stream<T> extends StreamIterable<T> {
     }
 
     default Single<Set<T>> toSet(int sizeHint) {
-        return collect(() -> new HashSet<T>(sizeHint),
-                (BiConsumer<Set<T>, T>) (set, x) -> set.add(x));
+        return collect(() -> new HashSet<T>(sizeHint), (BiConsumer<Set<T>, T>) (set, x) -> set.add(x));
     }
 
     default Single<List<T>> toList(int sizeHint) {
-        return collect(() -> new ArrayList<T>(sizeHint),
-                (BiConsumer<List<T>, T>) (list, x) -> list.add(x));
+        return collect(() -> new ArrayList<T>(sizeHint), (BiConsumer<List<T>, T>) (list, x) -> list.add(x));
     }
 
     default Stream<T> filter(Predicate<? super T> function) {
@@ -684,15 +675,15 @@ public interface Stream<T> extends StreamIterable<T> {
         return new Concat<T>(this, values);
     }
 
-    default <R> Stream<R> flatMap(
-            Function<? super T, ? extends StreamIterable<? extends R>> function) {
+    default <R> Stream<R> flatMap(Function<? super T, ? extends StreamIterable<? extends R>> function) {
         return new FlatMap<T, R>(function, this);
     }
 
-    default <R> Stream<R> flatMap(BiConsumer<? super T, ? super Consumer<R>> generator, Consumer<? super Consumer<R>> onFinish) {
+    default <R> Stream<R> flatMap(BiConsumer<? super T, ? super Consumer<R>> generator,
+            Consumer<? super Consumer<R>> onFinish) {
         return new FlatMapGenerator<T, R>(generator, onFinish, this);
     }
-    
+
     /**
      * Using a consumer to report items to downstream is more performant (fewer
      * allocations) because a Stream object doesn't have to be created for each
@@ -777,38 +768,31 @@ public interface Stream<T> extends StreamIterable<T> {
         return new TakeLast<T>(this, n);
     }
 
-    default <R> Stream<R> transform(
-            Function<? super Stream<T>, ? extends Stream<? extends R>> transformer) {
+    default <R> Stream<R> transform(Function<? super Stream<T>, ? extends Stream<? extends R>> transformer) {
         return new Transform<T, R>(transformer, this);
     }
 
-    default <R> Single<R> transformSingle(
-            Function<? super Stream<T>, ? extends Single<? extends R>> transformer) {
+    default <R> Single<R> transformSingle(Function<? super Stream<T>, ? extends Single<? extends R>> transformer) {
         return new TransformSingle<T, R>(transformer, this);
     }
 
-    default <R> Maybe<R> transformMaybe(
-            Function<? super Stream<T>, ? extends Maybe<? extends R>> transformer) {
+    default <R> Maybe<R> transformMaybe(Function<? super Stream<T>, ? extends Maybe<? extends R>> transformer) {
         return new TransformMaybe<T, R>(transformer, this);
     }
 
-    default <R> Stream<R> compose(
-            Function<? super Stream<T>, ? extends Stream<? extends R>> transformer) {
+    default <R> Stream<R> compose(Function<? super Stream<T>, ? extends Stream<? extends R>> transformer) {
         return transform(transformer);
     }
 
-    default <R> Single<R> composeSingle(
-            Function<? super Stream<T>, ? extends Single<? extends R>> transformer) {
+    default <R> Single<R> composeSingle(Function<? super Stream<T>, ? extends Single<? extends R>> transformer) {
         return transformSingle(transformer);
     }
 
-    default <R> Maybe<R> composeMaybe(
-            Function<? super Stream<T>, ? extends Maybe<? extends R>> transformer) {
+    default <R> Maybe<R> composeMaybe(Function<? super Stream<T>, ? extends Maybe<? extends R>> transformer) {
         return transformMaybe(transformer);
     }
 
-    default Stream<T> switchOnError(
-            Function<? super Throwable, ? extends Stream<? extends T>> function) {
+    default Stream<T> switchOnError(Function<? super Throwable, ? extends Stream<? extends T>> function) {
         return new SwitchOnError<T>(function, this);
     }
 
@@ -816,8 +800,7 @@ public interface Stream<T> extends StreamIterable<T> {
         return new SwitchOnEmpty<T>(this, factory);
     }
 
-    default <R, S> Stream<S> zipWith(Stream<? extends R> stream,
-            BiFunction<T, R, S> combiner) {
+    default <R, S> Stream<S> zipWith(Stream<? extends R> stream, BiFunction<T, R, S> combiner) {
         return new Zip<R, S, T>(this, stream, combiner);
     }
 
@@ -827,11 +810,10 @@ public interface Stream<T> extends StreamIterable<T> {
         return StreamSupport.stream(spliterator, false).onClose(() -> si.dispose());
     }
 
-    default <K, V> Single<java.util.Map<K, V>> toMap(
-            Function<? super T, ? extends K> keyFunction,
+    default <K, V> Single<java.util.Map<K, V>> toMap(Function<? super T, ? extends K> keyFunction,
             Function<? super T, ? extends V> valueFunction) {
-        return collect(HashMap::new, (BiConsumer<java.util.Map<K, V>, T>) (m, item) -> m
-                .put(keyFunction.apply(item), valueFunction.apply(item)));
+        return collect(HashMap::new, (BiConsumer<java.util.Map<K, V>, T>) (m, item) -> m.put(keyFunction.apply(item),
+                valueFunction.apply(item)));
     }
 
     default Single<String> join(String delimiter) {
@@ -887,11 +869,10 @@ public interface Stream<T> extends StreamIterable<T> {
         return new TakeWithPredicate<T>(predicate, this, false);
     }
 
-    default Stream<List<T>> bufferUntil(BiPredicate<? super List<T>, ? super T> condition,
-            boolean emitRemainder) {
+    default Stream<List<T>> bufferUntil(BiPredicate<? super List<T>, ? super T> condition, boolean emitRemainder) {
         return new BufferWithPredicate<T>(condition, emitRemainder, true, this);
     }
-    
+
     default Stream<List<T>> bufferWhile(BiPredicate<? super List<T>, ? super T> condition, boolean emitRemainder) {
         return new BufferWithPredicate<T>(condition, emitRemainder, false, this);
     }
@@ -947,10 +928,10 @@ public interface Stream<T> extends StreamIterable<T> {
         return new BufferWithPredicateSupplierAndStep<S, T>(factory, accumulator, condition, emitRemainder, false, this,
                 step, maxReplay);
     }
-    
+
     default Stream<Indexed<T>> mapWithIndex(int startIndex) {
         return defer(() -> {
-            int[] index = new int[] {startIndex};
+            int[] index = new int[] { startIndex };
             return map(x -> {
                 int n = index[0];
                 index[0] = n + 1;
@@ -1047,8 +1028,7 @@ public interface Stream<T> extends StreamIterable<T> {
         return new Materialize<T>(this);
     }
 
-    default <R> Stream<R> dematerialize(
-            Function<? super T, Notification<? extends R>> function) {
+    default <R> Stream<R> dematerialize(Function<? super T, Notification<? extends R>> function) {
         return new Dematerialize<T, R>(this, function);
     }
 
@@ -1084,8 +1064,7 @@ public interface Stream<T> extends StreamIterable<T> {
         }
     }
 
-    default <R> Stream<R> scan(R initialValue,
-            BiFunction<? super R, ? super T, ? extends R> accumulator) {
+    default <R> Stream<R> scan(R initialValue, BiFunction<? super R, ? super T, ? extends R> accumulator) {
         return Stream.defer(new Callable<Stream<R>>() {
 
             R r = initialValue;
@@ -1100,8 +1079,7 @@ public interface Stream<T> extends StreamIterable<T> {
         });
     }
 
-    default <R extends Number> Single<Statistics> statistics(
-            Function<? super T, ? extends R> mapper) {
+    default <R extends Number> Single<Statistics> statistics(Function<? super T, ? extends R> mapper) {
         return statistics(this.map(mapper));
     }
 
