@@ -42,7 +42,6 @@ import org.davidmoten.kool.internal.operators.stream.All;
 import org.davidmoten.kool.internal.operators.stream.Any;
 import org.davidmoten.kool.internal.operators.stream.Buffer;
 import org.davidmoten.kool.internal.operators.stream.BufferWithPredicate;
-import org.davidmoten.kool.internal.operators.stream.BufferWithPredicateAndStep;
 import org.davidmoten.kool.internal.operators.stream.BufferWithPredicateSupplierAndStep;
 import org.davidmoten.kool.internal.operators.stream.Cache;
 import org.davidmoten.kool.internal.operators.stream.Collect;
@@ -900,22 +899,23 @@ public interface Stream<T> extends StreamIterable<T> {
     
     default Stream<List<T>> bufferWhile(BiPredicate<? super List<T>, ? super T> condition, boolean emitRemainder,
             int step, int maxReplay) {
+//        return new BufferWithPredicateAndStep<T>(condition, emitRemainder, false, this, list -> step, maxReplay);
         return new BufferWithPredicateSupplierAndStep<List<T> , T>(() -> new ArrayList<T>(), (list, t) -> {list.add(t);return list;}, condition, emitRemainder, false, this, list -> step, maxReplay);
     }
 
     default Stream<List<T>> bufferUntil(BiPredicate<? super List<T>, ? super T> condition, boolean emitRemainder,
             int step, int maxReplay) {
-        return new BufferWithPredicateAndStep<T>(condition, emitRemainder, true, this, list -> step, maxReplay);
+        return new BufferWithPredicateSupplierAndStep<List<T>, T>(() -> new ArrayList<T>(), (list, t) -> {list.add(t);return list;}, condition, emitRemainder, true, this, list -> step, maxReplay);
     }
 
     default Stream<List<T>> bufferWhile(BiPredicate<? super List<T>, ? super T> condition, boolean emitRemainder,
             Function<? super List<T>, Integer> step, int maxReplay) {
-        return new BufferWithPredicateAndStep<T>(condition, emitRemainder, false, this, step, maxReplay);
+        return new BufferWithPredicateSupplierAndStep<List<T> , T>(() -> new ArrayList<T>(), (list, t) -> {list.add(t);return list;}, condition, emitRemainder, false, this, step, maxReplay);
     }
 
     default Stream<List<T>> bufferUntil(BiPredicate<? super List<T>, ? super T> condition, boolean emitRemainder,
             Function<? super List<T>, Integer> step, int maxReplay) {
-        return new BufferWithPredicateAndStep<T>(condition, emitRemainder, true, this, step, maxReplay);
+        return new BufferWithPredicateSupplierAndStep<List<T>, T>(() -> new ArrayList<T>(), (list, t) -> {list.add(t);return list;},condition, emitRemainder, true, this, step, maxReplay);
     }
 
     default Stream<Indexed<T>> mapWithIndex(int startIndex) {

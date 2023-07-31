@@ -58,10 +58,13 @@ public final class BufferWithPredicateSupplierAndStep<S, T> implements Stream<S>
                     nextBuffer = nextBuffer.create(factory.get());
                     ready = false;
                     int offset = step.applyUnchecked(current.state);
+                    int bufferSize = buffer.count;
+                    buffer.count = 0;
+                    buffer.state = factory.get();
                     if (offset > current.count) {
                         int n = offset - current.count;
                         // skip n values
-                        for (int i = 0; i < n - buffer.count; i++) {
+                        for (int i = 0; i < n - bufferSize; i++) {
                             if (it.hasNext()) {
                                 it.next();
                             } else {
@@ -69,7 +72,7 @@ public final class BufferWithPredicateSupplierAndStep<S, T> implements Stream<S>
                             }
                         }
                     } else {
-                        it.replay(current.count - offset + buffer.count);
+                        it.replay(current.count - offset + bufferSize);
                     }
                     return current.state;
                 }
