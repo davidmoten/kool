@@ -33,7 +33,7 @@ public final class BufferWithFactoryPredicateAndStep<S, T> implements Stream<S> 
         this.step = step;
         this.maxReplay = maxReplay;
     }
-    
+
     private Buffer<S, T> createBuffer() {
         try {
             return new Buffer<>(accumulator, factory.call());
@@ -48,7 +48,7 @@ public final class BufferWithFactoryPredicateAndStep<S, T> implements Stream<S> 
             ReplayableStreamIterator<T> it = new ReplayableStreamIterator<>(source.iteratorNullChecked(), maxReplay);
             Buffer<S, T> buffer = createBuffer();
             Buffer<S, T> nextBuffer = createBuffer();
-            
+
             boolean ready;
 
             @Override
@@ -69,6 +69,10 @@ public final class BufferWithFactoryPredicateAndStep<S, T> implements Stream<S> 
                     ready = false;
                     int offset = step.applyUnchecked(current.state);
                     int bufferSize = buffer.count;
+                    // reset buffer
+                    // we could reduce allocations by just calling clear()
+                    // on buffer.state (like when is a List). This would mean
+                    // adding another function parameter to the constructor.s
                     buffer.count = 0;
                     try {
                         buffer.state = factory.call();
