@@ -10,7 +10,7 @@ import org.davidmoten.kool.function.BiPredicate;
 import org.davidmoten.kool.function.Function;
 import org.davidmoten.kool.internal.util.Exceptions;
 
-public final class BufferWithPredicateSupplierAndStep<S, T> implements Stream<S> {
+public final class BufferWithFactoryPredicateAndStep<S, T> implements Stream<S> {
 
     private final Callable<? extends S> factory;
     private final BiFunction<? super S, ? super T, ? extends S> accumulator;
@@ -21,7 +21,7 @@ public final class BufferWithPredicateSupplierAndStep<S, T> implements Stream<S>
     private final Function<? super S, Integer> step;
     private final int maxReplay;
 
-    public BufferWithPredicateSupplierAndStep(Callable<? extends S> factory,
+    public BufferWithFactoryPredicateAndStep(Callable<? extends S> factory,
             BiFunction<? super S, ? super T, ? extends S> accumulator, BiPredicate<? super S, ? super T> condition,
             boolean emitRemainder, boolean until, Stream<T> source, Function<? super S, Integer> step, int maxReplay) {
         this.factory = factory;
