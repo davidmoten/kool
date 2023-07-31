@@ -41,8 +41,8 @@ import org.davidmoten.kool.function.Predicates;
 import org.davidmoten.kool.internal.operators.stream.All;
 import org.davidmoten.kool.internal.operators.stream.Any;
 import org.davidmoten.kool.internal.operators.stream.Buffer;
-import org.davidmoten.kool.internal.operators.stream.BufferWithPredicate;
 import org.davidmoten.kool.internal.operators.stream.BufferWithFactoryPredicateAndStep;
+import org.davidmoten.kool.internal.operators.stream.BufferWithPredicate;
 import org.davidmoten.kool.internal.operators.stream.Cache;
 import org.davidmoten.kool.internal.operators.stream.Collect;
 import org.davidmoten.kool.internal.operators.stream.Concat;
@@ -879,46 +879,34 @@ public interface Stream<T> extends StreamIterable<T> {
 
     default Stream<List<T>> bufferUntil(BiPredicate<? super List<T>, ? super T> condition, boolean emitRemainder,
             int step, int maxReplay) {
-        return new BufferWithFactoryPredicateAndStep<List<T>, T>(ArrayList::new, (list, t) -> {
-            list.add(t);
-            return list;
-        }, condition, emitRemainder, true, this, list -> step, maxReplay);
+        return new BufferWithFactoryPredicateAndStep<List<T>, T>(ArrayList::new, StreamUtils.listAccumulator(),
+                condition, emitRemainder, true, this, list -> step, maxReplay);
     }
 
     default Stream<List<T>> bufferWhile(BiPredicate<? super List<T>, ? super T> condition, boolean emitRemainder,
             int step, int maxReplay) {
-        return new BufferWithFactoryPredicateAndStep<List<T>, T>(ArrayList::new, (list, t) -> {
-            list.add(t);
-            return list;
-        }, condition, emitRemainder, false, this, list -> step, maxReplay);
-    }
-
-    default Stream<List<T>> bufferUntil(BiPredicate<? super List<T>, ? super T> condition, boolean emitRemainder,
-            Function<? super List<T>, Integer> step, int maxReplay) {
-        Callable<List<T>> factory = ArrayList::new;
-        BiFunction<List<T>, T, List<T>> accumulator = (list, t) -> {
-            list.add(t);
-            return list;
-        };
-        return new BufferWithFactoryPredicateAndStep<>(factory, accumulator, condition, emitRemainder, true, this,
-                step, maxReplay);
-    }
-
-    default Stream<List<T>> bufferWhile(BiPredicate<? super List<T>, ? super T> condition, boolean emitRemainder,
-            Function<? super List<T>, Integer> step, int maxReplay) {
-        return new BufferWithFactoryPredicateAndStep<>(ArrayList::new, (list, t) -> {
-            list.add(t);
-            return list;
-        }, condition, emitRemainder, false, this, step, maxReplay);
+        return new BufferWithFactoryPredicateAndStep<List<T>, T>(ArrayList::new, StreamUtils.listAccumulator(),
+                condition, emitRemainder, false, this, list -> step, maxReplay);
     }
     
+    default Stream<List<T>> bufferUntil(BiPredicate<? super List<T>, ? super T> condition, boolean emitRemainder,
+            Function<? super List<T>, Integer> step, int maxReplay) {
+        return bufferUntil(ArrayList::new, StreamUtils.listAccumulator(), condition, emitRemainder, step, maxReplay);
+    }
+    
+    default Stream<List<T>> bufferWhile(BiPredicate<? super List<T>, ? super T> condition, boolean emitRemainder,
+            Function<? super List<T>, Integer> step, int maxReplay) {
+        return new BufferWithFactoryPredicateAndStep<>(ArrayList::new, StreamUtils.listAccumulator(), condition,
+                emitRemainder, false, this, step, maxReplay);
+    }
+
     default <S> Stream<S> bufferUntil(Callable<? extends S> factory,
             BiFunction<? super S, ? super T, ? extends S> accumulator, BiPredicate<? super S, ? super T> condition,
             boolean emitRemainder, Function<? super S, Integer> step, int maxReplay) {
-        return new BufferWithFactoryPredicateAndStep<>(factory, accumulator, condition, emitRemainder, true, this,
+        return new BufferWithFactoryPredicateAndStep<>(factory, accumulator, condition, emitRemainder, false, this,
                 step, maxReplay);
     }
-
+    
     default <S> Stream<S> bufferWhile(Callable<? extends S> factory,
             BiFunction<? super S, ? super T, ? extends S> accumulator, BiPredicate<? super S, ? super T> condition,
             boolean emitRemainder, Function<? super S, Integer> step, int maxReplay) {

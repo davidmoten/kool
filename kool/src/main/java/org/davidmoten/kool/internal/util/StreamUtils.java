@@ -3,10 +3,12 @@ package org.davidmoten.kool.internal.util;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
+import java.util.List;
 
 import org.davidmoten.kool.Stream;
 import org.davidmoten.kool.StreamIterable;
 import org.davidmoten.kool.StreamIterator;
+import org.davidmoten.kool.function.BiFunction;
 import org.davidmoten.kool.function.Function;
 
 import com.github.davidmoten.guavamini.Preconditions;
@@ -78,6 +80,16 @@ public final class StreamUtils {
             }
 
         };
+    }
+    
+    private static final BiFunction<List<Object>, Object, List<Object>> LIST_ACCUMULATOR =  (list, t) -> {
+        list.add(t);
+        return list;
+    };
+    
+    @SuppressWarnings("unchecked")
+    public static <T> BiFunction<List<T>, T, List<T>> listAccumulator() {
+        return (BiFunction<List<T>, T, List<T>>)(BiFunction<?, ?, ?>)LIST_ACCUMULATOR;
     }
 
 }
