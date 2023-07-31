@@ -887,13 +887,10 @@ public interface Stream<T> extends StreamIterable<T> {
 
     default Stream<List<T>> bufferWhile(BiPredicate<? super List<T>, ? super T> condition, boolean emitRemainder,
             int step, int maxReplay) {
-        return new BufferWithPredicateSupplierAndStep<List<T>, T>( //
-                ArrayList::new, //
-                (list, t) -> {
-                    list.add(t);
-                    return list;
-                }, //
-                condition, emitRemainder, false, this, list -> step, maxReplay);
+        return new BufferWithPredicateSupplierAndStep<List<T>, T>(ArrayList::new, (list, t) -> {
+            list.add(t);
+            return list;
+        }, condition, emitRemainder, false, this, list -> step, maxReplay);
     }
 
     default Stream<List<T>> bufferUntil(BiPredicate<? super List<T>, ? super T> condition, boolean emitRemainder,
