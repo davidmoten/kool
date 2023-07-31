@@ -1,17 +1,18 @@
 package org.davidmoten.kool.internal.operators.stream;
 
 import java.util.NoSuchElementException;
+import java.util.concurrent.Callable;
 
 import org.davidmoten.kool.Stream;
 import org.davidmoten.kool.StreamIterator;
 import org.davidmoten.kool.function.BiFunction;
 import org.davidmoten.kool.function.BiPredicate;
 import org.davidmoten.kool.function.Function;
-import org.davidmoten.kool.function.Supplier;
+import org.davidmoten.kool.internal.util.Exceptions;
 
 public final class BufferWithPredicateSupplierAndStep<S, T> implements Stream<S> {
 
-    private final Supplier<? extends S> factory;
+    private final Callable<? extends S> factory;
     private final BiFunction<? super S, ? super T, ? extends S> accumulator;
     private final BiPredicate<? super S, ? super T> condition;
     private final boolean emitRemainder;
@@ -20,7 +21,7 @@ public final class BufferWithPredicateSupplierAndStep<S, T> implements Stream<S>
     private final Function<? super S, Integer> step;
     private final int maxReplay;
 
-    public BufferWithPredicateSupplierAndStep(Supplier<? extends S> factory,
+    public BufferWithPredicateSupplierAndStep(Callable<? extends S> factory,
             BiFunction<? super S, ? super T, ? extends S> accumulator, BiPredicate<? super S, ? super T> condition,
             boolean emitRemainder, boolean until, Stream<T> source, Function<? super S, Integer> step, int maxReplay) {
         this.factory = factory;
@@ -32,13 +33,22 @@ public final class BufferWithPredicateSupplierAndStep<S, T> implements Stream<S>
         this.step = step;
         this.maxReplay = maxReplay;
     }
+    
+    private Buffer<S, T> createBuffer() {
+        try {
+            return new Buffer<>(accumulator, factory.call());
+        } catch (Exception e) {
+            return Exceptions.rethrow(e);
+        }
+    }
 
     @Override
     public StreamIterator<S> iterator() {
         return new StreamIterator<S>() {
             ReplayableStreamIterator<T> it = new ReplayableStreamIterator<>(source.iteratorNullChecked(), maxReplay);
-            Buffer<S, T> buffer = new Buffer<>(accumulator, factory.get());
-            Buffer<S, T> nextBuffer = new Buffer<>(accumulator, factory.get());
+            Buffer<S, T> buffer = createBuffer();
+            Buffer<S, T> nextBuffer = createBuffer();
+            
             boolean ready;
 
             @Override
@@ -55,12 +65,16 @@ public final class BufferWithPredicateSupplierAndStep<S, T> implements Stream<S>
                 } else {
                     Buffer<S, T> current = buffer;
                     buffer = nextBuffer;
-                    nextBuffer = nextBuffer.create(factory.get());
+                    nextBuffer = createBuffer();
                     ready = false;
                     int offset = step.applyUnchecked(current.state);
                     int bufferSize = buffer.count;
                     buffer.count = 0;
-                    buffer.state = factory.get();
+                    try {
+                        buffer.state = factory.call();
+                    } catch (Exception e) {
+                        Exceptions.rethrow(e);
+                    }
                     if (offset > current.count) {
                         int n = offset - current.count;
                         // skip n values
@@ -138,9 +152,6 @@ public final class BufferWithPredicateSupplierAndStep<S, T> implements Stream<S>
             state = accumulator.apply(state, t);
         }
 
-        Buffer<S, T> create(S s) {
-            return new Buffer<>(accumulator, s);
-        }
     }
 
 }
