@@ -7,7 +7,7 @@
 Alternative to `java.util.stream.Stream`:
 
 * is sometimes much faster for synchonronous use ([benchmarks](benchmarks.md))
-* has many [more operators](https://davidmoten.github.io/kool/apidocs/index.html) and is generally **less verbose**
+* has many [more operators](https://davidmoten.github.io/kool/apidocs/org/davidmoten/kool/Stream.html) and is generally **less verbose**
 * operators are **more discoverable**
 * streams are **reusable**
 * **disposes** resources
