@@ -573,6 +573,31 @@ public final class StreamTest {
     public void testSkipMoreThanAvailable() {
         Stream.of(1, 2, 3, 4).skip(5).test().assertNoValuesOnly();
     }
+    
+    @Test
+    public void testSkipLast() {
+        Stream.of(1, 2, 3, 4).skipLast(2).test().assertValuesOnly(1, 2);
+    }
+    
+    @Test
+    public void testSkipLastZero() {
+        Stream.of(1, 2, 3, 4).skipLast(0).test().assertValuesOnly(1, 2, 3, 4);
+    }
+    
+    @Test
+    public void testSkipLastMoreThanAvailable() {
+        Stream.of(1, 2, 3, 4).skipLast(5).test().assertNoValuesOnly();
+    }
+    
+    @Test(expected = NoSuchElementException.class)
+    public void testSkipLastNoSuchElement() {
+        Stream.empty().skipLast(5).iterator().next();
+    }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void testSkipLastNegative() {
+        Stream.of(1, 2, 3, 4).skipLast(-1);
+    }
 
     @Test
     public void testTakeDisposes() {

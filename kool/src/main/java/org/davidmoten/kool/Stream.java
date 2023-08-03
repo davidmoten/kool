@@ -89,6 +89,7 @@ import org.davidmoten.kool.internal.operators.stream.RepeatLast;
 import org.davidmoten.kool.internal.operators.stream.RetryWhen;
 import org.davidmoten.kool.internal.operators.stream.Reverse;
 import org.davidmoten.kool.internal.operators.stream.Skip;
+import org.davidmoten.kool.internal.operators.stream.SkipLast;
 import org.davidmoten.kool.internal.operators.stream.SkipUntil;
 import org.davidmoten.kool.internal.operators.stream.Sorted;
 import org.davidmoten.kool.internal.operators.stream.Split;
@@ -843,6 +844,11 @@ public interface Stream<T> extends StreamIterable<T> {
 
     default Stream<T> skip(int size) {
         return new Skip<T>(size, this);
+    }
+    
+    default Stream<T> skipLast(int size) {
+        Preconditions.checkArgument(size >=0, "size must be non-negative");
+        return new SkipLast<T>(size, this);
     }
 
     default Stream<T> skipUntil(Predicate<? super T> predicate) {
