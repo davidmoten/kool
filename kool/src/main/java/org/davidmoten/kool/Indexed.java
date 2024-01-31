@@ -1,19 +1,21 @@
 package org.davidmoten.kool;
 
+import java.util.Objects;
+
 import com.github.davidmoten.guavamini.Preconditions;
 
 public final class Indexed<T> {
 
     private final T t;
-    private final int index;
+    private final long index;
 
-    private Indexed(T t, int index) {
+    private Indexed(T t, long index) {
         Preconditions.checkNotNull(t);
         this.t = t;
         this.index = index;
     }
 
-    public static <T> Indexed<T> create(T t, int index) {
+    public static <T> Indexed<T> create(T t, long index) {
         return new Indexed<T>(t, index);
     }
 
@@ -21,17 +23,14 @@ public final class Indexed<T> {
         return t;
     }
 
-    public int index() {
+    public long index() {
         return index;
     }
     
+
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + index;
-        result = prime * result + t.hashCode();
-        return result;
+        return Objects.hash(index, t);
     }
 
     @Override
