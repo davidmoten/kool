@@ -757,7 +757,7 @@ public interface Stream<T> extends StreamIterable<T> {
         return new Last<T>(this);
     }
 
-    default Maybe<T> get(int index) {
+    default Maybe<T> get(long index) {
         return take(index + 1).last();
     }
 
@@ -842,7 +842,7 @@ public interface Stream<T> extends StreamIterable<T> {
         return new Buffer<T>(this, size, step);
     }
 
-    default Stream<T> skip(int size) {
+    default Stream<T> skip(long size) {
         return new Skip<T>(size, this);
     }
     
@@ -917,11 +917,11 @@ public interface Stream<T> extends StreamIterable<T> {
                 step, maxReplay);
     }
 
-    default Stream<Indexed<T>> mapWithIndex(int startIndex) {
+    default Stream<Indexed<T>> mapWithIndex(long startIndex) {
         return defer(() -> {
-            int[] index = new int[] { startIndex };
+            long[] index = new long[] { startIndex };
             return map(x -> {
-                int n = index[0];
+                long n = index[0];
                 index[0] = n + 1;
                 return Indexed.create(x, n);
             });

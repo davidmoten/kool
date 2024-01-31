@@ -5,10 +5,10 @@ import org.davidmoten.kool.StreamIterator;
 
 public final class Skip<T> implements Stream<T> {
 
-    private final int count;
+    private final long count;
     private final Stream<T> source;
 
-    public Skip(int count, Stream<T> source) {
+    public Skip(long count, Stream<T> source) {
         this.count = count;
         this.source = source;
     }
@@ -18,7 +18,7 @@ public final class Skip<T> implements Stream<T> {
         return new StreamIterator<T>() {
 
             StreamIterator<T> it = source.iteratorNullChecked();
-            int n = count;
+            long n = count;
 
             @Override
             public boolean hasNext() {
