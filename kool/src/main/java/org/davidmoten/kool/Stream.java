@@ -764,6 +764,10 @@ public interface Stream<T> extends StreamIterable<T> {
     default Stream<T> take(long n) {
         return new Take<T>(n, this);
     }
+    
+    default Stream<T> limit(long n) {
+        return take(n);
+    }
 
     default Stream<T> takeLast(long n) {
         return new TakeLast<T>(this, n);

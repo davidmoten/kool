@@ -1202,7 +1202,7 @@ public final class StreamTest {
             i.incrementAndGet();
             emitter.onNext(i.get());
         }) //
-                .take(5) //
+                .limit(5) //
                 .test() //
                 .assertValuesOnly(1, 2, 3, 4, 5);
 
