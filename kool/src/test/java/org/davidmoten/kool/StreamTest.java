@@ -92,6 +92,11 @@ public final class StreamTest {
     public void testPrepend() {
         Stream.of(1, 2, 3).prepend(0).test().assertValuesOnly(0, 1, 2, 3);
     }
+    
+    @Test
+    public void testPrependIterable() {
+        Stream.of(1, 2, 3).prepend(Arrays.asList(5, 6, 7)).test().assertValuesOnly(5, 6, 7, 1, 2, 3);
+    }
 
     @Test
     public void testPrependMany() {
@@ -425,8 +430,13 @@ public final class StreamTest {
     }
 
     @Test
-    public void testConcat() {
+    public void testConcatWith() {
         Stream.of(1, 2).concatWith(Stream.of(3, 4)).test().assertValuesOnly(1, 2, 3, 4);
+    }
+    
+    @Test
+    public void testConcatWithIterable() {
+        Stream.of(1, 2).concatWith(Arrays.asList(3, 4)).test().assertValuesOnly(1, 2, 3, 4);
     }
 
     @Test
@@ -447,6 +457,15 @@ public final class StreamTest {
                 .doOnComplete(() -> list.add(3)) //
                 .forEach();
         assertEquals(Lists.newArrayList(1, 2, 3), list);
+    }
+    
+    @Test
+    public void testDoOnCompleteCount() {
+        List<Integer> list = new ArrayList<>();
+        Stream.of(1, 1, 1) //
+                .doOnComplete(count -> list.add(count.intValue())) //
+                .forEach();
+        assertEquals(Lists.newArrayList(3), list);
     }
 
     @Test
