@@ -444,7 +444,7 @@ public interface Stream<T> extends StreamIterable<T> {
     static Stream<Integer> interval(long duration, TimeUnit unit) {
         return range(1, Integer.MAX_VALUE).doOnNext(x -> unit.sleep(duration)).prepend(0);
     }
-
+    
     static InputStream inputStream(Stream<? extends byte[]> stream) {
         return StreamUtils.toInputStream(stream);
     }
@@ -671,15 +671,23 @@ public interface Stream<T> extends StreamIterable<T> {
     default Stream<T> prepend(StreamIterable<? extends T> values) {
         return new Concat<T>(values, this);
     }
+    
+    default Stream<T> prepend(Iterable<? extends T> values) {
+        return prepend(Stream.from(values));
+    }
 
     default Stream<T> concatWith(StreamIterable<? extends T> values) {
         return new Concat<T>(this, values);
+    }
+    
+    default Stream<T> concatWith(Iterable<? extends T> values) {
+        return concatWith(Stream.from(values));
     }
 
     default <R> Stream<R> flatMap(Function<? super T, ? extends StreamIterable<? extends R>> function) {
         return new FlatMap<T, R>(function, this);
     }
-
+    
     default <R> Stream<R> flatMap(BiConsumer<? super T, ? super Consumer<R>> generator,
             Consumer<? super Consumer<R>> onFinish) {
         return new FlatMapGenerator<T, R>(generator, onFinish, this);
@@ -751,6 +759,15 @@ public interface Stream<T> extends StreamIterable<T> {
 
     default Stream<T> doOnEmpty(Action action) {
         return new DoOnEmpty<T>(this, action);
+    }
+    
+    default Stream<T> doOnComplete(Consumer<? super Long> countAction) {
+        return defer(() -> {
+            long[] count = new long[1];
+            return this //
+                    .doOnNext(t -> count[0]++) //
+                    .doOnComplete(() -> countAction.accept(count[0]));
+        });
     }
 
     default Maybe<T> last() {
