@@ -1095,6 +1095,10 @@ public interface Stream<T> extends StreamIterable<T> {
     default Stream<T> repeatLast() {
         return repeatLast(Long.MAX_VALUE);
     }
+    
+    default Publisher<T> publish() {
+        return new Publisher<T>(this);
+    }
 
     static Stream<Set<Integer>> powerSet(int n) {
         return new PowerSet(n);

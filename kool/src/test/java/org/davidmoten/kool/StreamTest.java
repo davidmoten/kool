@@ -92,7 +92,7 @@ public final class StreamTest {
     public void testPrepend() {
         Stream.of(1, 2, 3).prepend(0).test().assertValuesOnly(0, 1, 2, 3);
     }
-    
+
     @Test
     public void testPrependIterable() {
         Stream.of(1, 2, 3).prepend(Arrays.asList(5, 6, 7)).test().assertValuesOnly(5, 6, 7, 1, 2, 3);
@@ -433,7 +433,7 @@ public final class StreamTest {
     public void testConcatWith() {
         Stream.of(1, 2).concatWith(Stream.of(3, 4)).test().assertValuesOnly(1, 2, 3, 4);
     }
-    
+
     @Test
     public void testConcatWithIterable() {
         Stream.of(1, 2).concatWith(Arrays.asList(3, 4)).test().assertValuesOnly(1, 2, 3, 4);
@@ -458,7 +458,7 @@ public final class StreamTest {
                 .forEach();
         assertEquals(Lists.newArrayList(1, 2, 3), list);
     }
-    
+
     @Test
     public void testDoOnCompleteCount() {
         List<Integer> list = new ArrayList<>();
@@ -592,27 +592,27 @@ public final class StreamTest {
     public void testSkipMoreThanAvailable() {
         Stream.of(1, 2, 3, 4).skip(5).test().assertNoValuesOnly();
     }
-    
+
     @Test
     public void testSkipLast() {
         Stream.of(1, 2, 3, 4).skipLast(2).test().assertValuesOnly(1, 2);
     }
-    
+
     @Test
     public void testSkipLastZero() {
         Stream.of(1, 2, 3, 4).skipLast(0).test().assertValuesOnly(1, 2, 3, 4);
     }
-    
+
     @Test
     public void testSkipLastMoreThanAvailable() {
         Stream.of(1, 2, 3, 4).skipLast(5).test().assertNoValuesOnly();
     }
-    
+
     @Test(expected = NoSuchElementException.class)
     public void testSkipLastNoSuchElement() {
         Stream.empty().skipLast(5).iterator().next();
     }
-    
+
     @Test(expected = IllegalArgumentException.class)
     public void testSkipLastNegative() {
         Stream.of(1, 2, 3, 4).skipLast(-1);
@@ -2115,6 +2115,25 @@ public final class StreamTest {
                         })
                 .toList().get();
         assertEquals(Arrays.asList("a", "b"), list);
+    }
+
+    @Test
+    public void testPublisher() {
+        Publisher<Integer> p = Stream.of(1, 2, 3).publish();
+        p.onNext(4);
+        p.onNext(5);
+        StreamIterator<Integer> it = p.iterator();
+        assertEquals(1, it.next().intValue());
+        assertEquals(2, it.next().intValue());
+        assertEquals(3, it.next().intValue());
+        assertEquals(4, it.next().intValue());
+        assertEquals(5, it.next().intValue());
+        p.onNext(6);
+        assertEquals(6, it.next().intValue());
+        assertFalse(it.hasNext());
+
+        // queue empty 
+        assertEquals(3, p.count().get().intValue());
     }
 
     public static void main(String[] args) throws MalformedURLException {
