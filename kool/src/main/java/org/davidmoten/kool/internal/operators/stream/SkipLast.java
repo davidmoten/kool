@@ -45,7 +45,7 @@ public final class SkipLast<T> implements Stream<T> {
 
             private void loadNext() {
                 while (buffer.size() < size + 1 && it.hasNext()) {
-                    buffer.add(it.next());
+                    buffer.offer(it.next());
                 }
             }
         };

@@ -572,6 +572,32 @@ public final class StreamTest {
     public void testBufferDispose() {
         checkTrue(b -> Stream.of(1, 2).doOnDispose(() -> b.set(true)).buffer(1).first().get());
     }
+    
+    @Test
+    public void testBufferNoCopyUsedCorrectly() {
+        String s = Stream //
+           .of(1, 2, 3) //
+           .buffer(2, 1, false) //
+           .map(x -> x.toString()) //
+           .join(",") //
+           .get();
+        assertEquals("[1, 2],[2, 3],[3]", s);
+    }
+    
+    @Test
+    public void testBufferNoCopyWhenUsedIncorrectly() {
+        long count = Stream //
+           .of(1, 2, 3) //
+           .buffer(2, 1, false) //
+           // accumulate, which we should not do with no-copy buffer
+           .toList() //
+           .flatMap(list -> Stream.from(list)) //
+           .filter(list -> list.isEmpty()) //
+           .count() //
+           .get();
+        // assert that 3 empty lists returned
+        assertEquals(3, count);
+    }
 
     @Test
     public void testAfterDispose() {
@@ -2135,7 +2161,7 @@ public final class StreamTest {
         // queue empty 
         assertEquals(3, p.count().get().intValue());
     }
-
+    
     public static void main(String[] args) throws MalformedURLException {
         URL url = new URL("https://doesnotexist.zz");
         Stream.using(() -> url.openStream(), in -> Stream.bytes(in))

@@ -860,7 +860,24 @@ public interface Stream<T> extends StreamIterable<T> {
     }
 
     default Stream<List<T>> buffer(int size, int step) {
-        return new Buffer<T>(this, size, step);
+        return new Buffer<T>(this, size, step, true);
+    }
+
+    /**
+     * Buffers the stream into list chunks of given size and step. If and only if
+     * copy is set to false the actual buffer used internally will be emitted. This
+     * is a performance-oriented offering to reduce allocation pressure but has
+     * side-effects. You must consume the emitted list immediately because the next
+     * emitted buffer reuses that object.
+     * 
+     * @param size buffer size
+     * @param step buffer step
+     * @param copy if false then the internal buffer will be emitted (but must be
+     *             consumed immediately)
+     * @return stream of lists
+     */
+    default Stream<List<T>> buffer(int size, int step, boolean copy) {
+        return new Buffer<T>(this, size, step, copy);
     }
 
     default Stream<T> skip(long size) {

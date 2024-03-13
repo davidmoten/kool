@@ -1,8 +1,12 @@
 package org.davidmoten.kool.internal.util;
 
+import java.util.AbstractList;
+import java.util.RandomAccess;
+import java.util.function.Consumer;
+
 import org.davidmoten.kool.exceptions.BufferOverflowException;
 
-public final class RingBuffer<T> {
+public final class RingBuffer<T> extends AbstractList<T> implements RandomAccess {
 
     private T[] buffer;
     private int start;
@@ -17,7 +21,7 @@ public final class RingBuffer<T> {
         this.finish = 0;
     }
 
-    public RingBuffer<T> add(T value) {
+    public RingBuffer<T> offer(T value) {
         buffer[finish] = value;
         finish = (finish + 1) % buffer.length;
         if (finish == start) {
@@ -36,6 +40,7 @@ public final class RingBuffer<T> {
         }
     }
 
+    @Override
     public int size() {
         if (finish < start) {
             return finish + buffer.length - start;
@@ -59,5 +64,37 @@ public final class RingBuffer<T> {
     public boolean isEmpty() {
         return start == finish;
     }
+    
+    private int arrayIndex(int index) {
+        if (index < 0 || index >= size()) {
+            throw new ArrayIndexOutOfBoundsException(); 
+        }
+        return (start + index) % buffer.length;
+    }
+    
+    public T get(int index) {
+        return buffer[arrayIndex(index)];
+    }
 
+    @Override
+    public boolean add(T e) {
+        offer(e);
+        return true;
+    }
+
+    @Override
+    public T set(int index, T element) {
+        int i = arrayIndex(index);
+        T v = buffer[i];
+        buffer[i] = element;
+        return v;
+    }
+
+    @Override
+    public void forEach(Consumer<? super T> action) {
+        int size = size();
+        for (int i = 0; i < size; i++) {
+            action.accept(get(i));
+        }
+    }
 }
