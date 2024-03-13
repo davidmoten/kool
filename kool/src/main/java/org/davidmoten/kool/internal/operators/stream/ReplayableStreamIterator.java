@@ -21,7 +21,7 @@ public final class ReplayableStreamIterator<T> implements StreamIterator<T> {
     @Override
     public T next() {
         if (buffer.isEmpty()) {
-            buffer.add(it.next());
+            buffer.offer(it.next());
         }
         return buffer.poll();
     }

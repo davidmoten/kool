@@ -6,6 +6,7 @@ import java.util.NoSuchElementException;
 
 import org.davidmoten.kool.Stream;
 import org.davidmoten.kool.StreamIterator;
+import org.davidmoten.kool.internal.util.RingBuffer;
 
 import com.github.davidmoten.guavamini.Preconditions;
 
@@ -14,12 +15,14 @@ public class Buffer<T> implements Stream<List<T>> {
     private final Stream<T> stream;
     private final int size;
     private final int step;
+    private final boolean copy;
 
-    public Buffer(Stream<T> stream, int size, int step) {
+    public Buffer(Stream<T> stream, int size, int step, boolean copy) {
         Preconditions.checkArgument(step > 0, "step must be greater than 0");
         this.stream = stream;
         this.size = size;
         this.step = step;
+        this.copy = copy;
     }
 
     @Override
@@ -27,7 +30,8 @@ public class Buffer<T> implements Stream<List<T>> {
         return new StreamIterator<List<T>>() {
 
             StreamIterator<T> it = stream.iteratorNullChecked();
-            List<T> buffer = new ArrayList<>(size);
+            RingBuffer<T> buffer = new RingBuffer<>(size);
+            boolean applyStep = false;
 
             @Override
             public boolean hasNext() {
@@ -41,10 +45,12 @@ public class Buffer<T> implements Stream<List<T>> {
                 if (buffer.isEmpty()) {
                     throw new NoSuchElementException();
                 } else {
-                    List<T> list = buffer;
-                    buffer = new ArrayList<>(
-                            buffer.subList(Math.min(step, buffer.size()), buffer.size()));
-                    return list;
+                    applyStep = true;
+                    if (copy) {
+                        return new ArrayList<>(buffer);
+                    } else {
+                        return buffer;
+                    }
                 }
             }
 
@@ -54,6 +60,13 @@ public class Buffer<T> implements Stream<List<T>> {
             }
 
             private void loadNext() {
+                if (applyStep) {
+                    int n = Math.min(step, buffer.size());
+                    for (int i = 0; i < n; i++) {
+                        buffer.poll();
+                    }
+                    applyStep = false;
+                }
                 while (buffer.size() < size && it.hasNext()) {
                     buffer.add(it.nextNullChecked());
                 }

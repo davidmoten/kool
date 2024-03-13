@@ -572,6 +572,17 @@ public final class StreamTest {
     public void testBufferDispose() {
         checkTrue(b -> Stream.of(1, 2).doOnDispose(() -> b.set(true)).buffer(1).first().get());
     }
+    
+    @Test
+    public void testBufferNoCopy() {
+        String s = Stream //
+           .of(1, 2, 3) //
+           .buffer(2, 1, false) //
+           .map(x -> x.toString()) //
+           .join(",") //
+           .get();
+        assertEquals("[1, 2],[2, 3],[3]", s);
+    }
 
     @Test
     public void testAfterDispose() {
@@ -2135,7 +2146,7 @@ public final class StreamTest {
         // queue empty 
         assertEquals(3, p.count().get().intValue());
     }
-
+    
     public static void main(String[] args) throws MalformedURLException {
         URL url = new URL("https://doesnotexist.zz");
         Stream.using(() -> url.openStream(), in -> Stream.bytes(in))
