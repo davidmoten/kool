@@ -574,7 +574,7 @@ public final class StreamTest {
     }
     
     @Test
-    public void testBufferNoCopy() {
+    public void testBufferNoCopyUsedCorrectly() {
         String s = Stream //
            .of(1, 2, 3) //
            .buffer(2, 1, false) //
@@ -582,6 +582,21 @@ public final class StreamTest {
            .join(",") //
            .get();
         assertEquals("[1, 2],[2, 3],[3]", s);
+    }
+    
+    @Test
+    public void testBufferNoCopyWhenUsedIncorrectly() {
+        long count = Stream //
+           .of(1, 2, 3) //
+           .buffer(2, 1, false) //
+           // accumulate, which we should not do with no-copy buffer
+           .toList() //
+           .flatMap(list -> Stream.from(list)) //
+           .filter(list -> list.isEmpty()) //
+           .count() //
+           .get();
+        // assert that 3 empty lists returned
+        assertEquals(3, count);
     }
 
     @Test
