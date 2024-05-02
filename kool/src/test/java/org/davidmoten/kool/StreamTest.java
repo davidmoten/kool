@@ -2014,6 +2014,16 @@ public final class StreamTest {
     public void testExistsReturnsFalse() {
         assertFalse(Stream.of(1, 2, 3).exists(x -> x == 4).get());
     }
+    
+    @Test
+    public void testNoneMatch() {
+        assertTrue(Stream.of(1, 2, 3).noneMatch(x -> x == 4).get());
+    }
+
+    @Test
+    public void testNoneMatchReturnsFalse() {
+        assertFalse(Stream.of(1, 2, 3).noneMatch(x -> x == 1).get());
+    }
 
     @SuppressWarnings("unchecked")
     @Test

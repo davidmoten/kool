@@ -635,6 +635,10 @@ public interface Stream<T> extends StreamIterable<T> {
     default Single<Boolean> exists(Predicate<? super T> function) {
         return filter(function).isEmpty().map(x -> !x);
     }
+    
+    default Single<Boolean> noneMatch(Predicate<? super T> function) {
+        return filter(function).isEmpty();
+    }
 
     default void forEach() {
         count().get();
