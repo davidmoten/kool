@@ -958,7 +958,11 @@ public interface Stream<T> extends StreamIterable<T> {
         return new BufferWithFactoryPredicateAndStep<>(factory, accumulator, condition, emitRemainder, false, this,
                 step, maxReplay);
     }
-
+    
+    default BufferWhileBuilder<T> bufferWhile() {
+        return new BufferWhileBuilder<T>(this);
+    }
+    
     default Stream<Indexed<T>> mapWithIndex(long startIndex) {
         return defer(() -> {
             long[] index = new long[] { startIndex };

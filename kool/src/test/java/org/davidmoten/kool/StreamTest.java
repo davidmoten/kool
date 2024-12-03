@@ -875,6 +875,23 @@ public final class StreamTest {
                         Lists.newArrayList(2, 3, 4, 5), //
                         Lists.newArrayList(3, 4, 5, 6));
     }
+    
+    @Test
+    public void testBufferWhileWithStepSmallerThanBufferedListDontEmitRemainderUseBuilder() {
+        Stream.of(1, 2, 3, 4, 5, 6, 7) //
+                .bufferWhile() //
+                .arrayList() //
+                .condition((list, t) -> list.size() <= 3) //
+                .step(1) //
+                .emitRemainder(false) //
+                .maxReplay(100)
+                .build()
+                .test() //
+                .assertValuesOnly( //
+                        Lists.newArrayList(1, 2, 3, 4), //
+                        Lists.newArrayList(2, 3, 4, 5), //
+                        Lists.newArrayList(3, 4, 5, 6));
+    }
 
     @Test(expected = NoSuchElementException.class)
     public void testBufferUntilWithStepWhenEmptyAndNextCalled() {
