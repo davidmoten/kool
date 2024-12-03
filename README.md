@@ -41,6 +41,9 @@ Add this dependency to your pom.xml:
     <version>VERSION_HERE</version>
 </dependency>
 ```
+### Operators
+See this [list](https://davidmoten.github.io/kool/apidocs/index.html).
+
 ## Example
 ```java
 import org.davidmoten.kool.Stream;
