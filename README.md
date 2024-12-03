@@ -42,7 +42,7 @@ Add this dependency to your pom.xml:
 </dependency>
 ```
 ### Operators
-See this [list](https://davidmoten.github.io/kool/apidocs/index.html).
+See this [list](https://davidmoten.github.io/kool/apidocs/org/davidmoten/kool/Stream.html).
 
 ## Example
 ```java
