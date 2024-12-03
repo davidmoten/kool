@@ -945,6 +945,22 @@ public interface Stream<T> extends StreamIterable<T> {
         return bufferWhile(ArrayList::new, StreamUtils.listAccumulator(), condition, emitRemainder, step, maxReplay);
     }
 
+    /**
+     * Buffers until a condition is true then emits the buffer and starts a new
+     * buffer for emission.
+     * 
+     * @param <S>           buffer type
+     * @param factory       factory method to create a new buffer
+     * @param accumulator   how to incorporate a stream element into the buffer
+     * @param condition     if true then stream element is incorporated into the
+     *                      buffer
+     * @param emitRemainder what to do with the final buffer
+     * @param step          function that defines overlap (or not) of buffers
+     * @param maxReplay     overlap of buffers is achieved efficiently via a ring
+     *                      buffer (the stream is made replayable to handle buffer
+     *                      overlaps (e.g step = 1)
+     * @return buffered stream
+     */
     default <S> Stream<S> bufferUntil(Callable<? extends S> factory,
             BiFunction<? super S, ? super T, ? extends S> accumulator, BiPredicate<? super S, ? super T> condition,
             boolean emitRemainder, Function<? super S, Integer> step, int maxReplay) {
