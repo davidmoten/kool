@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-import org.davidmoten.kool.function.BiConsumer;
 import org.davidmoten.kool.function.BiFunction;
 import org.davidmoten.kool.function.BiPredicate;
 import org.davidmoten.kool.function.Function;
@@ -92,11 +91,6 @@ public final class BufferBuilder<T> {
 
         public BuilderHasAccumulator<T, S> accumulator(BiFunction<? super S, ? super T, ? extends S> accumulator) {
             b.accumulator = accumulator;
-            return new BuilderHasAccumulator<T, S>(b);
-        }
-        
-        public BuilderHasAccumulator<T, S> accumulator(BiConsumer<? super S, ? super T> accumulator) {
-            b.accumulator = (buffer, t) -> {accumulator.accept(buffer, t); return buffer;};
             return new BuilderHasAccumulator<T, S>(b);
         }
     }
