@@ -837,6 +837,27 @@ public final class StreamTest {
                         Lists.newArrayList(6, 7), //
                         Lists.newArrayList(7));
     }
+    
+    @Test
+    public void testBufferUntilWithStepSmallerThanBufferedListUseBuilder() {
+        Stream.of(1, 2, 3, 4, 5, 6, 7) //
+                .bufferUntil()
+                .arrayList()
+                .condition((list, t) -> list.size() == 3)
+                .step(1)
+                .emitRemainder(true)
+                .maxReplay(100)
+                .build()
+                .test() //
+                .assertValuesOnly( //
+                        Lists.newArrayList(1, 2, 3, 4), //
+                        Lists.newArrayList(2, 3, 4, 5), //
+                        Lists.newArrayList(3, 4, 5, 6), //
+                        Lists.newArrayList(4, 5, 6, 7), //
+                        Lists.newArrayList(5, 6, 7), //
+                        Lists.newArrayList(6, 7), //
+                        Lists.newArrayList(7));
+    }
 
     @Test
     public void testBufferWhileWithStepSmallerThanBufferedList() {

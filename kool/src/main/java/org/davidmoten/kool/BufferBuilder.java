@@ -8,45 +8,45 @@ import org.davidmoten.kool.function.BiFunction;
 import org.davidmoten.kool.function.BiPredicate;
 import org.davidmoten.kool.function.Function;
 
-public final class BufferWhileBuilder<T> {
+public final class BufferBuilder<T> {
 
     private final Stream<T> stream;
+    private boolean isWhile;
 
 //    private Callable<? extends S> factory;
 //    private BiFunction<? super S, ? super T, ? extends S> accumulator, BiPredicate<? super S, ? super T> condition,
 //    boolean emitRemainder, Function<? super S, Integer> step, int maxReplay
 
-    BufferWhileBuilder(Stream<T> stream) {
+    BufferBuilder(Stream<T> stream, boolean isWhile) {
         this.stream = stream;
+        this.isWhile = isWhile;
     }
 
     public <S> BuilderHasFactory<T, S> factory(Callable<? extends S> factory) {
-        return new BuilderHasFactory<T, S>(stream, factory);
+        return new BuilderHasFactory<T, S>(stream, factory, isWhile);
     }
 
     public BuilderHasFactoryArrayList<T> arrayList() {
-        return new BuilderHasFactoryArrayList<T>(stream);
+        return new BuilderHasFactoryArrayList<T>(stream, isWhile);
     }
 
     public static final class BuilderHasFactoryArrayList<T> {
 
         private final Stream<T> stream;
+        private final boolean isWhile;
 
-        BuilderHasFactoryArrayList(Stream<T> stream) {
+        BuilderHasFactoryArrayList(Stream<T> stream, boolean isWhile) {
             this.stream = stream;
+            this.isWhile = isWhile;
         }
 
         public BuilderHasAccumulator<T, List<T>> condition(BiPredicate<? super List<T>, ? super T> condition) {
-            return new BuilderHasFactory<T, List<T>>(stream, ArrayList::new) //
+            return new BuilderHasFactory<T, List<T>>(stream, ArrayList::new, isWhile) //
                     .condition(condition) //
-                    .accumulator(listAccumulator());
-        }
-        
-        private BiFunction<List<T>, T, List<T>> listAccumulator() {
-            return (list, x) -> {
-                list.add(x);
-                return list;
-            };
+                    .accumulator((list, x) -> {
+                        list.add(x);
+                        return list;
+                    });
         }
     }
 
@@ -54,20 +54,30 @@ public final class BufferWhileBuilder<T> {
 
         private final Stream<T> stream;
         private final Callable<? extends S> factory;
+        private final boolean isWhile;
         private Function<? super S, Integer> step;
         private BiFunction<? super S, ? super T, ? extends S> accumulator;
         private BiPredicate<? super S, ? super T> condition;
         private boolean emitRemainder = true;
         private int maxReplay = 1024;
 
-        BuilderHasFactory(Stream<T> stream, Callable<? extends S> factory) {
+        BuilderHasFactory(Stream<T> stream, Callable<? extends S> factory, boolean isWhile) {
             this.stream = stream;
             this.factory = factory;
+            this.isWhile = isWhile;
         }
 
         public BuilderHasCondition<T, S> condition(BiPredicate<? super S, ? super T> condition) {
             this.condition = condition;
             return new BuilderHasCondition<T, S>(this);
+        }
+
+        Stream<S> build() {
+            if (isWhile) {
+                return stream.bufferWhile(factory, accumulator, condition, emitRemainder, step, maxReplay);
+            } else {
+                return stream.bufferUntil(factory, accumulator, condition, emitRemainder, step, maxReplay);
+            }
         }
     }
 
@@ -123,7 +133,7 @@ public final class BufferWhileBuilder<T> {
         }
 
         public Stream<S> build() {
-            return b.stream.bufferWhile(b.factory, b.accumulator, b.condition, b.emitRemainder, b.step, b.maxReplay);
+            return b.build();
         }
     }
 

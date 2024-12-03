@@ -975,8 +975,12 @@ public interface Stream<T> extends StreamIterable<T> {
                 step, maxReplay);
     }
     
-    default BufferWhileBuilder<T> bufferWhile() {
-        return new BufferWhileBuilder<T>(this);
+    default BufferBuilder<T> bufferUntil() {
+        return new BufferBuilder<T>(this, false);
+    }
+    
+    default BufferBuilder<T> bufferWhile() {
+        return new BufferBuilder<T>(this, true);
     }
     
     default Stream<Indexed<T>> mapWithIndex(long startIndex) {
