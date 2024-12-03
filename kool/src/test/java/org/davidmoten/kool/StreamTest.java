@@ -892,6 +892,24 @@ public final class StreamTest {
                         Lists.newArrayList(2, 3, 4, 5), //
                         Lists.newArrayList(3, 4, 5, 6));
     }
+    
+    @Test
+    public void testBufferWhileWithStepSmallerThanBufferedListDontEmitRemainderUseBuilderWithFactory() {
+        Stream.of(1, 2, 3, 4, 5, 6, 7) //
+                .bufferWhile() //
+                .factory(ArrayList::new) //
+                .condition((list, t) -> list.size() <= 3) //
+                .accumulator((list, t)-> {list.add(t); return list;}) //
+                .step(1) //
+                .emitRemainder(false) //
+                .maxReplay(100)
+                .build()
+                .test() //
+                .assertValuesOnly( //
+                        Lists.newArrayList(1, 2, 3, 4), //
+                        Lists.newArrayList(2, 3, 4, 5), //
+                        Lists.newArrayList(3, 4, 5, 6));
+    }
 
     @Test(expected = NoSuchElementException.class)
     public void testBufferUntilWithStepWhenEmptyAndNextCalled() {
