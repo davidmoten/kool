@@ -180,7 +180,7 @@ try (Stream<String> lines = readLines(filename)) {
     e.printStackTrace();
 }
 ```
-Using _kool_ `Stream` we don't have to step out of functional style and don't need a try-catch block, much cleaner:
+Using _kool_ `Stream` we don't have to step out of functional style and don't need a try-catch block to dispose I/O resources, much cleaner:
 ```java
 readLines(filename)
   .count()
