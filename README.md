@@ -167,7 +167,27 @@ min=1.0
 max=6.0
 range=5.0
 ```
+## Resource disposal
+Why is the resource disposal feature of _kool_ important?
 
+Consider an I/O related function that returns a stream and I just want to output the count of elements.
+
+Using `java.util.Stream`:
+```java
+try (Stream<String> lines = readLines(filename)) {
+    System.out.println(lines.count());
+} catch (UncheckedIOException e) {
+    e.printStackTrace();
+}
+```
+Using _kool_ `Stream` we don't have to step out of functional style and don't need a try-catch block, much cleaner:
+```java
+readLines(filename)
+  .count()
+  .doOnError(e -> e.printStackTrace())
+  .doOnNext(System.out::println)
+  .go();
+```
 ## JSON support
 See [kool-json](kool-json).
 
