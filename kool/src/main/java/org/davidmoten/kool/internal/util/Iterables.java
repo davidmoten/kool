@@ -10,29 +10,23 @@ public final class Iterables {
     }
 
     public static <T> Iterable<T> fromArray(T[] array) {
-        return new Iterable<T>() {
+        return () -> new Iterator<T>() {
+
+            int i = 0;
 
             @Override
-            public Iterator<T> iterator() {
-                return new Iterator<T>() {
+            public boolean hasNext() {
+                return i < array.length;
+            }
 
-                    int i = 0;
-
-                    @Override
-                    public boolean hasNext() {
-                        return i < array.length;
-                    }
-
-                    @Override
-                    public T next() {
-                        i++;
-                        if (i > array.length) {
-                            throw new NoSuchElementException();
-                        } else {
-                            return array[i - 1];
-                        }
-                    }
-                };
+            @Override
+            public T next() {
+                i++;
+                if (i > array.length) {
+                    throw new NoSuchElementException();
+                } else {
+                    return array[i - 1];
+                }
             }
         };
     }

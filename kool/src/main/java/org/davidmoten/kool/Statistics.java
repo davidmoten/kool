@@ -98,53 +98,45 @@ public final class Statistics {
     }
 
     public String toString(String prefix, String delimiter) {
-        StringBuilder b = new StringBuilder();
-        b.append(prefix);
-        b.append("count=");
-        b.append(count);
-        b.append(delimiter);
 
-        b.append(prefix);
-        b.append("mean=");
-        b.append(mean());
-        b.append(delimiter);
+        String b = prefix +
+                "count=" +
+                count +
+                delimiter +
+                prefix +
+                "mean=" +
+                mean() +
+                delimiter +
+                prefix +
+                "standardDeviation=" +
+                standardDeviation() +
+                delimiter +
+                prefix +
+                "variance=" +
+                variance() +
+                delimiter +
+                prefix +
+                "kurtosis=" +
+                kurtosis() +
+                delimiter +
+                prefix +
+                "skewness=" +
+                skewness() +
+                delimiter +
+                prefix +
+                "min=" +
+                min() +
+                delimiter +
+                prefix +
+                "max=" +
+                max() +
+                delimiter +
+                prefix +
+                "range=" +
+                range() +
+                delimiter;
 
-        b.append(prefix);
-        b.append("standardDeviation=");
-        b.append(standardDeviation());
-        b.append(delimiter);
-
-        b.append(prefix);
-        b.append("variance=");
-        b.append(variance());
-        b.append(delimiter);
-
-        b.append(prefix);
-        b.append("kurtosis=");
-        b.append(kurtosis());
-        b.append(delimiter);
-
-        b.append(prefix);
-        b.append("skewness=");
-        b.append(skewness());
-        b.append(delimiter);
-
-        b.append(prefix);
-        b.append("min=");
-        b.append(min());
-        b.append(delimiter);
-
-        b.append(prefix);
-        b.append("max=");
-        b.append(max());
-        b.append(delimiter);
-
-        b.append(prefix);
-        b.append("range=");
-        b.append(range());
-        b.append(delimiter);
-
-        return b.toString();
+        return b;
     }
 
     @Override

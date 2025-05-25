@@ -55,7 +55,6 @@ public final class SwitchOnEmpty<T> implements Stream<T> {
                             it = Preconditions.checkNotNull(factory.call().iterator());
                         } catch (Exception e) {
                             Exceptions.rethrow(e);
-                            return;
                         }
                     }
                 }

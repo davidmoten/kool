@@ -19,7 +19,7 @@ public final class LazyValueNode implements Supplier<ValueNode> {
     @Override
     public ValueNode get() {
         try {
-            return (ValueNode) Util.MAPPER.readTree(parser);
+            return Util.MAPPER.readTree(parser);
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }

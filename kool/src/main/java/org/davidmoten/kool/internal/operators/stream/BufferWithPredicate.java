@@ -81,7 +81,6 @@ public final class BufferWithPredicate<T> implements Stream<List<T>> {
                         ready = true;
                     }
                 } else {
-                    ready = true;
                 }
             }
         };

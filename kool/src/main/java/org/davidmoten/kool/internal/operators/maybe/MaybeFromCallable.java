@@ -18,7 +18,7 @@ public final class MaybeFromCallable<T> implements Maybe<T> {
 
     @Override
     public Optional<T> get() {
-        T v = null;
+        T v;
         try {
             v = callable.call();
         } catch (Throwable e) {

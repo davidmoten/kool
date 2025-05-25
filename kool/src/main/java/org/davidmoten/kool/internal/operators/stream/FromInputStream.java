@@ -66,7 +66,6 @@ public final class FromInputStream implements Stream<ByteBuffer> {
                     }
                     if (n == -1) {
                         is = null;
-                        next = null;
                     } else {
                         next = ByteBuffer.wrap(b, 0, n);
                     }

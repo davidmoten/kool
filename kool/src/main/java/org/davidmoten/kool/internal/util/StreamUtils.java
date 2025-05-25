@@ -43,7 +43,7 @@ public final class StreamUtils {
             int index;
 
             @Override
-            public int read() throws IOException {
+            public int read() {
                 load();
                 if (bytes == null) {
                     return -1;
@@ -53,7 +53,7 @@ public final class StreamUtils {
             }
 
             @Override
-            public int read(byte[] b, int off, int len) throws IOException {
+            public int read(byte[] b, int off, int len) {
                 load();
                 if (bytes == null) {
                     return -1;

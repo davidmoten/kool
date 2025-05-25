@@ -27,7 +27,7 @@ public final class RetryWhenBuilder<T> {
     }
 
     public RetryWhenBuilder<T> delays(Stream<Long> delays, TimeUnit unit) {
-        this.delays = delays.map(x -> unit.toMillis(x));
+        this.delays = delays.map(unit::toMillis);
         return this;
     }
 

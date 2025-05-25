@@ -129,8 +129,6 @@ public final class BufferWithFactoryPredicateAndStep<S, T> implements Stream<S> 
                     if (emitRemainder && !buffer.isEmpty()) {
                         ready = true;
                     }
-                } else {
-                    ready = true;
                 }
             }
         };

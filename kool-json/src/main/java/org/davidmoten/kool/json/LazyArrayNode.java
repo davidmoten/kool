@@ -26,7 +26,7 @@ public final class LazyArrayNode implements Supplier<ArrayNode> {
     @Override
     public ArrayNode get() {
         try {
-            return (ArrayNode) mapper.readTree(parser);
+            return mapper.readTree(parser);
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
@@ -42,7 +42,7 @@ public final class LazyArrayNode implements Supplier<ArrayNode> {
                 TreeNode v = mapper.readTree(parser);
                 emitter.onNext((JsonNode) v);
             }
-        })).doOnDispose(() -> parser.close());
+        })).doOnDispose(parser::close);
     }
 
     public <T> Stream<T> values(Class<T> cls) {
@@ -61,7 +61,7 @@ public final class LazyArrayNode implements Supplier<ArrayNode> {
                     }
                 }
             });
-        }).doOnDispose(() -> parser.close());
+        }).doOnDispose(parser::close);
     }
 
 }

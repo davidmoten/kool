@@ -25,7 +25,7 @@ public final class DoOnError<T> implements Stream<T> {
                 try {
                     return it.hasNext();
                 } catch (RuntimeException | Error t) {
-                    
+                    consumer.acceptUnchecked(t);
                     throw t;
                 }
             }

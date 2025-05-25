@@ -182,9 +182,7 @@ public interface Stream<T> extends StreamIterable<T> {
     static <T, R> Stream<T> generate(Callable<R> factory, BiConsumer<R, Emitter<T>> consumer) {
         return Stream.defer(() -> {
             R r = factory.call();
-            return generate(e -> {
-                consumer.accept(r, e);
-            });
+            return generate(e -> consumer.accept(r, e));
         });
     }
 
@@ -223,7 +221,7 @@ public interface Stream<T> extends StreamIterable<T> {
 
     @SuppressWarnings("unchecked")
     static <T> Stream<T> from(java.util.stream.Stream<? extends T> stream) {
-        return from(() -> (Iterator<T>) stream.iterator()).doOnDispose(() -> stream.close());
+        return from(() -> (Iterator<T>) stream.iterator()).doOnDispose(stream::close);
     }
 
     static <T> Stream<T> fromArray(T[] array, int fromIndex, int toIndex) {
@@ -285,7 +283,7 @@ public interface Stream<T> extends StreamIterable<T> {
             } catch (Exception e) {
                 return Exceptions.rethrow(e);
             }
-        }, br -> lines(br));
+        }, Stream::lines);
     }
 
     static Stream<String> lines(Callable<? extends InputStream> inFactory, Charset charset) {
@@ -319,7 +317,7 @@ public interface Stream<T> extends StreamIterable<T> {
     }
 
     static Stream<ByteBuffer> byteBuffers(Callable<? extends InputStream> provider, int bufferSize) {
-        return using(provider, is -> byteBuffers(is));
+        return using(provider, Stream::byteBuffers);
     }
 
     static Stream<ByteBuffer> byteBuffers(Callable<? extends InputStream> provider) {
@@ -433,7 +431,7 @@ public interface Stream<T> extends StreamIterable<T> {
      * Emits the integers 0, 1, 2, .... The first element is emitted immediately (0)
      * and then the current thread is blocked with {@code Thread.sleep} for the
      * given duration between further emissions.
-     * 
+     * <p>
      * If you don't want the stream to start with 0 immediately then call
      * {@code interval(...).skip(1)}.
      * 
@@ -527,19 +525,19 @@ public interface Stream<T> extends StreamIterable<T> {
             final java.util.function.Function<A, R> finisher = collector.finisher();
 
             @Override
-            public R apply(A a) throws Exception {
+            public R apply(A a)  {
                 return finisher.apply(a);
             }
         };
         return collect(new Collector<T, A>() {
 
             @Override
-            public A call() throws Exception {
+            public A call() {
                 return supplier.get();
             }
 
             @Override
-            public A apply(A a, T t) throws Exception {
+            public A apply(A a, T t)  {
                 accumulator.accept(a, t);
                 return a;
             }
@@ -617,11 +615,11 @@ public interface Stream<T> extends StreamIterable<T> {
     }
 
     default Single<Set<T>> toSet(int sizeHint) {
-        return collect(() -> new HashSet<T>(sizeHint), (BiConsumer<Set<T>, T>) (set, x) -> set.add(x));
+        return collect(() -> new HashSet<T>(sizeHint), Set::add);
     }
 
     default Single<List<T>> toList(int sizeHint) {
-        return collect(() -> new ArrayList<T>(sizeHint), (BiConsumer<List<T>, T>) (list, x) -> list.add(x));
+        return collect(() -> new ArrayList<T>(sizeHint), List::add);
     }
 
     default Stream<T> filter(Predicate<? super T> function) {
@@ -833,22 +831,22 @@ public interface Stream<T> extends StreamIterable<T> {
     default java.util.stream.Stream<T> toStreamJava() {
         StreamIterator<T> si = iterator();
         Spliterator<T> spliterator = Spliterators.spliteratorUnknownSize(si, 0);
-        return StreamSupport.stream(spliterator, false).onClose(() -> si.dispose());
+        return StreamSupport.stream(spliterator, false).onClose(si::dispose);
     }
 
     default <K, V> Single<java.util.Map<K, V>> toMap(Function<? super T, ? extends K> keyFunction,
             Function<? super T, ? extends V> valueFunction) {
-        return collect(HashMap::new, (BiConsumer<java.util.Map<K, V>, T>) (m, item) -> m.put(keyFunction.apply(item),
+        return collect(HashMap::new, (m, item) -> m.put(keyFunction.apply(item),
                 valueFunction.apply(item)));
     }
 
     default Single<String> join(String delimiter) {
-        return collect(() -> new StringBuilder(), (b, x) -> {
+        return collect(StringBuilder::new, (b, x) -> {
             if (b.length() > 0) {
                 b.append(delimiter);
             }
             b.append(x);
-        }).map(b -> b.toString());
+        }).map(StringBuilder::toString);
     }
 
     default Stream<String> split(String delimiter) {
@@ -1058,12 +1056,12 @@ public interface Stream<T> extends StreamIterable<T> {
     @SuppressWarnings("unchecked")
     default <R> Stream<R> cast(Class<R> cls) {
         Preconditions.checkNotNull(cls);
-        return (Stream<R>) (Stream<Object>) this;
+        return (Stream<R>) this;
     }
 
     default Single<Boolean> contains(T value) {
         Preconditions.checkNotNull(value);
-        return any(x -> value.equals(x));
+        return any(value::equals);
     }
 
     default Stream<T> distinctUntilChanged() {
@@ -1140,7 +1138,7 @@ public interface Stream<T> extends StreamIterable<T> {
             R r = initialValue;
 
             @Override
-            public Stream<R> call() throws Exception {
+            public Stream<R> call() {
                 return Stream.this.map(x -> {
                     r = accumulator.apply(r, x);
                     return r;

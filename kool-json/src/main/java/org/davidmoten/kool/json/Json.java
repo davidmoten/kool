@@ -108,17 +108,17 @@ public final class Json {
 
     public Maybe<LazyObjectNode> objectNode() {
         return node_(t -> t == JsonToken.START_OBJECT) //
-                .map(p -> new LazyObjectNode(p));
+                .map(LazyObjectNode::new);
     }
 
     public Maybe<LazyValueNode> valueNode() {
-        return node_(t -> VALUE_TOKENS.contains(t)) //
-                .map(p -> new LazyValueNode(p));
+        return node_(VALUE_TOKENS::contains) //
+                .map(LazyValueNode::new);
     }
 
     public Maybe<LazyTreeNode> node() {
         return node_(t -> true) //
-                .map(p -> new LazyTreeNode(p));
+                .map(LazyTreeNode::new);
     }
 
     public Maybe<LazyArrayNode> arrayNode() {

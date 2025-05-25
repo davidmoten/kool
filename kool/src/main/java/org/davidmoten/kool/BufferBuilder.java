@@ -13,10 +13,6 @@ public final class BufferBuilder<T> {
     private final Stream<T> stream;
     private boolean isWhile;
 
-//    private Callable<? extends S> factory;
-//    private BiFunction<? super S, ? super T, ? extends S> accumulator, BiPredicate<? super S, ? super T> condition,
-//    boolean emitRemainder, Function<? super S, Integer> step, int maxReplay
-
     BufferBuilder(Stream<T> stream, boolean isWhile) {
         this.stream = stream;
         this.isWhile = isWhile;

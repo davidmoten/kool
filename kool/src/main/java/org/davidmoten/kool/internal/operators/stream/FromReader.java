@@ -49,7 +49,6 @@ public final class FromReader implements Stream<String> {
                         n = reader.read(chars);
                     } catch (IOException e) {
                         Exceptions.rethrow(e);
-                        return;
                     }
                 }
             }

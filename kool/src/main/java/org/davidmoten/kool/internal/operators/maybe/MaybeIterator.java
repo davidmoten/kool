@@ -5,6 +5,7 @@ import java.util.Optional;
 import org.davidmoten.kool.Maybe;
 import org.davidmoten.kool.StreamIterator;
 
+@SuppressWarnings("OptionalGetWithoutIsPresent")
 public final class MaybeIterator<T> implements StreamIterator<T> {
 
     private final Maybe<T> maybe;

@@ -19,7 +19,7 @@ public final class LazyObjectNode implements Supplier<ObjectNode> {
     @Override
     public ObjectNode get() {
         try {
-            return (ObjectNode) Util.MAPPER.readTree(p);
+            return Util.MAPPER.readTree(p);
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }

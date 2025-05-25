@@ -10,12 +10,7 @@ public final class Permutations {
     }
 
     public static <T> Iterable<Swap<T>> iterable(final List<T> list) {
-        return new Iterable<Swap<T>>() {
-            @Override
-            public Iterator<Swap<T>> iterator() {
-                return Permutations.iterator(list);
-            }
-        };
+        return () -> iterator(list);
     }
 
     public static <T> Iterator<Swap<T>> iterator(List<T> list) {
@@ -26,9 +21,9 @@ public final class Permutations {
 
         /**
          * After
-         * http://www.cut-the-knot.org/Curriculum/Combinatorics/JohnsonTrotter.
+         * <a href="http://www.cut-the-knot.org/Curriculum/Combinatorics/JohnsonTrotter">...</a>.
          * shtml
-         * 
+         *
          */
         private final T[] values;
         private final DirectedReference[] references;
@@ -38,7 +33,7 @@ public final class Permutations {
             this.values = (T[]) list.toArray();
             this.references = new DirectedReference[list.size()];
             for (int i = 0; i < this.references.length; i++) {
-                this.references[i] = new DirectedReference(-1, i);
+                this.references[i] = new DirectedReference(i);
             }
         }
 
@@ -131,8 +126,8 @@ public final class Permutations {
         private final int reference;
         private int direction;
 
-        DirectedReference(int direction, int reference) {
-            this.direction = direction;
+        DirectedReference(int reference) {
+            this.direction = -1;
             this.reference = reference;
         }
 

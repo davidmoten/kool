@@ -14,13 +14,13 @@ import java.util.Set;
  * Represents an exception that is a composite of one or more other exceptions. A {@code CompositeException}
  * does not modify the structure of any exception it wraps, but at print-time it iterates through the list of
  * Throwables contained in the composite in order to print them all.
- *
+ * <p>
  * Its invariant is to contain an immutable, ordered (by insertion order), unique list of non-composite
  * exceptions. You can retrieve individual exceptions in this list with {@link #getExceptions()}.
- *
+ * <p>
  * The {@link #printStackTrace()} implementation handles the StackTrace in a customized way instead of using
  * {@code getCause()} so that it can avoid circular references.
- *
+ * <p>
  * If you invoke {@link #getCause()}, it will lazily create the causal chain but will stop if it finds any
  * Throwable in the chain that it has already seen.
  */
@@ -53,7 +53,6 @@ public final class CompositeException extends RuntimeException {
      */
     public CompositeException(Iterable<? extends Throwable> errors) {
         Set<Throwable> deDupedExceptions = new LinkedHashSet<Throwable>();
-        List<Throwable> localExceptions = new ArrayList<Throwable>();
         if (errors != null) {
             for (Throwable ex : errors) {
                 if (ex instanceof CompositeException) {
@@ -71,7 +70,7 @@ public final class CompositeException extends RuntimeException {
         if (deDupedExceptions.isEmpty()) {
             throw new IllegalArgumentException("errors is empty");
         }
-        localExceptions.addAll(deDupedExceptions);
+        List<Throwable> localExceptions = new ArrayList<Throwable>(deDupedExceptions);
         this.exceptions = Collections.unmodifiableList(localExceptions);
         this.message = exceptions.size() + " exceptions occurred. ";
     }
@@ -132,9 +131,9 @@ public final class CompositeException extends RuntimeException {
     }
 
     /**
-     * All of the following {@code printStackTrace} functionality is derived from JDK {@link Throwable}
+     * All the following {@code printStackTrace} functionality is derived from JDK {@link Throwable}
      * {@code printStackTrace}. In particular, the {@code PrintStreamOrWriter} abstraction is copied wholesale.
-     *
+     * <p>
      * Changes from the official JDK implementation:<ul>
      * <li>no infinite loop detection</li>
      * <li>smaller critical section holding {@link PrintStream} lock</li>

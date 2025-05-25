@@ -20,15 +20,15 @@ public final class JsonArray {
     }
 
     public <T> Stream<LazyTreeNode> nodes() {
-        return nodes_().map(p -> Util.MAPPER.readTree(p));
+        return nodes_().map(Util.MAPPER::readTree);
     }
 
     public Stream<LazyObjectNode> objectNodes() {
-        return nodes_().map(p -> new LazyObjectNode(p));
+        return nodes_().map(LazyObjectNode::new);
     }
 
     public Stream<LazyValueNode> valueNodes() {
-        return nodes_().map(p -> new LazyValueNode(p));
+        return nodes_().map(LazyValueNode::new);
     }
 
     public Stream<LazyArrayNode> arrayNodes() {
