@@ -1,6 +1,6 @@
 # kool
 <a href="https://github.com/davidmoten/kool/actions/workflows/ci.yml"><img src="https://github.com/davidmoten/kool/actions/workflows/ci.yml/badge.svg"/></a><br/>
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.davidmoten/kool/badge.svg?style=flat)](https://maven-badges.herokuapp.com/maven-central/com.github.davidmoten/kool)<br/>
+[![Maven Central](https://maven-badges.sml.io/sonatype-central/com.github.davidmoten/kool/badge.svg?style=flat)](https://maven-badges.sml.io/sonatype-central/com.github.davidmoten/kool)<br/>
 [![codecov](https://codecov.io/gh/davidmoten/kool/branch/master/graph/badge.svg)](https://codecov.io/gh/davidmoten/kool)
 
 
